@@ -1,0 +1,5254 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../../.prisma/joc-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_JOC")
+}
+
+model account_activity_log {
+  id         Int       @id @default(autoincrement())
+  account_id Int
+  member_id  Int       @default(0)
+  status     String?   @db.VarChar(255)
+  action     String?   @db.VarChar(255)
+  input      String?   @db.Text
+  output     String?   @db.Text
+  ip_address String    @db.VarChar(15)
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  @@index([account_id, member_id, status, deleted_at], map: "account_id")
+  @@index([ip_address], map: "ip_address")
+}
+
+model account_attachment_files {
+  id          Int       @id @default(autoincrement())
+  account_id  Int
+  member_id   Int
+  file_id     String    @db.VarChar(255)
+  file_name   String    @db.VarChar(255)
+  file_type   String    @db.VarChar(255)
+  description String?   @db.VarChar(1024)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+}
+
+model account_billing {
+  id                  Int                     @id @default(autoincrement())
+  u_id                String                  @db.VarChar(32)
+  account_id          Int
+  billing_id          Int?
+  type                account_billing_type?   @default(LICENSE)
+  billing_cycle       Int?                    @default(28)
+  cancellation_period String?                 @db.VarChar(255)
+  status              account_billing_status? @default(ACTIVE)
+  rate_override       String?                 @db.MediumText
+  created_at          DateTime?               @db.DateTime(0)
+  updated_at          DateTime?               @db.DateTime(0)
+  deleted_at          DateTime?               @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([deleted_at], map: "deleted_at")
+}
+
+model account_billing_dev {
+  id                  Int                         @id @default(autoincrement())
+  u_id                String                      @db.VarChar(32)
+  account_id          Int
+  billing_id          Int?
+  type                account_billing_dev_type?   @default(LICENSE)
+  billing_cycle       Int?                        @default(28)
+  billing_dev         Int
+  cancellation_period String?                     @db.VarChar(255)
+  status              account_billing_dev_status? @default(ACTIVE)
+  rate_override       String?                     @db.Text
+  created_at          DateTime?                   @db.DateTime(0)
+  updated_at          DateTime?                   @db.DateTime(0)
+  deleted_at          DateTime?                   @db.DateTime(0)
+}
+
+model account_contacts {
+  id               Int       @id @default(autoincrement())
+  u_id             String    @db.VarChar(32)
+  account_id       Int
+  department       String?   @db.VarChar(255)
+  first_name       String?   @db.VarChar(255)
+  middle_name      String?   @db.VarChar(255)
+  last_name        String?   @db.VarChar(255)
+  title            String?   @db.VarChar(255)
+  address          String?   @db.VarChar(255)
+  address_2        String?   @db.VarChar(255)
+  city             String?   @db.VarChar(255)
+  state            String?   @db.VarChar(255)
+  postal_code      String?   @db.VarChar(10)
+  country          String?   @db.VarChar(3)
+  phone_office     String?   @db.VarChar(15)
+  phone_home       String?   @db.VarChar(15)
+  phone_mobile     String?   @db.VarChar(15)
+  phone_fax        String?   @db.VarChar(15)
+  phone_office_ext String?   @db.VarChar(10)
+  phone_home_ext   String?   @db.VarChar(10)
+  phone_mobile_ext String?   @db.VarChar(10)
+  phone_fax_ext    String?   @db.VarChar(10)
+  email            String?   @db.VarChar(255)
+  secondary_email  String?   @db.VarChar(255)
+  notify           Int?
+  comment          String?   @db.VarChar(512)
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+
+  @@index([u_id, account_id, created_at], map: "u_id")
+}
+
+model account_cyneric {
+  id                     Int                            @id @default(autoincrement())
+  u_id                   String                         @db.VarChar(32)
+  account_id             Int
+  cyneric_id             Int?
+  type                   account_cyneric_type?          @default(OUTBOUND)
+  unlimited              account_cyneric_unlimited?     @default(Y)
+  pay_type               Int?                           @default(2)
+  balance                Decimal?                       @db.Decimal(10, 4)
+  rate                   Int?
+  min_start_second       Int?                           @default(0)
+  increment_second       Int?                           @default(0)
+  dialplan               Int?
+  refill_amount          Int?
+  refill_trigger_amount  Int?
+  max_credit_allowed     Float?
+  transaction_retry      Int?                           @default(0)
+  transaction_retried_at DateTime?                      @db.DateTime(0)
+  status                 account_cyneric_status?        @default(NEW)
+  created_at             DateTime?                      @db.DateTime(0)
+  updated_at             DateTime?                      @db.DateTime(0)
+  deleted_at             DateTime?                      @db.DateTime(0)
+  mrm_fund_percent       Int?
+  provider_id            Int?                           @default(5)
+  provider_type          account_cyneric_provider_type?
+  json_settings          String?                        @db.Text
+
+  @@index([account_id], map: "account_id")
+  @@index([cyneric_id], map: "cyneric_id")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([status], map: "status")
+  @@index([transaction_retry], map: "transaction_retry")
+  @@index([type], map: "type")
+}
+
+model account_dialer_settings {
+  id                  Int                               @id @default(autoincrement())
+  account_id          Int
+  subscription_id     String                            @db.VarChar(20)
+  dialer_component_id Int
+  quantity            Float?
+  billable            account_dialer_settings_billable? @default(N)
+  created_at          DateTime                          @db.DateTime(0)
+  updated_at          DateTime?                         @db.DateTime(0)
+  deleted_at          DateTime?                         @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([subscription_id], map: "subscription_id")
+}
+
+model account_group_accounts {
+  id               Int       @id @default(autoincrement())
+  account_group_id Int
+  account_id       Int
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+
+  @@index([account_group_id], map: "account_group_id")
+  @@index([account_id], map: "account_id")
+  @@index([deleted_at], map: "deleted_at")
+}
+
+model account_group_users {
+  id               Int       @id @default(autoincrement())
+  account_group_id Int
+  from_account_id  Int
+  from_user_id     Int
+  to_account_id    Int
+  to_user_id       Int
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+
+  @@index([account_group_id], map: "account_group_id")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([from_account_id], map: "from_account_id")
+  @@index([from_user_id], map: "from_user_id")
+  @@index([to_account_id], map: "to_account_id")
+  @@index([to_user_id], map: "to_user_id")
+}
+
+model account_groups {
+  id          Int                   @id @default(autoincrement())
+  name        String                @db.VarChar(50)
+  description String?               @db.VarChar(255)
+  status      account_groups_status @default(INACTIVE)
+  created_at  DateTime?             @db.DateTime(0)
+  updated_at  DateTime?             @db.DateTime(0)
+  deleted_at  DateTime?             @db.DateTime(0)
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([status], map: "status")
+}
+
+model account_info {
+  account_id                  Int                                      @id
+  password_complexity         Int
+  object_limitation           String?                                  @default("") @db.VarChar(512)
+  additional_lead_field       account_info_additional_lead_field?      @default(N)
+  preview_dial_restriction    account_info_preview_dial_restriction    @default(N)
+  num_free_minutes            Int                                      @default(1000)
+  minute_usage                Int?                                     @default(0)
+  is_honey_pot                account_info_is_honey_pot?               @default(N)
+  tours                       String?                                  @db.VarChar(512)
+  is_in_testbed               account_info_is_in_testbed?              @default(N)
+  archive_log_after_x_day     String?                                  @db.VarChar(512)
+  sale_rep_id                 Int?                                     @default(0)
+  backup_sale_rep_id          Int?
+  voso_ai_csm_id              Int
+  csm_rep_id                  Int                                      @default(0)
+  backup_csm_rep_id           Int?                                     @default(0)
+  max_channels                Int?                                     @default(0)
+  client_tier                 Int                                      @default(4)
+  disclaimer                  Bytes?                                   @db.Blob
+  log_lead_changes            account_info_log_lead_changes?           @default(N)
+  exclude_from_revenue_report account_info_exclude_from_revenue_report @default(N)
+  show_tos_on_agent_app       account_info_show_tos_on_agent_app?      @default(N)
+  billing_tab_status          account_info_billing_tab_status?         @default(N)
+  billing_tab_max             Float?                                   @default(0) @db.Float
+  tab_credit                  Float?                                   @default(0.00) @db.Float
+  virtual_agent               account_info_virtual_agent?              @default(N)
+  preserve_log_expire_at      DateTime?                                @db.DateTime(0)
+  json_settings               String?                                  @db.MediumText
+  external_service_json       String?                                  @db.Text
+  hopper_custom_field_order   account_info_hopper_custom_field_order   @default(N)
+  talkdesk_id                 String?                                  @db.VarChar(255)
+
+  @@index([backup_csm_rep_id], map: "backup_csm_rep_id")
+  @@index([backup_sale_rep_id], map: "backup_sale_rep_id")
+  @@index([csm_rep_id], map: "csm_rep_id")
+  @@index([talkdesk_id], map: "idx_talkdesk_id")
+  @@index([sale_rep_id], map: "sale_rep_id")
+}
+
+model account_info_backup {
+  account_id                  Int                                             @id
+  password_complexity         Int
+  object_limitation           String?                                         @default("") @db.VarChar(512)
+  additional_lead_field       account_info_backup_additional_lead_field?      @default(N)
+  preview_dial_restriction    account_info_backup_preview_dial_restriction    @default(N)
+  num_free_minutes            Int                                             @default(1000)
+  minute_usage                Int?                                            @default(0)
+  is_honey_pot                account_info_backup_is_honey_pot?               @default(N)
+  tours                       String?                                         @db.VarChar(512)
+  is_in_testbed               account_info_backup_is_in_testbed?              @default(N)
+  archive_log_after_x_day     String?                                         @db.VarChar(512)
+  sale_rep_id                 Int?                                            @default(0)
+  backup_sale_rep_id          Int?
+  voso_ai_csm_id              Int
+  csm_rep_id                  Int                                             @default(0)
+  backup_csm_rep_id           Int?                                            @default(0)
+  max_channels                Int?                                            @default(0)
+  client_tier                 Int                                             @default(4)
+  disclaimer                  Bytes?                                          @db.Blob
+  log_lead_changes            account_info_backup_log_lead_changes?           @default(N)
+  exclude_from_revenue_report account_info_backup_exclude_from_revenue_report @default(N)
+  show_tos_on_agent_app       account_info_backup_show_tos_on_agent_app?      @default(N)
+  billing_tab_status          account_info_backup_billing_tab_status?         @default(N)
+  billing_tab_max             Float?                                          @default(0) @db.Float
+  tab_credit                  Float?                                          @default(0.00) @db.Float
+  virtual_agent               account_info_backup_virtual_agent?              @default(N)
+  preserve_log_expire_at      DateTime?                                       @db.DateTime(0)
+  json_settings               String?                                         @db.MediumText
+  external_service_json       String?                                         @db.Text
+  hopper_custom_field_order   account_info_backup_hopper_custom_field_order   @default(N)
+
+  @@index([backup_csm_rep_id], map: "backup_csm_rep_id")
+  @@index([backup_sale_rep_id], map: "backup_sale_rep_id")
+  @@index([csm_rep_id], map: "csm_rep_id")
+  @@index([sale_rep_id], map: "sale_rep_id")
+}
+
+model account_notes {
+  id         Int       @id @default(autoincrement())
+  u_id       String    @db.VarChar(32)
+  account_id Int
+  member_id  Int?      @default(0)
+  subject    String?   @db.VarChar(255)
+  note       String?   @db.Text
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  @@index([u_id, account_id, member_id, created_at, deleted_at], map: "u_id")
+}
+
+model account_providers {
+  id                     Int                          @id @default(autoincrement())
+  u_id                   String                       @db.VarChar(32)
+  account_id             Int
+  provider_id            Int?
+  provider_external_id   Int?                         @default(0)
+  type                   account_providers_type?      @default(VOICE)
+  sub_type               account_providers_sub_type?
+  unlimited              account_providers_unlimited? @default(Y)
+  pay_type               Int?                         @default(2)
+  balance                Decimal?                     @db.Decimal(10, 2)
+  rate                   Int?
+  min_start_second       Int?                         @default(0)
+  increment_second       Int?                         @default(0)
+  dialplan               Int?
+  refill_amount          Int?
+  refill_trigger_amount  Int?
+  max_credit_allowed     Float?
+  transaction_retry      Int?                         @default(0)
+  transaction_retried_at DateTime?                    @db.DateTime(0)
+  status                 account_providers_status?    @default(NEW)
+  created_at             DateTime?                    @db.DateTime(0)
+  updated_at             DateTime?                    @db.DateTime(0)
+  deleted_at             DateTime?                    @db.DateTime(0)
+  mrm_fund_percent       Int?
+
+  @@index([transaction_retry], map: "transaction_retry")
+}
+
+model account_sip_trunks {
+  id         Int       @id @default(autoincrement())
+  account_id Int
+  dial_plan  String?   @db.Text
+  peer       String?   @db.Text
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model account_talkdesk {
+  id               Int                      @id @default(autoincrement())
+  account_id       Int?
+  talkdesk_id      String                   @db.VarChar(255)
+  account_name     String                   @db.VarChar(255)
+  app_id           String                   @db.VarChar(255)
+  app_version_id   String                   @db.VarChar(255)
+  app_version_name String                   @db.VarChar(255)
+  client_id        String                   @db.VarChar(255)
+  client_secret    String                   @db.VarChar(255)
+  event_id         String                   @db.VarChar(255)
+  installation_id  String                   @db.VarChar(255)
+  key_algorithm    String                   @db.VarChar(255)
+  key_id           String                   @db.VarChar(255)
+  private_key      String                   @db.VarChar(255)
+  public_key       String                   @db.VarChar(255)
+  users            String?                  @db.Text
+  widget_url       String?                  @db.Text
+  status           account_talkdesk_status?
+  trial_expires_at DateTime?                @db.DateTime(0)
+  created_at       DateTime                 @default(now()) @db.DateTime(0)
+  updated_at       DateTime                 @default(now()) @db.DateTime(0)
+  deleted_at       DateTime?                @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([status], map: "status")
+  @@index([talkdesk_id], map: "talkdesk_id")
+}
+
+model accounts {
+  id                         Int                                  @id @default(autoincrement())
+  u_id                       String                               @db.VarChar(32)
+  name                       String                               @db.VarChar(255)
+  company_name               String?                              @db.VarChar(255)
+  status                     accounts_status                      @default(NEW)
+  account_type               accounts_account_type?               @default(REGULAR)
+  address                    String?                              @db.VarChar(255)
+  address_2                  String?                              @db.VarChar(255)
+  city                       String?                              @db.VarChar(255)
+  state                      String?                              @db.VarChar(255)
+  zipcode                    String?                              @db.VarChar(10)
+  country                    String?                              @db.VarChar(255)
+  phone                      String?                              @db.VarChar(20)
+  website                    String?                              @db.VarChar(255)
+  local_gmt                  String?                              @db.VarChar(20)
+  registration_server        String?                              @db.VarChar(20)
+  master_server              String?                              @db.VarChar(20)
+  cluster_node               String?                              @db.VarChar(50)
+  billing_id                 Int?
+  impersonate_key            String?                              @db.VarChar(255)
+  impersonate_expired_at     DateTime?                            @db.DateTime(0)
+  default_gmt                String?                              @db.VarChar(10)
+  default_caller_id          String?                              @db.VarChar(20)
+  demo_expired_at            DateTime?                            @db.DateTime(0)
+  extend_delinquent_period   Int                                  @default(1)
+  delinquent_at              DateTime?                            @db.DateTime(0)
+  minimum_seat               Int
+  minimum_seat_expired_at    DateTime?                            @db.Date
+  contract_start_date        DateTime?                            @db.Date
+  billing_production         accounts_billing_production?         @default(N)
+  test_account               accounts_test_account?               @default(N)
+  maintenant_start_at        DateTime?                            @db.DateTime(0)
+  maintenant_end_at          DateTime?                            @db.DateTime(0)
+  dr_account                 accounts_dr_account?                 @default(N)
+  dr_account_id              Int                                  @default(0)
+  tier                       Int                                  @default(2)
+  day_log_keep_in_master     Int                                  @default(3)
+  day_log_to_keep            String?                              @db.VarChar(512)
+  security_compliance        Int                                  @default(0)
+  encryption_key             String?                              @db.Text
+  encryption_recipient       String?                              @db.VarChar(255)
+  default_audio_format       accounts_default_audio_format?       @default(MP3)
+  primary_data_center        accounts_primary_data_center?        @default(DT)
+  multi_process              accounts_multi_process?              @default(N)
+  multi_process_auto_dial    accounts_multi_process_auto_dial     @default(N)
+  verification_code          String?                              @db.VarChar(32)
+  license_seat_count         Int?                                 @default(0)
+  created_at                 DateTime?                            @db.DateTime(0)
+  updated_at                 DateTime?                            @db.DateTime(0)
+  inactive_at                DateTime?                            @db.DateTime(0)
+  deleted_at                 DateTime?                            @db.DateTime(0)
+  billing_system             String?                              @db.VarChar(124)
+  migration_mode             String?                              @db.VarChar(10)
+  billing_account_id         String?                              @db.VarChar(100)
+  z_account_id               String?                              @db.VarChar(100)
+  crm_id                     String?                              @db.VarChar(255)
+  trr_system                 String?                              @default("9") @db.VarChar(45)
+  iva_managed_service        accounts_iva_managed_service?        @default(N)
+  externally_managed_account accounts_externally_managed_account? @default(N)
+  voip_provider_env          accounts_voip_provider_env?
+  host_group_name            String?                              @db.VarChar(255)
+  use_hostgroup              Boolean?                             @default(false)
+  trr_account_id             Int?
+
+  @@index([delinquent_at], map: "delinquent_at")
+  @@index([demo_expired_at], map: "demo_expired_at")
+  @@index([primary_data_center], map: "primary_data_center")
+  @@index([status], map: "status")
+  @@index([u_id, name, company_name], map: "u_id")
+}
+
+model acl_paths {
+  id                   Int                       @id @default(autoincrement())
+  u_id                 String                    @db.VarChar(32)
+  section_name         String                    @db.VarChar(255)
+  name                 String                    @db.VarChar(255)
+  route_name           String                    @db.VarChar(255)
+  path                 String                    @db.VarChar(255)
+  permission_type      acl_paths_permission_type @default(R)
+  minimum_access_level Int?
+  created_at           DateTime                  @db.DateTime(0)
+  updated_at           DateTime?                 @db.DateTime(0)
+  deleted_at           DateTime?                 @db.DateTime(0)
+
+  @@unique([u_id, path], map: "u_id")
+  @@index([section_name], map: "parent_id")
+}
+
+model acl_paths_polaris {
+  id                   Int                               @id @default(autoincrement())
+  u_id                 String                            @db.VarChar(32)
+  section_name         String                            @db.VarChar(255)
+  name                 String                            @db.VarChar(255)
+  route_name           String                            @db.VarChar(255)
+  path                 String                            @db.VarChar(255)
+  permission_type      acl_paths_polaris_permission_type @default(R)
+  minimum_access_level Int?
+  created_at           DateTime                          @db.DateTime(0)
+  updated_at           DateTime?                         @db.DateTime(0)
+  deleted_at           DateTime?                         @db.DateTime(0)
+
+  @@unique([u_id, path], map: "u_id")
+  @@index([section_name], map: "parent_id")
+}
+
+model acl_rules {
+  id           Int                   @id @default(autoincrement())
+  u_id         String                @unique(map: "u_id") @db.VarChar(32)
+  parent_id    Int
+  app          String                @db.VarChar(20)
+  name         String                @db.VarChar(255)
+  section_name String                @db.VarChar(255)
+  require_acl  acl_rules_require_acl @default(NO)
+  tutorial_url String                @db.VarChar(255)
+  status       acl_rules_status?     @default(N)
+  created_at   DateTime              @db.DateTime(0)
+  updated_at   DateTime?             @db.DateTime(0)
+  deleted_at   DateTime?             @db.DateTime(0)
+
+  @@index([parent_id], map: "parent_id")
+}
+
+model acl_rules_polaris {
+  id           Int                           @id @default(autoincrement())
+  u_id         String                        @unique(map: "u_id") @db.VarChar(32)
+  parent_id    Int
+  app          String                        @db.VarChar(20)
+  name         String                        @db.VarChar(255)
+  section_name String                        @db.VarChar(255)
+  require_acl  acl_rules_polaris_require_acl @default(NO)
+  tutorial_url String                        @db.VarChar(255)
+  created_at   DateTime                      @db.DateTime(0)
+  updated_at   DateTime?                     @db.DateTime(0)
+  deleted_at   DateTime?                     @db.DateTime(0)
+
+  @@index([parent_id], map: "parent_id")
+}
+
+model active_defense_accounts {
+  account_id          Int                              @id
+  min_dial_level      String?                          @db.VarChar(6)
+  throttle_percentage Int?
+  throttle_duration   Int?                             @db.UnsignedSmallInt
+  trigger_duration    Int?                             @db.UnsignedSmallInt
+  trigger_percentage  Int?
+  enabled             active_defense_accounts_enabled?
+  created_at          DateTime?                        @default(now()) @db.DateTime(0)
+}
+
+model agent_acl {
+  id            Int       @id @default(autoincrement()) @db.UnsignedInt
+  acl_key       String    @db.VarChar(255)
+  label         String    @db.VarChar(255)
+  description   String?   @db.VarChar(255)
+  options       String?   @db.Text
+  default_value String?   @db.VarChar(255)
+  created_at    DateTime  @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+  deleted_at    DateTime? @db.DateTime(0)
+}
+
+model agent_calendar_info {
+  id                 Int       @id @default(autoincrement())
+  calendar_id        String?   @db.VarChar(255)
+  last_sync_datetime DateTime? @db.DateTime(0)
+  user_id            String?   @db.VarChar(32)
+  status             Int?      @db.TinyInt
+  access_token       String?   @db.Text
+  sync_status        Int?      @db.TinyInt
+  channel_id         String?   @db.VarChar(255)
+}
+
+model ai_global_agent_responses {
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
+  global_agent_id Int?
+  intent_id       String?   @db.VarChar(255)
+  text            String?   @db.VarChar(255)
+  created_at      DateTime? @db.DateTime(0)
+  updated_at      DateTime? @db.DateTime(0)
+  deleted_at      DateTime? @db.DateTime(0)
+}
+
+model ai_global_agents {
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar(255)
+  provider    String?   @db.VarChar(255)
+  project_id  String?   @db.VarChar(255)
+  credentials String?   @db.Text
+  script      String?   @db.MediumText
+  is_custom   Int       @default(0) @db.TinyInt
+  created_at  DateTime  @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+}
+
+model ai_trainings {
+  id               Int       @id @default(autoincrement()) @db.UnsignedInt
+  account_id       Int?
+  global_agent_id  Int?
+  virtual_agent_id Int?
+  conversation_id  Int?
+  training_phrase  String?   @db.Text
+  exchange_id      Int?
+  response         String?   @db.VarChar(255)
+  intent_id        String?   @db.VarChar(255)
+  status           String?   @db.VarChar(20)
+  type             String?   @db.VarChar(20)
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+}
+
+model ai_virtual_agents {
+  id              Int       @id @default(autoincrement())
+  account_id      Int
+  global_agent_id Int
+  config          String?   @db.Text
+  created_at      DateTime  @db.DateTime(0)
+  updated_at      DateTime? @db.DateTime(0)
+  deleted_at      DateTime? @db.DateTime(0)
+}
+
+model ani_blacklist {
+  id             Int      @id @default(autoincrement())
+  ani            String?  @unique(map: "ani") @db.VarChar(50)
+  account_id     Int?
+  comments       String?  @db.VarChar(100)
+  datetime_added DateTime @default(now()) @db.DateTime(0)
+
+  @@index([datetime_added], map: "datetime_added")
+}
+
+model api_activity_log {
+  id         Int       @id @default(autoincrement())
+  name       String?   @db.VarChar(255)
+  account_id Int?      @default(0)
+  input      String?   @db.Text
+  output     String?   @db.Text
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  @@index([created_at], map: "created_at")
+  @@index([name], map: "name")
+}
+
+model api_auth_limit_master {
+  id             Int       @id @default(autoincrement())
+  account_id     Int
+  api_key        String    @db.VarChar(150)
+  limit_per_min  Int
+  limit_per_hour Int
+  limit_per_day  Int
+  created_at     DateTime  @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+  deleted_at     DateTime? @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+}
+
+model api_tokens {
+  id           Int      @id @default(autoincrement())
+  token        String   @db.VarChar(64)
+  user_id      Int
+  account_id   Int
+  cluster_node String   @db.VarChar(4)
+  user_agent   String   @db.VarChar(255)
+  ip_address   String   @db.VarChar(15)
+  expires_at   DateTime @db.DateTime(0)
+  created_at   DateTime @db.DateTime(0)
+
+  @@index([token], map: "token")
+}
+
+model areacode_overlay_groups {
+  id            Int     @id @default(autoincrement())
+  area_code     Int
+  state         String? @db.VarChar(2)
+  city          String? @db.VarChar(255)
+  overlay_group String? @db.VarChar(255)
+}
+
+model authentication_tokens {
+  id           Int       @id @default(autoincrement())
+  u_id         String    @db.VarChar(32)
+  name         String?   @db.VarChar(255)
+  account_id   Int
+  user_id      Int
+  ip_address   String?   @db.VarChar(15)
+  acls         String?   @db.Text
+  created_at   DateTime  @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+  mobile_token String?   @db.VarChar(32)
+
+  @@index([account_id], map: "account_id")
+  @@index([u_id], map: "u_id")
+  @@index([user_id], map: "user_id")
+}
+
+model billing_activity_log {
+  id              Int                               @id @default(autoincrement())
+  account_id      Int
+  billing_id      Int                               @default(0)
+  subscription_id Int                               @default(0)
+  member_id       Int?                              @default(0)
+  action          String?                           @db.VarChar(255)
+  script          String?                           @db.VarChar(255)
+  input           String?                           @db.Text
+  output          String?                           @db.Text
+  refund_need     billing_activity_log_refund_need? @default(N)
+  created_at      DateTime?                         @db.DateTime(0)
+  updated_at      DateTime?                         @db.DateTime(0)
+  deleted_at      DateTime?                         @db.DateTime(0)
+
+  @@index([account_id, billing_id, subscription_id, deleted_at], map: "account_id")
+}
+
+model billing_logs {
+  id          Int                       @id @default(autoincrement())
+  account_id  Int
+  type        String?                   @db.VarChar(255)
+  sub_type    String?                   @db.VarChar(255)
+  input       String?                   @db.Text
+  output      String?                   @db.Text
+  member_id   Int?
+  refund_need billing_logs_refund_need? @default(N)
+  created_at  DateTime?                 @db.DateTime(0)
+  updated_at  DateTime?                 @db.DateTime(0)
+  deleted_at  DateTime?                 @db.DateTime(0)
+
+  @@index([account_id, type, created_at], map: "account_id")
+}
+
+model calendar_sync_log {
+  id                   Int       @id @default(autoincrement())
+  user_id              String?   @db.VarChar(32)
+  sync_time            DateTime? @db.DateTime(0)
+  sync_calendar_id     String?   @db.VarChar(255)
+  calendar_sync_logcol String?   @db.VarChar(45)
+}
+
+model carrier_inventory {
+  id               Int      @id @default(autoincrement())
+  did              String   @db.VarChar(50)
+  vendor           String   @db.VarChar(30)
+  last_verified_at DateTime @db.DateTime(0)
+}
+
+model carrier_options {
+  id         Int                    @id @default(autoincrement())
+  name       String?                @db.VarChar(255)
+  value      String?                @db.VarChar(255)
+  type       carrier_options_type?
+  code       String?                @db.VarChar(255)
+  status     carrier_options_status @default(Y)
+  created_at DateTime?              @db.DateTime(0)
+  updated_at DateTime?              @db.DateTime(0)
+  deleted_at DateTime?              @db.DateTime(0)
+}
+
+model ccid_reputation_data {
+  id                   Int                             @id @default(autoincrement())
+  att                  Float?                          @db.Float
+  att_unregistered     Float?                          @db.Float
+  att_registered       Float?                          @db.Float
+  tmobile              Float?                          @db.Float
+  tmobile_unregistered Float?                          @db.Float
+  tmobile_registered   Float?                          @db.Float
+  verizon              Float?                          @db.Float
+  verizon_unregistered Float?                          @db.Float
+  verizon_registered   Float?                          @db.Float
+  data_type            ccid_reputation_data_data_type?
+  data_point           DateTime?                       @db.DateTime(0)
+  created_at           DateTime                        @db.DateTime(0)
+  updated_at           DateTime?                       @db.DateTime(0)
+  deleted_at           DateTime?                       @db.DateTime(0)
+}
+
+model cdr_processing_logs {
+  id               Int       @id @default(autoincrement())
+  account_id       Int
+  trunk_id         Int
+  log_count        Int
+  cdr_count        Int
+  percent_diff     Float?
+  alert_triggerred Int?
+  created_at       DateTime? @db.DateTime(0)
+
+  @@index([account_id, trunk_id, log_count, alert_triggerred, created_at], map: "account_id")
+}
+
+model client_kpi_types {
+  id          Int       @id @default(autoincrement())
+  kpi         String    @unique(map: "unique_index") @db.VarChar(128)
+  kpi_type    String    @db.VarChar(128)
+  kpi_name    String?   @db.VarChar(512)
+  description String?   @db.VarChar(1024)
+  created_at  DateTime  @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+}
+
+model client_kpis {
+  id         Int       @id @default(autoincrement())
+  account_id Int
+  kpi        String    @default("") @db.VarChar(128)
+  frequency  String    @default("MONTLY") @db.VarChar(128)
+  data       Decimal   @db.Decimal(10, 2)
+  date       DateTime? @db.Date
+  raw_data   String?   @db.Text
+
+  @@unique([account_id, kpi, frequency, date], map: "unique_index")
+  @@index([account_id, kpi, frequency, date], map: "account_id")
+}
+
+model client_user_kpis {
+  id         Int       @id @default(autoincrement())
+  account_id Int
+  user_id    Int
+  kpi        String    @default("") @db.VarChar(128)
+  frequency  String    @default("MONTLY") @db.VarChar(128)
+  data       Decimal   @db.Decimal(10, 2)
+  date       DateTime? @db.Date
+  raw_data   String?   @db.Text
+
+  @@unique([user_id, kpi, frequency, date], map: "unique_index")
+  @@index([account_id, user_id, kpi, frequency, date], map: "account_id")
+}
+
+model clients {
+  id            String  @id @db.VarChar(255)
+  name          String  @db.VarChar(255)
+  account_id    Int?
+  scope         String? @db.VarChar(255)
+  secret        String  @db.VarChar(255)
+  redirect_uris String? @db.VarChar(255)
+}
+
+model components {
+  id                Int     @id @default(autoincrement())
+  u_id              String  @db.VarChar(32)
+  remote_id         Int
+  name              String  @db.VarChar(255)
+  description       String? @db.VarChar(255)
+  unit_name         String? @db.VarChar(255)
+  unit_price        Int?
+  pricing_scheme    String? @db.VarChar(255)
+  prices            Int?
+  starting_quantity Int?
+  ending_quantity   Int?
+  family_product_id Int?
+  kind              String? @db.VarChar(255)
+  taxable           Int?
+  archived          Int?
+
+  @@index([u_id, remote_id], map: "u_id")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model consent_purpose {
+  code        String    @db.VarChar(50)
+  description String?   @db.VarChar(255)
+  active      String    @default("Y") @db.Char(1)
+  created_at  DateTime? @default(now()) @db.DateTime(0)
+  updated_at  DateTime? @default(now()) @db.DateTime(0)
+
+  @@ignore
+}
+
+model coupons {
+  internal_id            Int       @id @default(autoincrement())
+  u_id                   String    @db.VarChar(32)
+  id                     Int
+  name                   String    @db.VarChar(255)
+  code                   String    @db.VarChar(50)
+  description            String?   @db.VarChar(255)
+  percentage             Int?
+  amount                 Int?
+  allow_negative_balance Boolean?
+  recurring              Boolean?
+  duration_period_count  Int?
+  coupon_end_date        DateTime? @db.DateTime(0)
+  product_family_id      Int?
+  created_at             DateTime? @db.DateTime(0)
+  updated_at             DateTime? @db.DateTime(0)
+  deleted_at             DateTime? @db.DateTime(0)
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([u_id, id], map: "u_id")
+}
+
+model coupons_dev {
+  internal_id            Int       @id @default(autoincrement())
+  u_id                   String    @db.VarChar(32)
+  id                     Int
+  name                   String    @db.VarChar(255)
+  code                   String    @db.VarChar(50)
+  description            String?   @db.VarChar(255)
+  percentage             Int?
+  amount                 Int?
+  allow_negative_balance Boolean?
+  recurring              Boolean?
+  duration_period_count  Int?
+  coupon_end_date        DateTime? @db.DateTime(0)
+  product_family_id      Int?
+  created_at             DateTime? @db.DateTime(0)
+  updated_at             DateTime? @db.DateTime(0)
+  deleted_at             DateTime? @db.DateTime(0)
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([u_id, id], map: "u_id")
+}
+
+model cron_logs {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  executed_at DateTime? @db.DateTime(0)
+  ran_for     String?   @db.VarChar(255)
+}
+
+model cron_managers {
+  id                 Int                          @id @default(autoincrement())
+  u_id               String                       @db.VarChar(32)
+  name               String?                      @db.VarChar(255)
+  command            String?                      @db.VarChar(255)
+  schedule_time      String?                      @db.VarChar(255)
+  schedule_time_days String?                      @db.Text
+  description        String?                      @db.VarChar(255)
+  must_run           cron_managers_must_run?      @default(N)
+  delta              Int?
+  result             String?                      @db.Text
+  run_once_aday      cron_managers_run_once_aday? @default(Y)
+  status             cron_managers_status
+  last_run_at        DateTime?                    @db.DateTime(0)
+  last_started_at    DateTime?                    @db.DateTime(0)
+  created_at         DateTime?                    @db.DateTime(0)
+  updated_at         DateTime?                    @db.DateTime(0)
+  deleted_at         DateTime?                    @db.DateTime(0)
+
+  @@index([u_id, name, command, status], map: "u_id")
+}
+
+model cyneric_inventory {
+  id               Int      @id @default(autoincrement())
+  did              String   @db.VarChar(50)
+  cyneric_id       Int?
+  last_verified_at DateTime @db.DateTime(0)
+}
+
+model cyneric_sms_to_inbound {
+  id            Int                                  @id @default(autoincrement())
+  did           String?                              @db.VarChar(50)
+  state         cyneric_sms_to_inbound_state?
+  failed_state  cyneric_sms_to_inbound_failed_state?
+  modified_date DateTime?                            @db.DateTime(0)
+}
+
+model data_import_job {
+  id            Int       @id @default(autoincrement())
+  module        String    @db.VarChar(100)
+  file_name     String    @db.VarChar(255)
+  original_name String?   @db.VarChar(255)
+  status        String    @default("queued") @db.VarChar(50)
+  total_rows    Int       @default(0)
+  imported_rows Int       @default(0)
+  mapping       String?   @db.Text
+  skip_lines    Int?      @default(0)
+  created_at    DateTime  @default(now()) @db.DateTime(0)
+  started_at    DateTime? @db.DateTime(0)
+  finished_at   DateTime? @db.DateTime(0)
+  error_message String?   @db.Text
+
+  @@index([created_at], map: "idx_created_at")
+  @@index([module, status], map: "idx_module_status")
+}
+
+model data_import_meta {
+  module       String    @id @db.VarChar(100)
+  swap_pending Boolean   @default(false)
+  last_swap    DateTime? @db.DateTime(0)
+}
+
+model dialer_settings_components {
+  id             Int       @id @default(autoincrement())
+  component_name String    @db.VarChar(250)
+  handle         String    @db.VarChar(250)
+  component_type String?   @db.VarChar(50)
+  sku            String    @db.VarChar(250)
+  pricing_scheme String    @db.VarChar(250)
+  kind           String    @db.VarChar(250)
+  unit_name      String    @db.VarChar(250)
+  created_at     DateTime  @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+  deleted_at     DateTime? @db.DateTime(0)
+
+  @@unique([handle, component_type], map: "handle_2")
+  @@index([sku], map: "sku")
+}
+
+model did_log {
+  id         Int      @id @default(autoincrement())
+  did        String   @db.VarChar(50)
+  account_id Int
+  order_id   Int?
+  action     String   @db.VarChar(32)
+  comments   String?  @db.Text
+  created_at DateTime @db.DateTime(0)
+  deleted_at DateTime @db.DateTime(0)
+}
+
+model did_master_list {
+  id          Int       @id @default(autoincrement())
+  did         String    @db.VarChar(50)
+  vendor      String    @db.VarChar(50)
+  inserted_at DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([did], map: "did")
+  @@index([inserted_at], map: "inserted_at")
+  @@index([vendor], map: "vendor")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model did_order_items {
+  id                        Int                             @db.UnsignedInt
+  did_order_type            did_order_items_did_order_type?
+  did_order_id              Int?
+  subscription_id           Int?
+  component_id              Int?
+  type                      did_order_items_type            @default(INBOUND)
+  vendor                    String?                         @db.VarChar(64)
+  state                     String?                         @db.VarChar(2)
+  did                       String?                         @db.VarChar(50)
+  tier                      Int?
+  price                     Float?
+  queue_id                  Int?
+  agent_id                  Int?
+  is_import                 Boolean                         @default(false)
+  status                    did_order_items_status?
+  process_id                String?                         @db.VarChar(100)
+  started_processing_at     DateTime?                       @db.DateTime(0)
+  finished_processing_at    DateTime?                       @db.DateTime(0)
+  error                     String?                         @db.Text
+  replacement_for           String?                         @db.Text
+  num_attempts              Int                             @default(0)
+  is_paid                   Boolean                         @default(false)
+  replaced_with             String?                         @db.VarChar(50)
+  last_replace_attempted_at DateTime?                       @db.DateTime(0)
+  created_at                DateTime?                       @db.DateTime(0)
+  updated_at                DateTime?                       @db.DateTime(0)
+  deleted_at                DateTime?                       @db.DateTime(0)
+  modified_at               DateTime                        @default(now()) @db.Timestamp(0)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model did_order_items_archive {
+  id                        Int                                     @db.UnsignedInt
+  did_order_type            did_order_items_archive_did_order_type?
+  did_order_id              Int?
+  subscription_id           Int?
+  component_id              Int?
+  type                      did_order_items_archive_type            @default(INBOUND)
+  vendor                    String?                                 @db.VarChar(20)
+  state                     String?                                 @db.VarChar(2)
+  did                       String?                                 @db.VarChar(50)
+  tier                      Int?
+  price                     Float?
+  queue_id                  Int?
+  agent_id                  Int?
+  is_import                 Boolean                                 @default(false)
+  status                    did_order_items_archive_status?
+  process_id                String?                                 @db.VarChar(100)
+  started_processing_at     DateTime?                               @db.DateTime(0)
+  finished_processing_at    DateTime?                               @db.DateTime(0)
+  error                     String?                                 @db.Text
+  replacement_for           String?                                 @db.Text
+  num_attempts              Int                                     @default(0)
+  is_paid                   Boolean                                 @default(false)
+  replaced_with             String?                                 @db.VarChar(50)
+  last_replace_attempted_at DateTime?                               @db.DateTime(0)
+  created_at                DateTime?                               @db.DateTime(0)
+  updated_at                DateTime?                               @db.DateTime(0)
+  deleted_at                DateTime?                               @db.DateTime(0)
+  modified_at               DateTime                                @default(now()) @db.Timestamp(0)
+
+  @@ignore
+}
+
+model did_order_payments {
+  id           Int       @id @db.UnsignedInt
+  did_order_id Int?
+  num_dids     Int?
+  dids         String?   @db.Text
+  total_fees   Decimal?  @db.Decimal(10, 2)
+  created_at   DateTime? @db.DateTime(0)
+}
+
+model did_orders {
+  id                     Int                        @id @default(autoincrement()) @db.UnsignedInt
+  type                   did_orders_type?
+  number_type            String?                    @db.VarChar(20)
+  account_id             Int?
+  queue_id               String?                    @db.VarChar(20)
+  user_id                Int?
+  subscription_id        Int?
+  total_num              Int?                       @default(0)
+  num_processed          Int?                       @default(0)
+  num_errored            Int                        @default(0)
+  num_remaining          Int?                       @default(0)
+  num_imports            Int?                       @default(0)
+  num_pending_payment    Int                        @default(0)
+  num_processing         Int?                       @default(0)
+  setup_fee              Float?                     @default(0.00)
+  total_price            Float?                     @default(0.00)
+  options                String?                    @db.Text
+  system_order_info      String?                    @db.Text
+  has_imports            Boolean?                   @default(false)
+  dids_entered           Boolean?                   @default(false)
+  find_best_matches      Int                        @default(0)
+  started_processing_at  DateTime?                  @db.DateTime(0)
+  finished_processing_at DateTime?                  @db.DateTime(0)
+  error                  String?                    @db.Text
+  payment_status         did_orders_payment_status? @default(UNPAID)
+  paid_amount            Float?                     @default(0.00)
+  num_payments           Int?                       @default(0)
+  status                 did_orders_status?
+  created_at             DateTime?                  @db.DateTime(0)
+  updated_at             DateTime?                  @db.DateTime(0)
+  deleted_at             DateTime?                  @db.DateTime(0)
+  billed_status          String?                    @db.VarChar(255)
+  billed_processing_at   DateTime?                  @db.DateTime(0)
+
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([status], map: "status")
+  @@index([updated_at], map: "updated_at")
+}
+
+model did_orders_archive {
+  id                     Int                                @id @default(autoincrement()) @db.UnsignedInt
+  type                   did_orders_archive_type?
+  number_type            String?                            @db.VarChar(20)
+  account_id             Int?
+  queue_id               String?                            @db.VarChar(20)
+  user_id                Int?
+  subscription_id        Int?
+  total_num              Int?                               @default(0)
+  num_processed          Int?                               @default(0)
+  num_errored            Int                                @default(0)
+  num_remaining          Int?                               @default(0)
+  num_imports            Int?                               @default(0)
+  num_pending_payment    Int                                @default(0)
+  num_processing         Int?                               @default(0)
+  setup_fee              Float?                             @default(0.00)
+  total_price            Float?                             @default(0.00)
+  options                String?                            @db.Text
+  has_imports            Boolean?                           @default(false)
+  find_best_matches      Int                                @default(0)
+  started_processing_at  DateTime?                          @db.DateTime(0)
+  finished_processing_at DateTime?                          @db.DateTime(0)
+  error                  String?                            @db.Text
+  payment_status         did_orders_archive_payment_status? @default(UNPAID)
+  paid_amount            Float?                             @default(0.00)
+  num_payments           Int?                               @default(0)
+  status                 did_orders_archive_status?
+  created_at             DateTime?                          @db.DateTime(0)
+  updated_at             DateTime?                          @db.DateTime(0)
+  deleted_at             DateTime?                          @db.DateTime(0)
+
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([status], map: "status")
+  @@index([updated_at], map: "updated_at")
+}
+
+model did_released {
+  id         Int       @id
+  did        String    @db.VarChar(50)
+  vendor     String    @db.VarChar(50)
+  created_at DateTime? @db.DateTime(0)
+
+  @@index([created_at], map: "created_at")
+  @@index([did], map: "did")
+  @@index([vendor], map: "vendor")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model did_vendor_configuration {
+  id                        Int                                    @id
+  vendor                    String                                 @default("0") @db.VarChar(250)
+  voip_provider             did_vendor_configuration_voip_provider @default(dbgenerated("9"))
+  number_type               did_vendor_configuration_number_type   @default(REGULAR)
+  trunk_group_configuration String                                 @db.LongText
+  environment               did_vendor_configuration_environment   @default(TRR_DEV)
+  data_center               did_vendor_configuration_data_center   @default(DT)
+  created_at                DateTime?                              @default(now()) @db.DateTime(0)
+  updated_at                DateTime?                              @db.DateTime(0)
+  deleted_at                DateTime?                              @db.DateTime(0)
+}
+
+model did_vendors {
+  id          Int       @id
+  did         String    @db.VarChar(50)
+  vendor      String    @db.VarChar(50)
+  inserted_at DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([did], map: "did")
+  @@index([inserted_at], map: "inserted_at")
+  @@index([vendor], map: "vendor")
+}
+
+model did_voice_providers {
+  id                   Int       @id
+  did                  String    @db.VarChar(50)
+  provider_internal_id Int
+  provider             String    @db.VarChar(50)
+  destination          String    @db.VarChar(20)
+  inserted_at          DateTime? @db.DateTime(0)
+  deleted_at           DateTime? @db.DateTime(0)
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([destination], map: "destination")
+  @@index([did], map: "did")
+  @@index([inserted_at], map: "inserted_at")
+  @@index([provider], map: "provider")
+  @@index([provider_internal_id], map: "provider_internal_id")
+}
+
+model dids {
+  id                      Int                      @id @default(autoincrement())
+  u_id                    String                   @db.VarChar(32)
+  account_id              Int
+  cyneric_id              Int?
+  did                     String                   @db.VarChar(50)
+  phone_code              Int?                     @default(1)
+  end_point               String?                  @db.VarChar(20)
+  subscription_id         Int?
+  component_id            Int                      @default(0)
+  type                    dids_type                @default(INBOUND)
+  vendor                  String?                  @db.VarChar(30)
+  tier                    Int?                     @default(1)
+  cid                     String?                  @db.VarChar(50)
+  stage                   dids_stage?
+  billable                dids_billable?           @default(YES)
+  verified_status         dids_verified_status?    @default(NO)
+  verify_data             String?                  @db.VarChar(512)
+  created_at              DateTime                 @db.DateTime(0)
+  updated_at              DateTime?                @db.DateTime(0)
+  last_verified_at        DateTime?                @db.DateTime(0)
+  resting_at              DateTime?                @db.DateTime(0)
+  awakened_at             DateTime?                @db.DateTime(0)
+  rest_days               Int?
+  service_days            Int?
+  deleted_at              DateTime?                @db.DateTime(0)
+  end_point_verified      dids_end_point_verified? @default(NO)
+  registration_date       DateTime?                @db.Date
+  spam_score              dids_spam_score?
+  spam_score_last_checked DateTime?                @db.DateTime(0)
+  spam_score_label        String?                  @db.VarChar(50)
+  fo_business_id          Int?
+  fo_call_purpose_code    String?                  @db.VarChar(255)
+
+  @@index([account_id, cyneric_id, did], map: "account_id")
+  @@index([component_id], map: "component_id")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([did], map: "did")
+  @@index([last_verified_at], map: "last_verified_at")
+  @@index([account_id, deleted_at], map: "pawan4")
+  @@index([spam_score], map: "spam_score")
+  @@index([subscription_id], map: "subscription_id")
+  @@index([tier], map: "tier")
+  @@index([type], map: "type")
+  @@index([u_id], map: "u_id")
+  @@index([verified_status], map: "verified_status")
+}
+
+model dids_archive {
+  id                      Int                              @id @default(autoincrement())
+  u_id                    String                           @db.VarChar(32)
+  account_id              Int
+  cyneric_id              Int?
+  did                     String                           @db.VarChar(50)
+  phone_code              Int?                             @default(1)
+  end_point               String?                          @db.VarChar(20)
+  subscription_id         Int?
+  component_id            Int                              @default(0)
+  type                    dids_archive_type                @default(INBOUND)
+  vendor                  String?                          @db.VarChar(30)
+  tier                    Int?                             @default(1)
+  cid                     String?                          @db.VarChar(50)
+  stage                   dids_archive_stage?
+  billable                dids_archive_billable?           @default(YES)
+  verified_status         dids_archive_verified_status?    @default(NO)
+  verify_data             String?                          @db.VarChar(512)
+  created_at              DateTime                         @db.DateTime(0)
+  updated_at              DateTime?                        @db.DateTime(0)
+  last_verified_at        DateTime?                        @db.DateTime(0)
+  resting_at              DateTime?                        @db.DateTime(0)
+  awakened_at             DateTime?                        @db.DateTime(0)
+  rest_days               Int?
+  service_days            Int?
+  deleted_at              DateTime?                        @db.DateTime(0)
+  end_point_verified      dids_archive_end_point_verified? @default(NO)
+  registration_date       DateTime?                        @db.Date
+  spam_score              dids_archive_spam_score?
+  spam_score_last_checked DateTime?                        @db.DateTime(0)
+  spam_score_label        String?                          @db.VarChar(50)
+
+  @@index([account_id, cyneric_id, did], map: "account_id")
+  @@index([account_id], map: "account_id_1")
+  @@index([component_id], map: "component_id")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([did], map: "did")
+  @@index([last_verified_at], map: "last_verified_at")
+  @@index([spam_score], map: "spam_score")
+  @@index([subscription_id], map: "subscription_id")
+  @@index([tier], map: "tier")
+  @@index([type], map: "type")
+  @@index([u_id], map: "u_id")
+  @@index([verified_status], map: "verified_status")
+}
+
+model disposition_status_delay {
+  status     String    @id @db.VarChar(6)
+  delay      Int
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model dno_data_import {
+  NPANXX     String @db.Char(6)
+  LATA       String @db.Char(4)
+  OCN        String @db.Char(5)
+  CATEGORY   String @db.VarChar(10)
+  OCN_NAME   String @db.VarChar(255)
+  OCN_PARENT String @db.VarChar(100)
+
+  @@index([NPANXX], map: "idx_npanxx_import")
+  @@ignore
+}
+
+model dspdata_global_hashes {
+  id              Int      @id
+  hash            String   @db.VarChar(20)
+  hash_position   Int
+  hash_per_sample Int
+  hash_count      Int
+  created_at      DateTime @default(now()) @db.DateTime(0)
+
+  @@index([created_at], map: "created_at")
+  @@index([hash], map: "hash")
+  @@index([hash_count], map: "hash_count")
+  @@index([hash_per_sample], map: "hash_per_sample")
+  @@index([hash_position], map: "hash_position")
+}
+
+model email_lists {
+  id          Int       @id
+  u_id        String    @db.VarChar(32)
+  handle      String    @db.VarChar(100)
+  name        String    @db.VarChar(100)
+  description String    @db.Text
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([u_id, handle, name, deleted_at], map: "u_id")
+}
+
+model email_subscription_lists {
+  id            Int       @id
+  email_list_id Int
+  email_address String    @db.VarChar(255)
+  name          String?   @db.VarChar(255)
+  created_at    DateTime? @db.DateTime(0)
+  deleted_at    DateTime? @db.DateTime(0)
+
+  @@index([email_list_id, email_address, deleted_at], map: "email_list_id")
+}
+
+model email_templates {
+  id         Int                        @id @db.UnsignedInt
+  u_id       String                     @db.VarChar(32)
+  name       String                     @db.VarChar(255)
+  subject    String?                    @db.VarChar(255)
+  body       String?                    @db.Text
+  departnemt email_templates_departnemt @default(SALES)
+  created_at DateTime?                  @db.DateTime(0)
+  updated_at DateTime?                  @db.DateTime(0)
+  deleted_at DateTime?                  @db.DateTime(0)
+}
+
+model email_templates_attachments {
+  id                Int       @id @db.UnsignedInt
+  u_id              String    @db.VarChar(32)
+  email_template_id Int
+  attachment        String?   @db.VarChar(255)
+  created_at        DateTime? @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+  deleted_at        DateTime? @db.DateTime(0)
+  file_data         Bytes?
+  the_number        Int?
+}
+
+model error_log {
+  id         Int            @id
+  type       error_log_type
+  name       String?        @db.VarChar(255)
+  input      String?        @db.Text
+  output     String?        @db.Text
+  created_at DateTime?      @db.DateTime(0)
+  updated_at DateTime?      @db.DateTime(0)
+  deleted_at DateTime?      @db.DateTime(0)
+
+  @@index([type, created_at], map: "type")
+}
+
+model feature_flag {
+  id               String               @id @db.VarChar(255)
+  name             String               @db.VarChar(255)
+  enabled          feature_flag_enabled @default(YES)
+  last_deployed_at DateTime?            @db.DateTime(0)
+  created_at       DateTime?            @default(now()) @db.DateTime(0)
+  updated_at       DateTime?            @db.DateTime(0)
+  deleted_at       DateTime?            @db.DateTime(0)
+}
+
+model feature_flag_account {
+  feature_flag_id String    @db.VarChar(255)
+  account_id      Int
+  created_at      DateTime? @default(now()) @db.DateTime(0)
+
+  @@id([account_id, feature_flag_id])
+}
+
+model feature_flag_audit_log {
+  id              Int       @id
+  feature_flag_id String    @db.VarChar(255)
+  action          String    @db.VarChar(255)
+  log_details     String    @db.Text
+  created_at      DateTime? @default(now()) @db.DateTime(0)
+
+  @@index([feature_flag_id], map: "feature_flag_id")
+}
+
+model featured_features {
+  id         Int                       @id
+  release_id Int
+  html       String?                   @db.MediumText
+  misc       String?                   @db.Text
+  active     featured_features_active? @default(Y)
+  created_at DateTime?                 @db.DateTime(0)
+  updated_at DateTime?                 @db.DateTime(0)
+  deleted_at DateTime?                 @db.DateTime(0)
+}
+
+model field_description {
+  id                Int       @id
+  object_type       String    @db.VarChar(255)
+  section_name      String    @db.VarChar(255)
+  field_name        String    @db.VarChar(255)
+  field_label       String    @db.VarChar(255)
+  field_description String    @db.Text
+  created_at        DateTime  @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+  deleted_at        DateTime? @db.DateTime(0)
+}
+
+model fo_business_accounts_mapping {
+  id                   Int       @id
+  account_id           Int?
+  acid_list_id         Int?
+  fo_business_id       Int?
+  fo_call_purpose_code String?   @db.VarChar(255)
+  created_at           DateTime? @default(now()) @db.DateTime(0)
+  deleted_at           DateTime? @db.DateTime(0)
+  updated_at           DateTime? @db.DateTime(0)
+
+  @@index([account_id, acid_list_id, fo_business_id, fo_call_purpose_code], map: "account_id")
+}
+
+model fo_businesses {
+  id                    Int       @id
+  fo_business_name      String?   @db.VarChar(255)
+  fo_business_id        String?   @db.VarChar(255)
+  dba                   String?   @db.VarChar(255)
+  fo_business_address   String?   @db.VarChar(255)
+  industry              String?   @db.VarChar(255)
+  contact_info          String?   @db.VarChar(255)
+  status                String?   @db.VarChar(255)
+  did_count             String?   @db.VarChar(255)
+  created_at            DateTime? @default(now()) @db.DateTime(0)
+  deleted_at            DateTime? @db.DateTime(0)
+  updated_at            DateTime? @db.DateTime(0)
+  website_url           String?   @db.VarChar(255)
+  tax_id                String?   @db.VarChar(100)
+  duns_number           String?   @db.VarChar(100)
+  street_address        String    @default("") @db.VarChar(255)
+  city                  String    @default("") @db.VarChar(100)
+  state                 String    @default("") @db.VarChar(100)
+  zip                   String    @default("") @db.VarChar(20)
+  employee_count        Int?
+  primary_contact_name  String    @default("") @db.VarChar(255)
+  primary_contact_email String    @default("") @db.VarChar(255)
+  primary_contact_phone String    @default("") @db.VarChar(50)
+}
+
+model ftc_dnc {
+  id                           Int      @id
+  company_phone_number         String   @db.VarChar(20)
+  created_date                 DateTime @db.DateTime(0)
+  violation_date               DateTime @db.DateTime(0)
+  consumer_city                String   @db.VarChar(100)
+  consumer_state               String   @db.VarChar(50)
+  consumer_area_code           String   @db.VarChar(11)
+  subject                      String   @db.VarChar(500)
+  recorded_message_or_robocall String   @db.VarChar(5)
+  created_at                   DateTime @default(now()) @db.DateTime(0)
+
+  @@index([company_phone_number], map: "company_phone_number")
+  @@index([consumer_area_code], map: "consumer_area_code")
+  @@index([consumer_city], map: "consumer_city")
+  @@index([consumer_state], map: "consumer_state")
+  @@index([created_at], map: "created_at")
+  @@index([created_date], map: "created_date")
+  @@index([company_phone_number, violation_date], map: "number_and_violation_date")
+  @@index([recorded_message_or_robocall], map: "recorded_message_or_robocall")
+  @@index([subject(length: 333)], map: "subject")
+  @@index([violation_date], map: "violation_date")
+}
+
+model ftc_dnc_days {
+  id        Int                    @id
+  log_date  DateTime               @unique(map: "log_date") @db.Date
+  count     Int
+  processed ftc_dnc_days_processed @default(dbgenerated("0"))
+
+  @@index([count], map: "count")
+  @@index([processed], map: "processed")
+}
+
+model generic_settings {
+  id            Int                      @id
+  type          String                   @db.VarChar(50)
+  name          String                   @db.VarChar(255)
+  display_name  String?                  @db.VarChar(255)
+  json_settings String?                  @db.Text
+  description   String?                  @db.VarChar(255)
+  active        generic_settings_active? @default(Y)
+  created_at    DateTime                 @default(now()) @db.DateTime(0)
+  updated_at    DateTime?                @db.DateTime(0)
+  deleted_at    DateTime?                @db.DateTime(0)
+
+  @@index([type], map: "type")
+}
+
+model geoip_blocks {
+  network_cidr                   String   @id @default("") @db.VarChar(32)
+  geoname_id                     Int?
+  registered_country_geoname_id  Int?
+  represented_country_geoname_id Int?
+  is_anonymous_proxy             Boolean? @default(false)
+  is_satellite_provider          Boolean? @default(false)
+  postal_code                    String?  @db.VarChar(45)
+  latitude                       Float?   @db.Float
+  longitude                      Float?   @db.Float
+  network                        Int?     @db.UnsignedInt
+  broadcast                      Int?     @db.UnsignedInt
+
+  @@index([broadcast], map: "idx_blocks_broadcast")
+  @@index([network], map: "idx_blocks_network")
+}
+
+model geoip_locations {
+  geoname_id             Int     @id @db.UnsignedInt
+  locale_code            String? @db.VarChar(2)
+  continent_code         String? @db.VarChar(2)
+  continent_name         String? @db.VarChar(2)
+  country_iso_code       String? @db.VarChar(2)
+  country_name           String? @db.VarChar(45)
+  subdivision_1_iso_code Int?    @db.TinyInt
+  subdivision_1_name     String? @db.VarChar(1000)
+  subdivision_2_iso_code Int?    @db.TinyInt
+  subdivision_2_name     String? @db.VarChar(1000)
+  city_name              String? @db.VarChar(1000)
+  metro_code             Int?
+  postalCode             String? @db.VarChar(10)
+
+  @@index([city_name(length: 767)], map: "city_name")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model global_block_numbers {
+  id                Int
+  name              String    @db.VarChar(100)
+  requestingEntity  String    @db.VarChar(150)
+  letterAddressedTo String    @db.VarChar(150)
+  loaOnHand         Boolean   @default(false)
+  phoneNumber       String    @db.VarChar(20)
+  remarks           String?   @db.VarChar(500)
+  created_at        DateTime  @default(now()) @db.DateTime(0)
+  status            String    @db.VarChar(50)
+  applyToSMS        Boolean   @default(false)
+  updated_at        DateTime? @default(now()) @db.DateTime(0)
+
+  @@ignore
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model global_block_numbers_import {
+  id                Int       @id
+  name              String    @db.VarChar(100)
+  requestingEntity  String    @db.VarChar(150)
+  letterAddressedTo String    @db.VarChar(150)
+  loaOnHand         Boolean   @default(false)
+  phoneNumber       String    @unique(map: "uniq_phoneNumber") @db.VarChar(20)
+  remarks           String?   @db.VarChar(500)
+  created_at        DateTime  @default(now()) @db.DateTime(0)
+  status            String    @db.VarChar(50)
+  applyToSMS        Boolean   @default(false)
+  updated_at        DateTime? @db.DateTime(0)
+  updated_by        String?   @db.VarChar(32)
+}
+
+model global_statetracker {
+  id                  Int                         @id @db.UnsignedInt
+  u_id                String                      @db.VarChar(32)
+  active              global_statetracker_active?
+  state               String                      @db.VarChar(10)
+  max_call_count      Int
+  start_call_count    Int
+  method              global_statetracker_method  @default(MIDNIGHT)
+  delay_interval      String                      @db.VarChar(10)
+  delay_interval_days String                      @db.VarChar(10)
+  created_at          DateTime?                   @db.DateTime(0)
+  updated_at          DateTime?                   @db.DateTime(0)
+  deleted_at          DateTime?                   @db.DateTime(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model inbound_dids_metric_tracking {
+  id           Int
+  account_id   Int
+  acid_list_id Int
+  carrier      String   @db.VarChar(50)
+  metric       String   @db.VarChar(50)
+  metric_value Int
+  cnt          Int
+  call_counts  String   @db.Text
+  updated_at   DateTime @default(now()) @db.Timestamp(0)
+
+  @@ignore
+}
+
+model lb_users {
+  id            Int              @id @db.UnsignedInt
+  account_id    Int
+  lb_account_id Int
+  name          String?          @db.VarChar(255)
+  email         String?          @db.VarChar(255)
+  salt          String?          @db.VarChar(255)
+  password      String?          @db.VarChar(255)
+  status        lb_users_status? @default(Y)
+  created_at    DateTime?        @db.DateTime(0)
+  updated_at    DateTime?        @db.DateTime(0)
+  deleted_at    DateTime?        @db.DateTime(0)
+}
+
+model leads {
+  id                       Int                         @id
+  u_id                     String                      @db.VarChar(32)
+  name                     String                      @db.VarChar(255)
+  company_name             String?                     @db.VarChar(255)
+  phone                    String?                     @db.VarChar(20)
+  phone_type               String?                     @db.VarChar(10)
+  phone_carrier            String?                     @db.VarChar(100)
+  status                   leads_status                @default(NEW)
+  demo_expired_at          DateTime?                   @db.DateTime(0)
+  extend_delinquent_period Int                         @default(1)
+  delinquent_at            DateTime?                   @db.DateTime(0)
+  minimum_seat             Int
+  minimum_seat_expired_at  DateTime?                   @db.Date
+  contract_start_date      DateTime?                   @db.Date
+  billing_production       leads_billing_production?   @default(N)
+  test_account             leads_test_account?         @default(N)
+  maintenant_start_at      DateTime?                   @db.DateTime(0)
+  maintenant_end_at        DateTime?                   @db.DateTime(0)
+  dr_account               leads_dr_account?           @default(N)
+  dr_account_id            Int                         @default(0)
+  tier                     Int                         @default(2)
+  day_log_keep_in_master   Int                         @default(3)
+  security_compliance      Int                         @default(0)
+  encryption_key           String?                     @db.Text
+  encryption_recipient     String?                     @db.VarChar(255)
+  default_audio_format     leads_default_audio_format? @default(MP3)
+  primary_data_center      leads_primary_data_center?  @default(LAX)
+  verification_code        String?                     @db.VarChar(32)
+  inactive_at              DateTime?                   @db.DateTime(0)
+  email                    String?                     @db.VarChar(255)
+  email_mailbox            String?                     @db.VarChar(255)
+  email_domain             String?                     @db.VarChar(255)
+  password                 String?                     @db.VarChar(255)
+  first_name               String?                     @db.VarChar(255)
+  last_name                String?                     @db.VarChar(255)
+  ipaddress                String?                     @db.VarChar(45)
+  geoip_country            String?                     @db.VarChar(2)
+  geoip_city               String?                     @db.VarChar(50)
+  user_agent               String?                     @db.Text
+  web_node                 String?                     @db.VarChar(20)
+  account_id               Int?
+  session                  String?                     @db.VarChar(50)
+  intercom_id              String?                     @db.VarChar(50)
+  hubspot_utk              String?                     @db.VarChar(64)
+  referer                  String?                     @db.VarChar(255)
+  accept_language          String?                     @db.VarChar(50)
+  browser_fingerprint      String?                     @db.Text
+  screen_size              String?                     @db.VarChar(20)
+  timezone                 Int?
+  timezone_countries       String?                     @db.Text
+  browser_user_agent       String?                     @db.Text
+  browser_size             String?                     @db.VarChar(20)
+  os_family                String?                     @db.VarChar(50)
+  os_version               String?                     @db.VarChar(10)
+  browser_family           String?                     @db.VarChar(50)
+  browser_version          String?                     @db.VarChar(10)
+  browser_plugins          String?                     @db.Text
+  device_family            String?                     @db.VarChar(50)
+  webgl_version            String?                     @db.VarChar(50)
+  platform                 String?                     @db.VarChar(50)
+  headers                  String?                     @db.Text
+  analysis_score           Int?
+  analysis_messages        String?                     @db.Text
+  has_passed_analysis      Boolean?                    @default(false)
+  created_at               DateTime?                   @db.DateTime(0)
+  updated_at               DateTime?                   @db.DateTime(0)
+  deleted_at               DateTime?                   @db.DateTime(0)
+  address                  String?                     @db.VarChar(255)
+  address_2                String?                     @db.VarChar(255)
+  city                     String?                     @db.VarChar(255)
+  state                    String?                     @db.VarChar(255)
+  zipcode                  String?                     @db.VarChar(10)
+  country                  String?                     @db.VarChar(255)
+  website                  String?                     @db.VarChar(255)
+  local_gmt                String?                     @db.VarChar(20)
+  registration_server      String?                     @db.VarChar(20)
+  master_server            String?                     @db.VarChar(20)
+  cluster_node             String?                     @db.VarChar(50)
+  billing_id               Int?
+  impersonate_key          String?                     @db.VarChar(255)
+  impersonate_expired_at   DateTime?                   @db.DateTime(0)
+  default_gmt              String?                     @db.VarChar(10)
+  default_caller_id        String?                     @db.VarChar(20)
+
+  @@index([demo_expired_at], map: "demo_expired_at")
+  @@index([primary_data_center], map: "primary_data_center")
+  @@index([status], map: "status")
+  @@index([u_id, name, company_name], map: "u_id")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model lerg {
+  NPA        Int
+  NXX        Int
+  X          lerg_X
+  STATE      String      @db.VarChar(7)
+  COMPANY    String      @db.VarChar(1000)
+  OCN        String      @db.VarChar(5)
+  ASSIGNDATE String      @db.VarChar(15)
+  PREFIXTYPE String      @db.VarChar(15)
+  LATA       String      @db.VarChar(5)
+  CUSTOM     lerg_CUSTOM @default(dbgenerated("0"))
+  NPA_NXX    String      @db.VarChar(7)
+  carrier    String?     @db.VarChar(100)
+  TYPE       String?     @db.VarChar(20)
+
+  @@index([carrier], map: "CARRIER")
+  @@index([COMPANY(length: 767)], map: "COMPANY")
+  @@index([CUSTOM], map: "CUSTOM")
+  @@index([NPA], map: "NPA")
+  @@index([NPA_NXX], map: "NPA_NXX")
+  @@index([NPA, NXX], map: "NPA_NXX_Combined")
+  @@index([NXX], map: "NXX")
+  @@index([OCN], map: "OCN")
+  @@index([PREFIXTYPE], map: "PREFIXTYPE")
+  @@index([STATE], map: "STATE")
+  @@index([TYPE], map: "TYPE")
+  @@ignore
+}
+
+model licenses {
+  id                      Int              @id
+  u_id                    String           @db.VarChar(32)
+  account_id              Int
+  user_id                 Int
+  subscription_id         Int
+  transaction_id          Int
+  type                    licenses_type    @default(AGENT)
+  status                  licenses_status? @default(ACTIVE)
+  cancellation_notice_day DateTime?        @db.DateTime(0)
+  cancellation_date       DateTime?        @db.DateTime(0)
+  last_assigned_at        DateTime?        @db.DateTime(0)
+  created_at              DateTime         @db.DateTime(0)
+  updated_at              DateTime?        @db.DateTime(0)
+  deleted_at              DateTime?        @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([user_id], map: "pawan1")
+  @@index([subscription_id], map: "pawan2")
+  @@index([status], map: "status")
+  @@index([transaction_id], map: "transaction_id")
+  @@index([type], map: "type")
+  @@index([u_id, account_id, user_id, subscription_id], map: "u_id")
+}
+
+model location_list {
+  id            Int    @id
+  city          String @db.VarChar(30)
+  state         String @db.VarChar(2)
+  zip_code      Int
+  area_code     Int
+  county_fips   Int
+  county_name   String @db.VarChar(30)
+  time_zone     String @db.VarChar(10)
+  dts           String @db.VarChar(2)
+  latitude      String @db.VarChar(10)
+  longitude     String @db.VarChar(10)
+  zip_code_type String @db.VarChar(2)
+
+  @@unique([area_code, state, city, zip_code], map: "area_code")
+  @@index([area_code], map: "area_code_2")
+  @@index([zip_code], map: "zip_code")
+}
+
+model location_list_areacode {
+  id                  Int    @id
+  city                String @db.VarChar(30)
+  state               String @db.VarChar(2)
+  zip_code            Int
+  area_code           Int
+  proximity_area_code Int
+  distance            Float  @default(0.00)
+  county_fips         Int
+  county_name         String @db.VarChar(30)
+  time_zone           String @db.VarChar(10)
+  dts                 String @db.VarChar(2)
+  latitude            String @db.VarChar(10)
+  longitude           String @db.VarChar(10)
+  zip_code_type       String @db.VarChar(2)
+
+  @@unique([area_code, proximity_area_code], map: "area_code_proximity")
+  @@index([distance], map: "distance")
+}
+
+model location_list_county {
+  id            Int    @id
+  city          String @db.VarChar(30)
+  state         String @db.VarChar(2)
+  zip_code      Int
+  area_code     Int
+  county_fips   Int
+  county_name   String @db.VarChar(30)
+  time_zone     String @db.VarChar(10)
+  dts           String @db.VarChar(2)
+  latitude      String @db.VarChar(10)
+  longitude     String @db.VarChar(10)
+  zip_code_type String @db.VarChar(2)
+
+  @@index([area_code], map: "area_code")
+}
+
+model migration {
+  id                 Int       @id
+  u_id               String    @db.VarChar(32)
+  md_account_id      String    @db.VarChar(100)
+  omni_account_id    Int
+  options            String?   @db.Text
+  result             String?   @db.Text
+  row_count          Int?
+  row_processed      Int?
+  process_started_at DateTime? @db.DateTime(0)
+  status             Int?
+  created_at         DateTime? @db.DateTime(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model npanxx_data {
+  NPANXX     String @db.Char(6)
+  LATA       String @db.Char(4)
+  OCN        String @db.Char(5)
+  CATEGORY   String @db.VarChar(10)
+  OCN_NAME   String @db.VarChar(255)
+  OCN_PARENT String @db.VarChar(100)
+
+  @@index([CATEGORY], map: "CATEGORY")
+  @@index([LATA], map: "LATA")
+  @@index([NPANXX], map: "NPANXX")
+  @@index([OCN], map: "OCN")
+  @@index([OCN_PARENT], map: "OCN PARENT")
+  @@index([OCN_NAME], map: "OCN_NAME")
+  @@index([NPANXX], map: "idx_npanxx__npanxx")
+  @@index([OCN], map: "idx_npanxx__ocn")
+  @@index([OCN_PARENT], map: "idx_npanxx__parent")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model npanxx_data_import {
+  NPANXX     String @db.Char(6)
+  LATA       String @db.Char(4)
+  OCN        String @db.Char(5)
+  CATEGORY   String @db.VarChar(10)
+  OCN_NAME   String @db.VarChar(255)
+  OCN_PARENT String @db.VarChar(100)
+
+  @@index([NPANXX], map: "idx_npanxx_import")
+  @@ignore
+}
+
+model omni_error_log {
+  id             Int                   @id
+  account_id     Int?
+  name           String                @db.VarChar(256)
+  start_datetime DateTime              @db.DateTime(0)
+  end_datetime   DateTime              @db.DateTime(0)
+  created_at     DateTime              @db.DateTime(0)
+  status         omni_error_log_status @default(Y)
+  updated_at     DateTime?             @db.DateTime(0)
+  deleted_at     DateTime?             @db.DateTime(0)
+}
+
+model password_reset {
+  id         Int       @id
+  u_id       String    @unique(map: "u_id") @db.VarChar(32)
+  user_id    Int
+  ip_address String    @db.VarChar(15)
+  expired_at DateTime  @db.DateTime(0)
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  @@index([user_id, expired_at], map: "user_id")
+}
+
+model payment_profiles {
+  internal_id Int                         @id
+  id          Int
+  customer_id Int?
+  is_active   payment_profiles_is_active  @default(Y)
+  is_default  payment_profiles_is_default @default(N)
+  created_at  DateTime                    @db.DateTime(0)
+  updated_at  DateTime?                   @db.DateTime(0)
+  deleted_at  DateTime?                   @db.DateTime(0)
+
+  @@index([id, customer_id], map: "id")
+}
+
+model payment_profiles_dev {
+  internal_id Int                             @id
+  id          Int
+  customer_id Int?
+  is_active   payment_profiles_dev_is_active  @default(Y)
+  is_default  payment_profiles_dev_is_default @default(N)
+  created_at  DateTime                        @db.DateTime(0)
+  updated_at  DateTime?                       @db.DateTime(0)
+  deleted_at  DateTime?                       @db.DateTime(0)
+
+  @@index([id, customer_id], map: "id")
+}
+
+model pending_transactions {
+  id               Int       @id
+  account_id       Int
+  transaction_type String    @db.VarChar(32)
+  trunk_type       String    @db.VarChar(255)
+  component_id     Int
+  memo             String?   @db.Text
+  charge           Float?    @db.Float
+  payment_status   String?   @db.VarChar(32)
+  quantity         Int?
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([component_id], map: "component_id")
+  @@index([deleted_at], map: "deleted_at")
+}
+
+model polaris_accounts {
+  id                     Int                     @id
+  u_id                   String                  @db.VarChar(32)
+  name                   String                  @db.VarChar(255)
+  company_name           String?                 @db.VarChar(255)
+  address                String?                 @db.VarChar(255)
+  address_2              String?                 @db.VarChar(255)
+  city                   String?                 @db.VarChar(255)
+  state                  String?                 @db.VarChar(255)
+  zipcode                String?                 @db.VarChar(10)
+  country                String?                 @db.VarChar(255)
+  phone                  String?                 @db.VarChar(20)
+  website                String?                 @db.VarChar(255)
+  local_gmt              String?                 @db.VarChar(20)
+  registration_server    String?                 @db.VarChar(20)
+  cluster_node           String?                 @db.VarChar(50)
+  billing_id             Int?
+  external_id            Int?                    @default(0)
+  status                 polaris_accounts_status @default(NEW)
+  impersonate_key        String?                 @db.VarChar(255)
+  impersonate_expired_at DateTime?               @db.DateTime(0)
+  default_gmt            String?                 @db.VarChar(10)
+  default_caller_id      String?                 @db.VarChar(20)
+  created_at             DateTime?               @db.DateTime(0)
+  updated_at             DateTime?               @db.DateTime(0)
+  deleted_at             DateTime?               @db.DateTime(0)
+  api_key                String?                 @db.VarChar(64)
+  api_secret             String?                 @db.VarChar(64)
+
+  @@index([external_id], map: "external_id")
+  @@index([status], map: "status")
+  @@index([u_id, name, company_name], map: "u_id")
+}
+
+model polaris_api {
+  id          Int                 @id
+  name        String              @db.VarChar(255)
+  section     String?             @db.VarChar(255)
+  action      String              @db.VarChar(255)
+  method      polaris_api_method? @default(GET)
+  description String?             @db.MediumText
+  created_at  DateTime?           @db.DateTime(0)
+  updated_at  DateTime?           @db.DateTime(0)
+  deleted_at  DateTime?           @db.DateTime(0)
+
+  @@index([created_at, deleted_at], map: "created_at")
+  @@index([section], map: "section")
+}
+
+model polaris_api_payload {
+  id               Int       @unique(map: "id")
+  parameters       String?   @db.MediumText
+  response         String?   @db.Text
+  example_response String?   @db.Text
+  editable         String?   @db.MediumText
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+
+  @@index([created_at, deleted_at], map: "created_at")
+}
+
+model polaris_api_tokens {
+  id           Int      @id
+  token        String   @db.VarChar(64)
+  user_id      Int
+  account_id   Int
+  cluster_node String   @db.VarChar(4)
+  user_agent   String   @db.VarChar(255)
+  ip_address   String   @db.VarChar(15)
+  expires_at   DateTime @db.DateTime(0)
+  created_at   DateTime @db.DateTime(0)
+
+  @@index([token], map: "token")
+}
+
+model polaris_authentication_tokens {
+  id           Int       @id
+  u_id         String    @db.VarChar(32)
+  account_id   Int
+  user_id      Int?
+  ip_address   String?   @db.VarChar(15)
+  created_at   DateTime  @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+  mobile_token String?   @db.VarChar(32)
+
+  @@index([account_id], map: "account_id")
+  @@index([u_id], map: "u_id")
+  @@index([user_id], map: "user_id")
+}
+
+model polaris_password_reset {
+  id         Int       @id
+  u_id       String    @unique(map: "u_id") @db.VarChar(32)
+  user_id    Int
+  ip_address String    @db.VarChar(15)
+  expired_at DateTime  @db.DateTime(0)
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  @@index([user_id, expired_at], map: "user_id")
+}
+
+model polaris_users {
+  id                     Int                   @id
+  u_id                   String                @db.VarChar(32)
+  account_id             Int
+  email                  String                @db.VarChar(255)
+  salt                   String                @db.VarChar(255)
+  algo                   String                @db.VarChar(32)
+  password               String                @db.VarChar(255)
+  first_name             String?               @db.VarChar(255)
+  last_name              String?               @db.VarChar(255)
+  title                  String                @db.VarChar(255)
+  email_verification_key String?               @db.VarChar(255)
+  verify                 polaris_users_verify? @default(NO)
+  ip_address             String?               @db.VarChar(32)
+  last_login_at          DateTime?             @db.DateTime(0)
+  created_at             DateTime?             @db.DateTime(0)
+  updated_at             DateTime?             @db.DateTime(0)
+  deleted_at             DateTime?             @db.DateTime(0)
+  google_id              String?               @db.VarChar(100)
+  registration_server    String?               @db.VarChar(20)
+  avatar                 String?               @db.VarChar(255)
+
+  @@index([account_id], map: "account_id")
+  @@index([u_id, email, first_name, last_name], map: "u_id")
+}
+
+model product_component {
+  id                      Int                           @id
+  product_family_id       Int
+  component_id            Int
+  name                    String?                       @db.VarChar(255)
+  handle                  String                        @db.VarChar(255)
+  price_type              product_component_price_type? @default(QUANTITY)
+  component_type          String?                       @db.VarChar(50)
+  unit_name               String?                       @db.VarChar(255)
+  unit_price              Float?                        @db.Float
+  default_price           Int
+  pricing_scheme          String?                       @db.VarChar(15)
+  prices                  String?                       @db.Text
+  view_type               product_component_view_type?  @default(BASIC)
+  kind                    String?                       @db.VarChar(30)
+  price_per_unit_in_cents Int?
+  archived                Boolean?
+  taxable                 Boolean?
+  tier                    Int?                          @default(2)
+  description             String?                       @db.VarChar(1024)
+  created_at              DateTime?                     @db.DateTime(0)
+  updated_at              DateTime?                     @db.DateTime(0)
+  deleted_at              DateTime?                     @db.DateTime(0)
+
+  @@index([component_type], map: "component_type")
+  @@index([component_id], map: "product_id")
+}
+
+model product_component_bk {
+  id                      Int                              @id
+  product_family_id       Int
+  component_id            Int
+  name                    String?                          @db.VarChar(255)
+  handle                  String                           @db.VarChar(255)
+  price_type              product_component_bk_price_type? @default(QUANTITY)
+  component_type          String?                          @db.VarChar(50)
+  unit_name               String?                          @db.VarChar(255)
+  unit_price              Float?                           @db.Float
+  default_price           Int
+  pricing_scheme          String?                          @db.VarChar(15)
+  prices                  String?                          @db.Text
+  kind                    String?                          @db.VarChar(30)
+  price_per_unit_in_cents Int?
+  archived                Boolean?
+  taxable                 Boolean?
+  description             String?                          @db.VarChar(255)
+  created_at              DateTime?                        @db.DateTime(0)
+  updated_at              DateTime?                        @db.DateTime(0)
+  deleted_at              DateTime?                        @db.DateTime(0)
+
+  @@index([component_type], map: "component_type")
+  @@index([component_id], map: "product_id")
+}
+
+model product_component_dev {
+  id                      Int                               @id
+  product_family_id       Int
+  component_id            Int
+  name                    String?                           @db.VarChar(255)
+  handle                  String                            @db.VarChar(255)
+  price_type              product_component_dev_price_type? @default(QUANTITY)
+  component_type          String?                           @db.VarChar(50)
+  unit_name               String?                           @db.VarChar(255)
+  unit_price              Float?                            @db.Float
+  default_price           Int
+  pricing_scheme          String?                           @db.VarChar(15)
+  prices                  String?                           @db.Text
+  view_type               product_component_dev_view_type?  @default(BASIC)
+  kind                    String?                           @db.VarChar(30)
+  price_per_unit_in_cents Int?
+  archived                Boolean?
+  taxable                 Boolean?
+  tier                    Int?                              @default(0)
+  description             String?                           @db.VarChar(255)
+  created_at              DateTime?                         @db.DateTime(0)
+  updated_at              DateTime?                         @db.DateTime(0)
+  deleted_at              DateTime?                         @db.DateTime(0)
+
+  @@index([component_type], map: "component_type")
+  @@index([component_id], map: "product_id")
+}
+
+model product_family {
+  id          Int       @id
+  u_id        String    @db.VarChar(32)
+  remote_id   Int
+  name        String    @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  api_handle  String?   @db.VarChar(255)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([u_id, remote_id, name], map: "u_id")
+}
+
+model product_family_dev {
+  id          Int       @id
+  u_id        String    @db.VarChar(32)
+  remote_id   Int
+  name        String    @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  api_handle  String?   @db.VarChar(255)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([u_id, remote_id, name], map: "u_id")
+}
+
+model products {
+  id                       Int       @id
+  u_id                     String    @db.VarChar(32)
+  remote_id                Int
+  created_at               DateTime? @db.DateTime(0)
+  accounting_code          String?   @db.VarChar(255)
+  name                     String    @db.VarChar(255)
+  description              String    @db.Text
+  handle                   String?   @db.VarChar(255)
+  expiration_interval      String?   @db.VarChar(255)
+  expiration_interval_unit String?   @db.VarChar(255)
+  initial_charge_in_cents  Int?
+  interval                 Int?
+  interval_unit            String?   @db.VarChar(15)
+  price_in_cents           Int?
+  request_credit_card      String?   @db.VarChar(1)
+  require_credit_card      String?   @db.VarChar(1)
+  return_params            String?   @db.VarChar(255)
+  taxable                  String?   @db.VarChar(1)
+  trial_interval           String?   @db.VarChar(10)
+  trial_interval_unit      String?   @db.VarChar(15)
+  trial_price_in_cents     Int?
+  update_return_url        String?   @db.VarChar(255)
+  version_number           Int?
+  product_family_id        Int?
+  updated_at               DateTime? @db.DateTime(0)
+  deleted_at               DateTime? @db.DateTime(0)
+
+  @@index([u_id, remote_id], map: "u_id")
+}
+
+model products_dev {
+  id                       Int       @id
+  u_id                     String    @db.VarChar(32)
+  remote_id                Int
+  created_at               DateTime? @db.DateTime(0)
+  accounting_code          String?   @db.VarChar(255)
+  name                     String    @db.VarChar(255)
+  description              String    @db.Text
+  handle                   String?   @db.VarChar(255)
+  expiration_interval      String?   @db.VarChar(255)
+  expiration_interval_unit String?   @db.VarChar(255)
+  initial_charge_in_cents  Int?
+  interval                 Int?
+  interval_unit            String?   @db.VarChar(15)
+  price_in_cents           Int?
+  request_credit_card      String?   @db.VarChar(1)
+  require_credit_card      String?   @db.VarChar(1)
+  return_params            String?   @db.VarChar(255)
+  taxable                  String?   @db.VarChar(1)
+  trial_interval           String?   @db.VarChar(10)
+  trial_interval_unit      String?   @db.VarChar(15)
+  trial_price_in_cents     Int?
+  update_return_url        String?   @db.VarChar(255)
+  version_number           Int?
+  product_family_id        Int?
+  updated_at               DateTime? @db.DateTime(0)
+  deleted_at               DateTime? @db.DateTime(0)
+
+  @@index([u_id, remote_id], map: "u_id")
+}
+
+model provider_cdr {
+  id                      Int      @id
+  date                    DateTime @db.DateTime(0)
+  src_number              BigInt
+  dst_number              BigInt
+  billed_number           Int
+  duration                Int
+  account_id              Int
+  account_billed_duration Decimal  @db.Decimal(10, 2)
+  account_rate            Decimal  @db.Decimal(10, 2)
+  account_cost            Decimal  @db.Decimal(10, 2)
+  lrn_number              BigInt
+
+  @@index([dst_number], map: "dst_number")
+}
+
+model provider_cdr_temp {
+  id                      Int      @id
+  date                    DateTime @db.DateTime(0)
+  src_number              BigInt
+  dst_number              BigInt
+  billed_number           Int
+  duration                Int
+  account_id              Int
+  account_billed_duration Decimal  @db.Decimal(10, 2)
+  account_rate            Decimal  @db.Decimal(10, 2)
+  account_cost            Decimal  @db.Decimal(10, 2)
+  lrn_number              BigInt
+
+  @@index([dst_number], map: "dst_number")
+}
+
+model provider_rates {
+  id                  Int                       @id
+  name                String?                   @db.VarChar(255)
+  type                provider_rates_type       @default(VOICE)
+  role_type           provider_rates_role_type  @default(BASIC)
+  rate_out            Float
+  rate_in             Float
+  rate_tollfree       Float?
+  rate_tollfree_out   Float
+  rate_tollfree_in    Float
+  rate_short_code_out Float
+  rate_short_code_in  Float
+  unit_cost_name      String?                   @db.VarChar(255)
+  unit_cost           Float
+  other_settings      String?                   @db.VarChar(512)
+  is_default          provider_rates_is_default @default(N)
+  created_at          DateTime                  @db.DateTime(0)
+  updated_at          DateTime?                 @db.DateTime(0)
+  deleted_at          DateTime?                 @db.DateTime(0)
+
+  @@index([type, deleted_at], map: "type")
+}
+
+model providers {
+  id          Int       @id
+  name        String    @db.VarChar(50)
+  handle      String    @db.VarChar(50)
+  type        String    @db.VarChar(50)
+  status      String    @db.VarChar(20)
+  description String    @db.VarChar(50)
+  contact     String    @db.VarChar(1000)
+  priority    Int       @default(0)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([handle], map: "handle")
+  @@index([name], map: "name")
+}
+
+model queue_tasks {
+  id         Int                   @id
+  processed  queue_tasks_processed @default(NO)
+  type       String                @db.Text
+  options    String                @db.VarChar(1200)
+  created_at DateTime?             @db.DateTime(0)
+  updated_at DateTime?             @db.DateTime(0)
+  deleted_at DateTime?             @db.DateTime(0)
+
+  @@index([processed], map: "processed")
+  @@index([type(length: 255)], map: "type")
+}
+
+model queue_tasks_backup {
+  id         Int                          @id
+  processed  queue_tasks_backup_processed @default(NO)
+  type       String                       @db.VarChar(255)
+  options    String                       @db.VarChar(1200)
+  created_at DateTime?                    @db.DateTime(0)
+  updated_at DateTime?                    @db.DateTime(0)
+  deleted_at DateTime?                    @db.DateTime(0)
+
+  @@index([processed], map: "processed")
+  @@index([type], map: "type")
+}
+
+model recording_storage_stats {
+  account_id Int
+  created_at DateTime @default(now()) @db.DateTime(0)
+  size       BigInt   @db.UnsignedBigInt
+  file_count BigInt   @db.UnsignedBigInt
+
+  @@id([account_id, created_at])
+}
+
+model release_logs {
+  id              Int                    @id
+  u_id            String                 @db.VarChar(32)
+  type            release_logs_type      @default(BUG)
+  note            String?                @db.Text
+  client_list     String?                @db.Text
+  ticket_list     String?                @db.VarChar(255)
+  suggestion_list String?                @db.VarChar(255)
+  internal        release_logs_internal? @default(Y)
+  added_by        Int?
+  published_at    DateTime?              @db.DateTime(0)
+  created_at      DateTime?              @db.DateTime(0)
+  updated_at      DateTime?              @db.DateTime(0)
+  deleted_at      DateTime?              @db.DateTime(0)
+
+  @@index([u_id, type], map: "uid")
+}
+
+model reports {
+  id              Int                @id
+  member_id       Int
+  handle          String?            @db.VarChar(255)
+  name            String             @db.VarChar(255)
+  email_enabled   Boolean?           @default(false)
+  email_addresses String?            @db.LongText
+  filters         String?            @db.LongText
+  frequency       reports_frequency? @default(NEVER)
+  report_last_ran DateTime?          @db.DateTime(0)
+  template        String?            @db.Text
+  created_at      DateTime?          @db.DateTime(0)
+  modified_at     DateTime?          @db.DateTime(0)
+  deleted_at      DateTime?          @db.DateTime(0)
+  u_id            String             @db.VarChar(32)
+  report_time     String?            @db.VarChar(20)
+
+  @@index([frequency], map: "frequency")
+  @@index([report_last_ran], map: "report_last_ran")
+}
+
+model reputation_check {
+  id                        Int       @id
+  did_id                    Int       @unique(map: "did_id")
+  carrier                   String    @db.VarChar(50)
+  number                    String    @db.VarChar(15)
+  account_id                Int
+  verizon_cname             String    @db.VarChar(100)
+  verizon_retry             Int       @default(0)
+  verizon_answered_count    Int       @default(0)
+  verizon_answered_at       DateTime? @db.DateTime(0)
+  verizon_failure_count     Int       @default(0)
+  verizon_updated_at        DateTime  @db.DateTime(0)
+  verizon_channel           String    @db.VarChar(255)
+  att_cname                 String    @db.VarChar(100)
+  att_retry                 Int       @default(0)
+  att_answered_count        Int       @default(0)
+  att_answered_at           DateTime? @db.DateTime(0)
+  att_failure_count         Int       @default(0)
+  att_updated_at            DateTime  @db.DateTime(0)
+  att_channel               String    @db.VarChar(255)
+  tmobile_cname             String    @db.VarChar(100)
+  tmobile_retry             Int       @default(0)
+  tmobile_answered_count    Int       @default(0)
+  tmobile_answered_at       DateTime? @db.DateTime(0)
+  tmobile_failure_count     Int       @default(0)
+  tmobile_updated_at        DateTime  @db.DateTime(0)
+  tmobile_channel           String    @db.VarChar(255)
+  truecaller_cname          String    @db.VarChar(100)
+  truecaller_retry          Int
+  truecaller_answered_count Int
+  truecaller_answered_at    DateTime  @db.DateTime(0)
+  truecaller_failure_count  Int
+  truecaller_updated_at     DateTime  @db.DateTime(0)
+  truecaller_channel        String    @db.VarChar(255)
+  robokiller_cname          String    @db.VarChar(100)
+  robokiller_retry          Int
+  robokiller_answered_count Int
+  robokiller_answered_at    DateTime  @db.DateTime(0)
+  robokiller_failure_count  Int
+  robokiller_updated_at     DateTime  @db.DateTime(0)
+  robokiller_channel        String    @db.VarChar(255)
+  youmail_cname             String    @db.VarChar(100)
+  youmail_retry             Int
+  youmail_answered_count    Int
+  youmail_answered_at       DateTime  @db.DateTime(0)
+  youmail_failure_count     Int
+  youmail_updated_at        DateTime  @db.DateTime(0)
+  youmail_channel           String    @db.VarChar(255)
+  nomorobo_cname            String    @db.VarChar(255)
+  nomorobo_retry            String    @db.VarChar(100)
+  nomorobo_answered_count   Int
+  nomorobo_answered_at      DateTime  @db.DateTime(0)
+  nomorobo_failure_count    Int
+  nomorobo_updated_at       DateTime  @db.DateTime(0)
+  nomorobo_channel          String    @db.VarChar(255)
+  server_ip                 String    @db.VarChar(50)
+  json_object               String    @db.MediumText
+  created_at                DateTime? @default(now()) @db.DateTime(0)
+  updated_at                DateTime  @db.DateTime(0)
+  deleted_at                DateTime? @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([att_answered_at], map: "att_answered_at")
+  @@index([att_answered_count], map: "att_answered_count")
+  @@index([att_channel], map: "att_channel")
+  @@index([att_cname], map: "att_cname")
+  @@index([att_failure_count], map: "att_failure_count")
+  @@index([att_retry], map: "att_retry")
+  @@index([att_updated_at, account_id], map: "att_sorted")
+  @@index([att_updated_at], map: "att_updated_at")
+  @@index([carrier], map: "carrier")
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([nomorobo_answered_count], map: "nomorobo_answered_count")
+  @@index([nomorobo_channel], map: "nomorobo_channel")
+  @@index([nomorobo_cname], map: "nomorobo_cname")
+  @@index([nomorobo_failure_count], map: "nomorobo_failure_count")
+  @@index([nomorobo_retry], map: "nomorobo_retry")
+  @@index([nomorobo_updated_at], map: "nomorobo_updated_at")
+  @@index([number], map: "number")
+  @@index([robokiller_answered_at], map: "robokiller_answered_at")
+  @@index([robokiller_answered_count], map: "robokiller_answered_count")
+  @@index([robokiller_channel], map: "robokiller_channel")
+  @@index([robokiller_cname], map: "robokiller_cname")
+  @@index([robokiller_failure_count], map: "robokiller_failure_count")
+  @@index([robokiller_retry], map: "robokiller_retry")
+  @@index([robokiller_updated_at], map: "robokiller_updated_at")
+  @@index([server_ip], map: "server_ip")
+  @@index([server_ip], map: "server_ip_2")
+  @@index([tmobile_answered_at], map: "tmobile_answered_at")
+  @@index([tmobile_answered_count], map: "tmobile_answered_count")
+  @@index([tmobile_channel], map: "tmobile_channel")
+  @@index([tmobile_cname], map: "tmobile_cname")
+  @@index([tmobile_failure_count], map: "tmobile_failure_count")
+  @@index([tmobile_retry], map: "tmobile_retry")
+  @@index([tmobile_updated_at, account_id], map: "tmobile_sorted")
+  @@index([tmobile_updated_at], map: "tmobile_updated_at")
+  @@index([truecaller_answered_at], map: "truecaller_answered_at")
+  @@index([truecaller_answered_count], map: "truecaller_answered_count")
+  @@index([truecaller_channel], map: "truecaller_channel")
+  @@index([truecaller_cname], map: "truecaller_cname")
+  @@index([truecaller_failure_count], map: "truecaller_failure_count")
+  @@index([truecaller_retry], map: "truecaller_retry")
+  @@index([truecaller_updated_at], map: "truecaller_updated_at")
+  @@index([updated_at], map: "updated_at")
+  @@index([verizon_answered_at], map: "verizon_answered_at")
+  @@index([verizon_answered_count], map: "verizon_answered_count")
+  @@index([verizon_channel], map: "verizon_channel")
+  @@index([verizon_cname], map: "verizon_cname")
+  @@index([verizon_failure_count], map: "verizon_failure_count")
+  @@index([verizon_retry], map: "verizon_retry")
+  @@index([verizon_updated_at, account_id], map: "verizon_sorted")
+  @@index([verizon_updated_at], map: "verizon_updated_at")
+  @@index([youmail_answered_at], map: "youmail_answered_at")
+  @@index([youmail_answered_count], map: "youmail_answered_count")
+  @@index([youmail_channel], map: "youmail_channel")
+  @@index([youmail_cname], map: "youmail_cname")
+  @@index([youmail_failure_count], map: "youmail_failure_count")
+  @@index([youmail_retry], map: "youmail_retry")
+  @@index([youmail_updated_at], map: "youmail_updated_at")
+}
+
+model reputation_check_archive {
+  id                     Int       @id
+  did_id                 Int
+  carrier                String    @db.VarChar(50)
+  number                 String    @db.VarChar(15)
+  account_id             Int
+  verizon_cname          String    @db.VarChar(100)
+  verizon_retry          Int       @default(0)
+  verizon_answered_count Int       @default(0)
+  verizon_answered_at    DateTime? @db.DateTime(0)
+  verizon_failure_count  Int       @default(0)
+  verizon_updated_at     DateTime  @db.DateTime(0)
+  att_cname              String    @db.VarChar(100)
+  att_retry              Int       @default(0)
+  att_answered_count     Int       @default(0)
+  att_answered_at        DateTime? @db.DateTime(0)
+  att_failure_count      Int       @default(0)
+  att_updated_at         DateTime  @db.DateTime(0)
+  tmobile_cname          String    @db.VarChar(100)
+  tmobile_retry          Int       @default(0)
+  tmobile_answered_count Int       @default(0)
+  tmobile_answered_at    DateTime? @db.DateTime(0)
+  tmobile_failure_count  Int       @default(0)
+  tmobile_updated_at     DateTime  @db.DateTime(0)
+  channel                String    @db.VarChar(255)
+  server_ip              String    @db.VarChar(50)
+  json_object            String    @db.MediumText
+  created_at             DateTime? @default(now()) @db.DateTime(0)
+  updated_at             DateTime  @db.DateTime(0)
+  deleted_at             DateTime? @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([att_answered_at], map: "att_answered_at")
+  @@index([att_answered_count], map: "att_answered_count")
+  @@index([att_cname], map: "att_cname")
+  @@index([att_failure_count], map: "att_failure_count")
+  @@index([att_retry], map: "att_retry")
+  @@index([att_updated_at], map: "att_updated_at")
+  @@index([carrier], map: "carrier")
+  @@index([channel], map: "channel")
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([did_id], map: "did_id")
+  @@index([number], map: "number")
+  @@index([server_ip], map: "server_ip")
+  @@index([server_ip], map: "server_ip_2")
+  @@index([tmobile_answered_at], map: "tmobile_answered_at")
+  @@index([tmobile_answered_count], map: "tmobile_answered_count")
+  @@index([tmobile_cname], map: "tmobile_cname")
+  @@index([tmobile_failure_count], map: "tmobile_failure_count")
+  @@index([tmobile_retry], map: "tmobile_retry")
+  @@index([tmobile_updated_at], map: "tmobile_updated_at")
+  @@index([updated_at], map: "updated_at")
+  @@index([verizon_answered_at], map: "verizon_answered_at")
+  @@index([verizon_answered_count], map: "verizon_answered_count")
+  @@index([verizon_cname], map: "verizon_cname")
+  @@index([verizon_failure_count], map: "verizon_failure_count")
+  @@index([verizon_retry], map: "verizon_retry")
+  @@index([verizon_updated_at], map: "verizon_updated_at")
+}
+
+model reputation_check_csv_upload {
+  id           Int                                 @id
+  file_name    String?                             @db.VarChar(250)
+  file         Bytes                               @db.MediumBlob
+  status       reputation_check_csv_upload_status? @default(NEW)
+  mode         reputation_check_csv_upload_mode?   @default(MIXED)
+  notes        String?                             @db.Text
+  results      String?                             @db.Text
+  processed_at DateTime?                           @db.DateTime(0)
+  created_at   DateTime                            @db.DateTime(0)
+  deleted_at   DateTime?                           @db.DateTime(0)
+
+  @@index([created_at], map: "idx_created_at")
+  @@index([status], map: "idx_status")
+}
+
+model reputation_check_new {
+  id                        Int       @id
+  did_id                    Int       @unique(map: "did_id")
+  carrier                   String    @db.VarChar(50)
+  number                    String    @db.VarChar(15)
+  account_id                Int
+  verizon_cname             String    @db.VarChar(100)
+  verizon_retry             Int       @default(0)
+  verizon_answered_count    Int       @default(0)
+  verizon_answered_at       DateTime? @db.DateTime(0)
+  verizon_failure_count     Int       @default(0)
+  verizon_updated_at        DateTime  @db.DateTime(0)
+  verizon_channel           String    @db.VarChar(255)
+  att_cname                 String    @db.VarChar(100)
+  att_retry                 Int       @default(0)
+  att_answered_count        Int       @default(0)
+  att_answered_at           DateTime? @db.DateTime(0)
+  att_failure_count         Int       @default(0)
+  att_updated_at            DateTime  @db.DateTime(0)
+  att_channel               String    @db.VarChar(255)
+  tmobile_cname             String    @db.VarChar(100)
+  tmobile_retry             Int       @default(0)
+  tmobile_answered_count    Int       @default(0)
+  tmobile_answered_at       DateTime? @db.DateTime(0)
+  tmobile_failure_count     Int       @default(0)
+  tmobile_updated_at        DateTime  @db.DateTime(0)
+  tmobile_channel           String    @db.VarChar(255)
+  truecaller_cname          String    @db.VarChar(100)
+  truecaller_retry          Int
+  truecaller_answered_count Int
+  truecaller_answered_at    DateTime  @db.DateTime(0)
+  truecaller_failure_count  Int
+  truecaller_updated_at     DateTime  @db.DateTime(0)
+  truecaller_channel        String    @db.VarChar(255)
+  robokiller_cname          String    @db.VarChar(100)
+  robokiller_retry          Int
+  robokiller_answered_count Int
+  robokiller_answered_at    DateTime  @db.DateTime(0)
+  robokiller_failure_count  Int
+  robokiller_updated_at     DateTime  @db.DateTime(0)
+  robokiller_channel        String    @db.VarChar(255)
+  youmail_cname             String    @db.VarChar(100)
+  youmail_retry             Int
+  youmail_answered_count    Int
+  youmail_answered_at       DateTime  @db.DateTime(0)
+  youmail_failure_count     Int
+  youmail_updated_at        DateTime  @db.DateTime(0)
+  youmail_channel           String    @db.VarChar(255)
+  nomorobo_cname            String    @db.VarChar(255)
+  nomorobo_retry            String    @db.VarChar(100)
+  nomorobo_answered_count   Int
+  nomorobo_answered_at      DateTime  @db.DateTime(0)
+  nomorobo_failure_count    Int
+  nomorobo_updated_at       DateTime  @db.DateTime(0)
+  nomorobo_channel          String    @db.VarChar(255)
+  server_ip                 String    @db.VarChar(50)
+  json_object               String    @db.MediumText
+  created_at                DateTime? @default(now()) @db.DateTime(0)
+  updated_at                DateTime  @db.DateTime(0)
+  deleted_at                DateTime? @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([att_answered_at], map: "att_answered_at")
+  @@index([att_answered_count], map: "att_answered_count")
+  @@index([att_channel], map: "att_channel")
+  @@index([att_cname], map: "att_cname")
+  @@index([att_failure_count], map: "att_failure_count")
+  @@index([att_retry], map: "att_retry")
+  @@index([att_updated_at, account_id], map: "att_sorted")
+  @@index([att_updated_at], map: "att_updated_at")
+  @@index([carrier], map: "carrier")
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([nomorobo_answered_count], map: "nomorobo_answered_count")
+  @@index([nomorobo_channel], map: "nomorobo_channel")
+  @@index([nomorobo_cname], map: "nomorobo_cname")
+  @@index([nomorobo_failure_count], map: "nomorobo_failure_count")
+  @@index([nomorobo_retry], map: "nomorobo_retry")
+  @@index([nomorobo_updated_at], map: "nomorobo_updated_at")
+  @@index([number], map: "number")
+  @@index([robokiller_answered_at], map: "robokiller_answered_at")
+  @@index([robokiller_answered_count], map: "robokiller_answered_count")
+  @@index([robokiller_channel], map: "robokiller_channel")
+  @@index([robokiller_cname], map: "robokiller_cname")
+  @@index([robokiller_failure_count], map: "robokiller_failure_count")
+  @@index([robokiller_retry], map: "robokiller_retry")
+  @@index([robokiller_updated_at], map: "robokiller_updated_at")
+  @@index([server_ip], map: "server_ip")
+  @@index([server_ip], map: "server_ip_2")
+  @@index([tmobile_answered_at], map: "tmobile_answered_at")
+  @@index([tmobile_answered_count], map: "tmobile_answered_count")
+  @@index([tmobile_channel], map: "tmobile_channel")
+  @@index([tmobile_cname], map: "tmobile_cname")
+  @@index([tmobile_failure_count], map: "tmobile_failure_count")
+  @@index([tmobile_retry], map: "tmobile_retry")
+  @@index([tmobile_updated_at, account_id], map: "tmobile_sorted")
+  @@index([tmobile_updated_at], map: "tmobile_updated_at")
+  @@index([truecaller_answered_at], map: "truecaller_answered_at")
+  @@index([truecaller_answered_count], map: "truecaller_answered_count")
+  @@index([truecaller_channel], map: "truecaller_channel")
+  @@index([truecaller_cname], map: "truecaller_cname")
+  @@index([truecaller_failure_count], map: "truecaller_failure_count")
+  @@index([truecaller_retry], map: "truecaller_retry")
+  @@index([truecaller_updated_at], map: "truecaller_updated_at")
+  @@index([updated_at], map: "updated_at")
+  @@index([verizon_answered_at], map: "verizon_answered_at")
+  @@index([verizon_answered_count], map: "verizon_answered_count")
+  @@index([verizon_channel], map: "verizon_channel")
+  @@index([verizon_cname], map: "verizon_cname")
+  @@index([verizon_failure_count], map: "verizon_failure_count")
+  @@index([verizon_retry], map: "verizon_retry")
+  @@index([verizon_updated_at, account_id], map: "verizon_sorted")
+  @@index([verizon_updated_at], map: "verizon_updated_at")
+  @@index([youmail_answered_at], map: "youmail_answered_at")
+  @@index([youmail_answered_count], map: "youmail_answered_count")
+  @@index([youmail_channel], map: "youmail_channel")
+  @@index([youmail_cname], map: "youmail_cname")
+  @@index([youmail_failure_count], map: "youmail_failure_count")
+  @@index([youmail_retry], map: "youmail_retry")
+  @@index([youmail_updated_at], map: "youmail_updated_at")
+}
+
+model reputation_test_numbers {
+  id                              Int                                         @id
+  server_ip                       String                                      @db.VarChar(50)
+  pause                           Int
+  number                          String                                      @db.VarChar(50)
+  os                              reputation_test_numbers_os                  @default(ios)
+  comments                        String                                      @db.VarChar(1000)
+  label                           String                                      @db.VarChar(10)
+  rack                            Int
+  max_ring_seconds                Int                                         @default(120)
+  carrier                         String                                      @db.VarChar(50)
+  displayed_carrier               String                                      @db.VarChar(40)
+  type                            reputation_test_numbers_type                @default(mobile)
+  phone_serial                    String?                                     @unique(map: "phone_serials") @db.VarChar(50)
+  IMEI                            String                                      @db.VarChar(100)
+  ICCID                           String                                      @db.VarChar(100)
+  MEID                            String                                      @db.VarChar(100)
+  last_used                       DateTime                                    @db.DateTime(0)
+  current_state                   reputation_test_numbers_current_state       @default(FREE)
+  reboot_state                    reputation_test_numbers_reboot_state        @default(NONE)
+  pause_state_before_reboot_state Int                                         @default(0)
+  failures                        Int?                                        @default(0)
+  answered                        Int                                         @default(0)
+  noanswer                        Int                                         @default(0)
+  canceled                        Int                                         @default(0)
+  total_reboots                   Int?                                        @default(0)
+  server                          String?                                     @db.VarChar(50)
+  uuid                            String?                                     @db.VarChar(72)
+  wifistatus                      reputation_test_numbers_wifistatus?         @default(ACTIVE)
+  battery_current_capacity        Int                                         @default(0)
+  att_spam_service                String                                      @default("NO") @db.VarChar(10)
+  icloud_removal_pending          Int                                         @default(0)
+  maintenance                     Int                                         @default(0)
+  possible_battery_problem        Int                                         @default(0)
+  battery_is_charging             reputation_test_numbers_battery_is_charging @default(false)
+  total_memory                    String                                      @db.VarChar(20)
+  used_memory                     String                                      @db.VarChar(20)
+  available_memory                String                                      @db.VarChar(20)
+  last_reboot_date                DateTime?                                   @db.DateTime(0)
+  last_charge_date                DateTime?                                   @db.DateTime(0)
+  last_log_activity_date          DateTime                                    @db.DateTime(0)
+  battery_temp                    Int?                                        @db.SmallInt
+  battery_health                  String?                                     @db.VarChar(50)
+  calllog_version                 String?                                     @db.VarChar(50)
+
+  @@index([att_spam_service], map: "att_spam_service")
+  @@index([current_state], map: "current_state")
+  @@index([last_charge_date], map: "last_charge_date")
+  @@index([last_used], map: "last_used")
+  @@index([os], map: "os")
+  @@index([pause], map: "pause")
+  @@index([reboot_state], map: "reboot_state")
+  @@index([server_ip, number, carrier], map: "server_ip")
+  @@index([type], map: "type")
+  @@index([uuid], map: "uuid")
+}
+
+model sendgrid_email_domains {
+  id           Int       @id @db.UnsignedInt
+  domain       String    @db.VarChar(255)
+  domain_cname String?   @db.VarChar(1024)
+  account_id   Int
+  domain_id    Int
+  verified     String    @default("N") @db.VarChar(10)
+  created_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+}
+
+model service_accounts {
+  id          Int       @id
+  u_id        String    @db.VarChar(32)
+  remote_id   String    @db.VarChar(255)
+  account_id  Int
+  name        String?   @db.VarChar(255)
+  tier_type   Int?
+  license_key String?   @db.VarChar(255)
+  status      Int?
+  expired_at  DateTime? @db.DateTime(0)
+  renewal_at  DateTime? @db.DateTime(0)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([u_id, remote_id, account_id, expired_at], map: "u_id")
+}
+
+model service_add_ons {
+  id         Int                   @id
+  u_id       String                @db.VarChar(32)
+  remote_id  String                @db.VarChar(255)
+  name       String?               @db.VarChar(255)
+  user_id    Int?
+  account_id Int?
+  type       service_add_ons_type? @default(ACCOUNT)
+  status     Int?
+  expired_at DateTime?             @db.DateTime(0)
+  renewal_at DateTime?             @db.DateTime(0)
+  created_at DateTime?             @db.DateTime(0)
+  updated_at DateTime?             @db.DateTime(0)
+  deleted_at DateTime?             @db.DateTime(0)
+
+  @@index([u_id, remote_id, type], map: "u_id")
+}
+
+model service_users {
+  id          Int       @id
+  u_id        String    @db.VarChar(32)
+  remote_id   String    @db.VarChar(255)
+  user_id     Int?
+  account_id  Int
+  license_key String?   @db.VarChar(255)
+  expired_at  DateTime? @db.DateTime(0)
+  renewal_at  DateTime? @db.DateTime(0)
+  status      Int?
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([u_id, remote_id, user_id, account_id], map: "u_id")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model sinch_order_queue {
+  id                   Int
+  account_id           Int
+  action               sinch_order_queue_action? @default(ENABLE_SMS)
+  vendor_order_id      String?                   @db.VarChar(50)
+  campaign_registry_id String?                   @db.VarChar(50)
+  dids                 String?                   @db.Text
+  payload              String?                   @db.Text
+  response             String?                   @db.Text
+  status               sinch_order_queue_status? @default(PENDING)
+  retry_count          Int?
+  created_at           DateTime                  @default(now()) @db.DateTime(0)
+  updated_at           DateTime                  @default(now()) @db.DateTime(0)
+
+  @@ignore
+}
+
+model sms_aggregate_stats {
+  id           Int      @id
+  account_id   Int
+  campaign_id  Int
+  date         DateTime @db.Date
+  msg_sent     Int
+  msg_received Int
+  msg_failed   Int
+
+  @@unique([account_id, campaign_id, date], map: "account_campaign_date")
+  @@index([account_id, campaign_id, date], map: "account_id")
+}
+
+model speech_to_text_aggregate {
+  id             Int      @id
+  account_id     Int
+  campaign_id    Int
+  aggregate_date DateTime @db.Date
+  success_count  Int
+  failure_count  Int
+  total_cost     Float
+
+  @@index([account_id], map: "account_id")
+  @@index([campaign_id], map: "campaign_id")
+}
+
+model speech_words {
+  word_id Int    @id
+  word    String @db.VarChar(45)
+
+  @@index([word], map: "word")
+}
+
+model split_table_templates {
+  id          Int       @id @db.UnsignedInt
+  u_id        String    @db.VarChar(32)
+  table_name  String    @db.VarChar(255)
+  table_query String    @db.Text
+  created_at  DateTime  @db.DateTime(0)
+  created_by  Int
+  updated_at  DateTime? @db.DateTime(0)
+  updated_by  Int?      @default(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([created_at], map: "created_at")
+  @@index([table_name], map: "table_name")
+}
+
+model stat_subscription_component_monthly {
+  id                 Int       @id
+  account_id         Int
+  subscription_id    Int
+  component_id       Int
+  allocated_quantity Int
+  date               DateTime? @db.Date
+
+  @@index([account_id, subscription_id, component_id, date], map: "account_id")
+}
+
+model stat_subscription_revenue_monthly {
+  id              Int       @id
+  account_id      Int
+  subscription_id Int
+  revenue         Decimal   @db.Decimal(10, 2)
+  date            DateTime? @db.Date
+
+  @@index([account_id, subscription_id, date], map: "account_id")
+}
+
+model states {
+  id      Int    @id
+  code    String @default("") @db.Char(2)
+  name    String @default("") @db.VarChar(128)
+  country String @db.Char(2)
+}
+
+model stir_shaken_test_numbers {
+  id                 Int     @id @db.UnsignedInt
+  carrier_name       String? @db.VarChar(50)
+  prefix             String? @db.Char(11)
+  caller_id          String? @db.Char(10)
+  carrier_short_name String? @db.Char(10)
+}
+
+model subscriptions {
+  internal_id               Int                @id
+  account_id                Int
+  user_id                   Int?
+  id                        Int
+  customer_id               Int
+  product_id                Int
+  type                      subscriptions_type @default(LICENSE)
+  payment_profile_id        Int?
+  balance_in_cents          Int?
+  cancel_at_end_of_period   Int?
+  cancellation_message      String?            @db.VarChar(255)
+  current_period_ends_at    DateTime?          @db.DateTime(0)
+  expires_at                DateTime?          @db.DateTime(0)
+  next_assessment_at        DateTime?          @db.DateTime(0)
+  next_product_id           Int?
+  payment_collection_method String?            @db.VarChar(255)
+  snap_day                  String?            @db.VarChar(255)
+  state                     String?            @db.VarChar(255)
+  trial_ended_at            DateTime?          @db.DateTime(0)
+  trial_started_at          DateTime?          @db.DateTime(0)
+  current_period_started_at DateTime?          @db.DateTime(0)
+  previous_state            String?            @db.VarChar(255)
+  signup_payment_id         Int?
+  signup_revenue            String?            @db.VarChar(255)
+  delayed_cancel_at         DateTime?          @db.DateTime(0)
+  coupon_code               String?            @db.VarChar(255)
+  total_revenue_in_cents    Int?
+  product_price_in_cents    Int?
+  product_version_number    Int?
+  payment_type              String?            @db.VarChar(255)
+  referral_code             String?            @db.VarChar(255)
+  customer                  String?            @db.Text
+  product                   String?            @db.Text
+  credit_card               String?            @db.Text
+  canceled_at               DateTime?          @db.DateTime(0)
+  activated_at              DateTime?          @db.DateTime(0)
+  created_at                DateTime           @db.DateTime(0)
+  updated_at                DateTime?          @db.DateTime(0)
+  deleted_at                DateTime?          @db.DateTime(0)
+  cancel_on                 DateTime?          @db.Date
+  billing_state             String?            @db.VarChar(30)
+
+  @@index([account_id], map: "account_id")
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([id, customer_id], map: "id")
+  @@index([user_id], map: "user_id")
+}
+
+model subscriptions_components {
+  internal_id            Int       @id
+  component_id           Int
+  subscription_id        Int
+  allocated_quantity     Int?
+  allocated_quantity_new Float?
+  pricing_scheme         String?   @db.VarChar(255)
+  name                   String?   @db.VarChar(255)
+  kind                   String?   @db.VarChar(255)
+  unit_name              String?   @db.VarChar(255)
+  unit_price             Float?
+  created_at             DateTime? @db.DateTime(0)
+  updated_at             DateTime? @db.DateTime(0)
+  deleted_at             DateTime? @db.DateTime(0)
+
+  @@index([component_id, subscription_id], map: "component_id_subscription_id")
+  @@index([created_at], map: "created_at")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([subscription_id], map: "subscription_id")
+}
+
+model subscriptions_components_dev {
+  internal_id        Int       @id
+  component_id       Int
+  subscription_id    Int
+  allocated_quantity Int?
+  pricing_scheme     String?   @db.VarChar(255)
+  name               String?   @db.VarChar(255)
+  kind               String?   @db.VarChar(255)
+  unit_name          String?   @db.VarChar(255)
+  unit_price         Float?
+  created_at         DateTime? @db.DateTime(0)
+  updated_at         DateTime? @db.DateTime(0)
+  deleted_at         DateTime? @db.DateTime(0)
+
+  @@index([component_id, subscription_id], map: "component_id_subscription_id")
+}
+
+model subscriptions_dev {
+  internal_id               Int                    @id
+  account_id                Int
+  user_id                   Int?
+  id                        Int
+  customer_id               Int
+  product_id                Int
+  type                      subscriptions_dev_type @default(LICENSE)
+  payment_profile_id        Int?
+  balance_in_cents          Int?
+  cancel_at_end_of_period   Int?
+  cancellation_message      String?                @db.VarChar(255)
+  current_period_ends_at    DateTime?              @db.DateTime(0)
+  expires_at                DateTime?              @db.DateTime(0)
+  next_assessment_at        DateTime?              @db.DateTime(0)
+  next_product_id           Int?
+  payment_collection_method String?                @db.VarChar(255)
+  snap_day                  String?                @db.VarChar(255)
+  state                     String?                @db.VarChar(255)
+  trial_ended_at            DateTime?              @db.DateTime(0)
+  trial_started_at          DateTime?              @db.DateTime(0)
+  current_period_started_at DateTime?              @db.DateTime(0)
+  previous_state            String?                @db.VarChar(255)
+  signup_payment_id         Int?
+  signup_revenue            String?                @db.VarChar(255)
+  delayed_cancel_at         DateTime?              @db.DateTime(0)
+  coupon_code               String?                @db.VarChar(255)
+  total_revenue_in_cents    Int?
+  product_price_in_cents    Int?
+  product_version_number    Int?
+  payment_type              String?                @db.VarChar(255)
+  referral_code             String?                @db.VarChar(255)
+  customer                  String?                @db.Text
+  product                   String?                @db.Text
+  credit_card               String?                @db.Text
+  canceled_at               DateTime?              @db.DateTime(0)
+  activated_at              DateTime?              @db.DateTime(0)
+  created_at                DateTime               @db.DateTime(0)
+  updated_at                DateTime?              @db.DateTime(0)
+  deleted_at                DateTime?              @db.DateTime(0)
+  cancel_on                 DateTime?              @db.Date
+
+  @@index([account_id], map: "account_id")
+  @@index([id, customer_id], map: "id")
+  @@index([user_id], map: "user_id")
+}
+
+model survey_questions {
+  id         Int                     @id
+  u_id       String                  @db.VarChar(32)
+  group_id   Int
+  type       survey_questions_type   @default(RADIO)
+  question   String                  @db.VarChar(512)
+  status     survey_questions_status @default(ACTIVE)
+  created_at DateTime                @db.DateTime(0)
+  updated_at DateTime?               @db.DateTime(0)
+  deleted_at DateTime?               @db.DateTime(0)
+
+  @@index([created_at], map: "created_at")
+}
+
+model survey_results {
+  id          Int       @id
+  account_id  Int
+  question_id Int
+  reason      String?   @db.Text
+  member_id   Int
+  created_at  DateTime  @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([account_id, question_id, created_at, deleted_at], map: "account_id")
+}
+
+model system_performance {
+  id                        Int       @id @db.UnsignedInt
+  name                      String?   @db.VarChar(100)
+  namespace                 String?   @db.VarChar(100)
+  is_available              Boolean   @default(true)
+  last_status_changed_at    DateTime? @db.DateTime(0)
+  current_status_changed_at DateTime? @db.DateTime(0)
+  last_pinged_at            DateTime? @db.DateTime(0)
+  is_active                 Boolean?
+  alerts                    String    @db.Text
+  ping_frequency            Int       @default(1)
+}
+
+model system_performance_logs {
+  id                    Int      @id @db.UnsignedInt
+  system_performance_id Int?
+  is_available          Boolean
+  type                  String?  @db.VarChar(50)
+  message               String?  @db.Text
+  raw_response          String?  @db.Text
+  response_code         String?  @db.VarChar(4)
+  created_at            DateTime @db.DateTime(0)
+
+  @@index([system_performance_id, is_available, created_at], map: "system_performance_id_is_available_created_at")
+}
+
+model system_status_logs {
+  id              Int                         @id
+  u_id            String                      @db.VarChar(32)
+  platform        system_status_logs_platform @default(OMNI)
+  type            system_status_logs_type     @default(BROWNOUT)
+  log_group       String?                     @db.VarChar(250)
+  note            String?                     @db.Text
+  rfo             String?                     @db.Text
+  client_list     String?                     @db.Text
+  ticket_list     String?                     @db.VarChar(255)
+  suggestion_list String?                     @db.VarChar(255)
+  send_alert      Boolean?
+  alert_sent_at   DateTime?                   @db.DateTime(0)
+  incident_id     String?                     @db.VarChar(10)
+  start_time      DateTime?                   @db.DateTime(0)
+  end_time        DateTime?                   @db.DateTime(0)
+  duration        Int?
+  added_by        Int?
+  created_at      DateTime?                   @db.DateTime(0)
+  updated_at      DateTime?                   @db.DateTime(0)
+  deleted_at      DateTime?                   @db.DateTime(0)
+
+  @@index([u_id, type], map: "uid")
+}
+
+model task_log {
+  id            Int       @id
+  member_id     Int
+  department_id Int
+  task_note     String?   @db.Text
+  type          Int
+  sent          Int
+  created_at    DateTime? @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+  deleted_at    DateTime? @db.DateTime(0)
+
+  @@index([department_id, created_at], map: "department_id")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model temp_dids {
+  did String @db.VarChar(50)
+
+  @@ignore
+}
+
+model token_acl {
+  id         Int       @id
+  section    String?   @db.VarChar(255)
+  name       String    @db.VarChar(255)
+  route_name String    @db.VarChar(255)
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model transaction_logs {
+  id                 Int                           @id
+  account_id         Int?
+  account_cyneric_id Int?
+  type               transaction_logs_type?
+  current_balance    Float?
+  amount_charged     Float?
+  new_balance        Float?
+  transaction_retry  Int?
+  refill_type        transaction_logs_refill_type? @default(AUTO)
+  verify_duplicate   Boolean?                      @default(false)
+  created_at         DateTime?                     @db.DateTime(0)
+
+  @@index([account_id, account_cyneric_id, type, created_at], map: "account_id")
+}
+
+model transactions {
+  internal_id               Int       @id
+  u_id                      String    @db.VarChar(32)
+  transaction_type          String?   @default("") @db.VarChar(32)
+  kind                      String?   @db.VarChar(25)
+  component_type            String?   @db.VarChar(255)
+  id                        String?   @db.VarChar(50)
+  amount_in_cents           Int
+  starting_balance_in_cents Int
+  ending_balance_in_cents   Int
+  memo                      String?   @db.Text
+  subscription_id           String?   @db.VarChar(50)
+  product_id                Int
+  success                   String    @db.VarChar(1)
+  payment_id                String?   @db.VarChar(50)
+  gateway_transaction_id    String?   @db.VarChar(50)
+  gateway_order_id          String?   @db.VarChar(50)
+  created_at                DateTime  @db.DateTime(0)
+  updated_at                DateTime? @db.DateTime(0)
+  deleted_at                DateTime? @db.DateTime(0)
+  receipt                   String?   @db.Text
+  zuora_status              String?   @db.VarChar(20)
+  gateway_response          String?   @db.VarChar(50)
+  payment_number            String?   @db.VarChar(20)
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([component_type], map: "type")
+  @@index([u_id, id], map: "u_id")
+}
+
+model transactions_copy {
+  internal_id               Int       @id
+  u_id                      String    @db.VarChar(32)
+  transaction_type          String?   @default("") @db.VarChar(32)
+  kind                      String?   @db.VarChar(25)
+  component_type            String?   @db.VarChar(255)
+  id                        Int
+  amount_in_cents           Int
+  starting_balance_in_cents Int
+  ending_balance_in_cents   Int
+  memo                      String?   @db.Text
+  subscription_id           Int
+  product_id                Int
+  success                   String    @db.VarChar(1)
+  payment_id                Int?
+  gateway_transaction_id    Int
+  gateway_order_id          Int
+  created_at                DateTime  @db.DateTime(0)
+  updated_at                DateTime? @db.DateTime(0)
+  deleted_at                DateTime? @db.DateTime(0)
+  receipt                   String?   @db.Text
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([component_type], map: "type")
+  @@index([u_id, id], map: "u_id")
+}
+
+model transactions_dev {
+  internal_id               Int       @id
+  u_id                      String    @db.VarChar(32)
+  transaction_type          String?   @default("") @db.VarChar(32)
+  kind                      String?   @db.VarChar(25)
+  component_type            String?   @db.VarChar(255)
+  id                        Int
+  amount_in_cents           Int
+  starting_balance_in_cents Int
+  ending_balance_in_cents   Int
+  memo                      String?   @db.Text
+  receipt                   String?   @db.Text
+  subscription_id           Int
+  product_id                Int
+  success                   String    @db.VarChar(1)
+  payment_id                Int?
+  gateway_transaction_id    Int
+  gateway_order_id          Int
+  created_at                DateTime  @db.DateTime(0)
+  updated_at                DateTime? @db.DateTime(0)
+  deleted_at                DateTime? @db.DateTime(0)
+
+  @@index([deleted_at], map: "deleted_at")
+  @@index([component_type], map: "type")
+  @@index([u_id, id], map: "u_id")
+}
+
+model trigger_aggregate_stats {
+  id               Int      @id
+  account_id       Int
+  created_at       DateTime @db.Date
+  event_triggered  Int
+  event_failed     Int
+  action_performed Int
+  action_failed    Int
+
+  @@unique([account_id, created_at], map: "account_date")
+  @@index([account_id, created_at], map: "account_id")
+}
+
+model user_password {
+  user_id    Int
+  password   String   @db.VarChar(255)
+  salt       String   @db.VarChar(255)
+  created_at DateTime @default(now()) @db.DateTime(0)
+
+  @@id([user_id, created_at])
+}
+
+model user_productivity_stats {
+  id             Int      @id
+  account_id     Int
+  user_id        Int
+  campaign_id    Int
+  date           DateTime @db.Date
+  all_time       Int
+  billable_time  Int
+  ready_time     Int
+  not_ready_time Int
+
+  @@unique([user_id, campaign_id, date], map: "user_campaign_date")
+  @@index([account_id, user_id, campaign_id, date], map: "account_id")
+}
+
+model users {
+  id                        Int                   @id
+  u_id                      String                @db.VarChar(32)
+  account_id                Int
+  email                     String                @db.VarChar(255)
+  salt                      String                @db.VarChar(255)
+  algo                      String                @db.VarChar(32)
+  password                  String                @db.VarChar(255)
+  first_name                String?               @db.VarChar(255)
+  last_name                 String?               @db.VarChar(255)
+  title                     String                @db.VarChar(255)
+  contact_email             String?               @db.VarChar(255)
+  email_verification_key    String?               @db.VarChar(255)
+  verify                    users_verify?         @default(NO)
+  ip_address                String?               @db.VarChar(32)
+  last_login_at             DateTime?             @db.DateTime(0)
+  contact_email_verified_at DateTime?             @db.DateTime(0)
+  created_at                DateTime?             @db.DateTime(0)
+  updated_at                DateTime?             @db.DateTime(0)
+  deleted_at                DateTime?             @db.DateTime(0)
+  google_id                 String?               @db.VarChar(100)
+  registration_server       String?               @db.VarChar(20)
+  avatar                    String?               @db.VarChar(255)
+  remote_session            users_remote_session? @default(NO)
+  remote_session_expired_at DateTime?             @db.DateTime(0)
+  log_debug_level           Int                   @default(0)
+  talkdesk_user_id          String?               @db.VarChar(255)
+
+  @@index([account_id], map: "account_id")
+  @@index([deleted_at], map: "deleted_at")
+  @@index([email], map: "email")
+  @@index([talkdesk_user_id], map: "idx_talkdesk_user_id")
+  @@index([u_id, email, first_name, last_name], map: "u_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model va_project_pool {
+  id                        Int       @id
+  u_id                      String    @db.VarChar(32)
+  project_id                String    @db.VarChar(255)
+  account_id                Int       @default(0)
+  name                      String?   @db.VarChar(255)
+  text_to_speech_quality    String?   @default("BASIC") @db.VarChar(32)
+  speech_to_text_quality    String    @default("BASIC") @db.VarChar(32)
+  status                    Int?
+  credential                String?   @db.Text
+  azure_credentials         String?   @db.VarChar(255)
+  disconnected_from_account Int?
+  created_at                DateTime? @db.DateTime(0)
+  updated_at                DateTime? @db.DateTime(0)
+  deleted_at                DateTime? @db.DateTime(0)
+
+  @@index([u_id], map: "u_id")
+}
+
+model vendors {
+  id                 Int              @id
+  name               String           @db.VarChar(50)
+  priority           vendors_priority @default(dbgenerated("3"))
+  distribution       Decimal?         @db.Decimal(5, 2)
+  procurement_method String?          @db.VarChar(64)
+  status             vendors_status   @default(active)
+  created_at         DateTime?        @db.DateTime(0)
+  updated_at         DateTime?        @db.DateTime(0)
+}
+
+model wl_accounts {
+  id                       Int                      @id
+  omni_account_id          Int
+  account_type             wl_accounts_account_type @default(MAIN)
+  sub_domain               String?                  @db.VarChar(255)
+  u_id                     String                   @db.VarChar(32)
+  name                     String                   @db.VarChar(255)
+  status                   wl_accounts_status       @default(ACTIVE)
+  address                  String?                  @db.VarChar(255)
+  address_2                String?                  @db.VarChar(255)
+  city                     String?                  @db.VarChar(255)
+  state                    String?                  @db.VarChar(255)
+  zipcode                  String?                  @db.VarChar(10)
+  country                  String?                  @db.VarChar(255)
+  phone                    String?                  @db.VarChar(20)
+  email                    String?                  @db.VarChar(255)
+  website                  String?                  @db.VarChar(255)
+  local_gmt                String?                  @db.VarChar(20)
+  cluster_node             String?                  @db.VarChar(50)
+  billing_id               Int?
+  default_gmt              String?                  @db.VarChar(10)
+  default_caller_id        String?                  @db.VarChar(20)
+  extend_delinquent_period Int                      @default(1)
+  delinquent_at            DateTime?                @db.DateTime(0)
+  contract_start_date      DateTime?                @db.Date
+  disclaimer               String?                  @db.Text
+  logo                     String?                  @db.VarChar(255)
+  created_at               DateTime?                @db.DateTime(0)
+  updated_at               DateTime?                @db.DateTime(0)
+  inactive_at              DateTime?                @db.DateTime(0)
+  deleted_at               DateTime?                @db.DateTime(0)
+  lead_limit               Int?                     @default(1000000)
+  list_limit               Int?
+  pay_type                 wl_accounts_pay_type?
+
+  @@index([delinquent_at], map: "delinquent_at")
+  @@index([status], map: "status")
+  @@index([id], map: "u_id")
+}
+
+model wl_acl_paths {
+  id                   Int                          @id
+  u_id                 String                       @db.VarChar(32)
+  section_name         String                       @db.VarChar(255)
+  name                 String                       @db.VarChar(255)
+  route_name           String                       @db.VarChar(255)
+  path                 String                       @db.VarChar(255)
+  permission_type      wl_acl_paths_permission_type @default(R)
+  minimum_access_level Int?
+  created_at           DateTime                     @db.DateTime(0)
+  updated_at           DateTime?                    @db.DateTime(0)
+  deleted_at           DateTime?                    @db.DateTime(0)
+
+  @@unique([u_id, path], map: "u_id")
+  @@index([section_name], map: "parent_id")
+}
+
+model wl_acl_rules {
+  id           Int                      @id
+  u_id         String                   @unique(map: "u_id") @db.VarChar(32)
+  parent_id    Int
+  app          String                   @db.VarChar(20)
+  name         String                   @db.VarChar(255)
+  section_name String                   @db.VarChar(255)
+  require_acl  wl_acl_rules_require_acl @default(NO)
+  tutorial_url String                   @db.VarChar(255)
+  created_at   DateTime                 @db.DateTime(0)
+  updated_at   DateTime?                @db.DateTime(0)
+  deleted_at   DateTime?                @db.DateTime(0)
+
+  @@index([parent_id], map: "parent_id")
+}
+
+model wl_balances {
+  id                  Int       @id
+  wl_account_id       Int
+  omni_account_id     Int
+  balance             Decimal   @db.Decimal(10, 2)
+  last_transaction_id Int?
+  created_at          DateTime? @db.DateTime(0)
+  updated_at          DateTime? @db.DateTime(0)
+  deleted_at          DateTime? @db.DateTime(0)
+
+  @@index([wl_account_id, omni_account_id], map: "account_ids")
+  @@index([omni_account_id], map: "omni_account_id")
+  @@index([wl_account_id], map: "wl_account_id")
+}
+
+model wl_transactions {
+  id               Int       @id
+  transaction_id   Int?
+  wl_account_id    Int
+  omni_account_id  Int
+  transaction_type String?   @db.VarChar(255)
+  quantity         Int       @default(1)
+  rate             Decimal   @db.Decimal(10, 0)
+  amount           Decimal   @db.Decimal(10, 2)
+  starting_balance Int
+  ending_balance   Int
+  description      String?   @db.VarChar(255)
+  log_data         String?   @db.Text
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+
+  @@index([wl_account_id, omni_account_id], map: "account_ids")
+  @@index([omni_account_id], map: "omni_account_id")
+  @@index([transaction_id], map: "transaction_id")
+  @@index([wl_account_id], map: "wl_account_id")
+}
+
+model wl_uris {
+  id   Int     @id
+  uri  String  @db.VarChar(255)
+  name String? @db.VarChar(255)
+
+  @@index([uri], map: "uri")
+}
+
+model wl_users {
+  id              Int              @id
+  u_id            String           @db.VarChar(32)
+  wl_account_id   Int
+  omni_account_id Int
+  first_name      String?          @db.VarChar(255)
+  last_name       String?          @db.VarChar(255)
+  email           String?          @db.VarChar(255)
+  salt            String?          @db.VarChar(255)
+  password        String?          @db.VarChar(255)
+  status          wl_users_status? @default(Y)
+  layout_settings String?          @db.Text
+  created_at      DateTime?        @db.DateTime(0)
+  updated_at      DateTime?        @db.DateTime(0)
+  deleted_at      DateTime?        @db.DateTime(0)
+}
+
+model z_account_billing {
+  id                  Int                       @id
+  u_id                String                    @db.VarChar(32)
+  account_id          Int
+  billing_id          Int?
+  type                z_account_billing_type?   @default(LICENSE)
+  billing_cycle       Int?                      @default(28)
+  cancellation_period String?                   @db.VarChar(255)
+  status              z_account_billing_status? @default(ACTIVE)
+  rate_override       String?                   @db.MediumText
+  created_at          DateTime?                 @db.DateTime(0)
+  updated_at          DateTime?                 @db.DateTime(0)
+  deleted_at          DateTime?                 @db.DateTime(0)
+}
+
+model z_account_contacts {
+  id               Int       @id
+  u_id             String    @db.VarChar(32)
+  account_id       Int
+  department       String?   @db.VarChar(255)
+  first_name       String?   @db.VarChar(255)
+  middle_name      String?   @db.VarChar(255)
+  last_name        String?   @db.VarChar(255)
+  title            String?   @db.VarChar(255)
+  address          String?   @db.VarChar(255)
+  address_2        String?   @db.VarChar(255)
+  city             String?   @db.VarChar(255)
+  state            String?   @db.VarChar(255)
+  postal_code      String?   @db.VarChar(10)
+  country          String?   @db.VarChar(3)
+  phone_office     String?   @db.VarChar(15)
+  phone_home       String?   @db.VarChar(15)
+  phone_mobile     String?   @db.VarChar(15)
+  phone_fax        String?   @db.VarChar(15)
+  phone_office_ext String?   @db.VarChar(10)
+  phone_home_ext   String?   @db.VarChar(10)
+  phone_mobile_ext String?   @db.VarChar(10)
+  phone_fax_ext    String?   @db.VarChar(10)
+  email            String?   @db.VarChar(255)
+  secondary_email  String?   @db.VarChar(255)
+  notify           Int?
+  comment          String?   @db.VarChar(512)
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+
+  @@index([u_id, account_id, created_at], map: "u_id")
+}
+
+model z_account_info {
+  account_id                  Int                                        @id
+  password_complexity         Int
+  object_limitation           String?                                    @default("") @db.VarChar(512)
+  additional_lead_field       z_account_info_additional_lead_field?      @default(N)
+  preview_dial_restriction    z_account_info_preview_dial_restriction    @default(N)
+  num_free_minutes            Int                                        @default(1000)
+  minute_usage                Int?                                       @default(0)
+  is_honey_pot                z_account_info_is_honey_pot?               @default(N)
+  tours                       String?                                    @db.VarChar(512)
+  is_in_testbed               z_account_info_is_in_testbed?              @default(N)
+  archive_log_after_x_day     String?                                    @db.VarChar(512)
+  sale_rep_id                 Int?                                       @default(0)
+  backup_sale_rep_id          Int?
+  csm_rep_id                  Int                                        @default(0)
+  backup_csm_rep_id           Int?                                       @default(0)
+  max_channels                Int?                                       @default(0)
+  client_tier                 Int                                        @default(4)
+  disclaimer                  Bytes?                                     @db.Blob
+  log_lead_changes            z_account_info_log_lead_changes?           @default(N)
+  exclude_from_revenue_report z_account_info_exclude_from_revenue_report @default(N)
+  show_tos_on_agent_app       z_account_info_show_tos_on_agent_app?      @default(N)
+  billing_tab_status          z_account_info_billing_tab_status?         @default(N)
+  billing_tab_max             Float?                                     @default(0) @db.Float
+  tab_credit                  Float?                                     @default(0.00) @db.Float
+  virtual_agent               z_account_info_virtual_agent?              @default(N)
+  preserve_log_expire_at      DateTime?                                  @db.DateTime(0)
+  json_settings               String?                                    @db.Text
+
+  @@index([backup_csm_rep_id], map: "backup_csm_rep_id")
+  @@index([backup_sale_rep_id], map: "backup_sale_rep_id")
+  @@index([csm_rep_id], map: "csm_rep_id")
+  @@index([sale_rep_id], map: "sale_rep_id")
+}
+
+model z_accounts {
+  id                       Int                              @id
+  u_id                     String                           @db.VarChar(32)
+  name                     String                           @db.VarChar(255)
+  company_name             String?                          @db.VarChar(255)
+  status                   z_accounts_status                @default(NEW)
+  account_type             z_accounts_account_type?         @default(REGULAR)
+  address                  String?                          @db.VarChar(255)
+  address_2                String?                          @db.VarChar(255)
+  city                     String?                          @db.VarChar(255)
+  state                    String?                          @db.VarChar(255)
+  zipcode                  String?                          @db.VarChar(10)
+  country                  String?                          @db.VarChar(255)
+  phone                    String?                          @db.VarChar(20)
+  website                  String?                          @db.VarChar(255)
+  local_gmt                String?                          @db.VarChar(20)
+  registration_server      String?                          @db.VarChar(20)
+  master_server            String?                          @db.VarChar(20)
+  cluster_node             String?                          @db.VarChar(50)
+  billing_id               Int?
+  impersonate_key          String?                          @db.VarChar(255)
+  impersonate_expired_at   DateTime?                        @db.DateTime(0)
+  default_gmt              String?                          @db.VarChar(10)
+  default_caller_id        String?                          @db.VarChar(20)
+  demo_expired_at          DateTime?                        @db.DateTime(0)
+  extend_delinquent_period Int                              @default(1)
+  delinquent_at            DateTime?                        @db.DateTime(0)
+  minimum_seat             Int
+  minimum_seat_expired_at  DateTime?                        @db.Date
+  contract_start_date      DateTime?                        @db.Date
+  billing_production       z_accounts_billing_production?   @default(N)
+  test_account             z_accounts_test_account?         @default(N)
+  maintenant_start_at      DateTime?                        @db.DateTime(0)
+  maintenant_end_at        DateTime?                        @db.DateTime(0)
+  dr_account               z_accounts_dr_account?           @default(N)
+  dr_account_id            Int                              @default(0)
+  tier                     Int                              @default(2)
+  day_log_keep_in_master   Int                              @default(3)
+  day_log_to_keep          String?                          @db.VarChar(512)
+  security_compliance      Int                              @default(0)
+  encryption_key           String?                          @db.Text
+  encryption_recipient     String?                          @db.VarChar(255)
+  default_audio_format     z_accounts_default_audio_format? @default(MP3)
+  primary_data_center      z_accounts_primary_data_center?  @default(LAX)
+  multi_process            z_accounts_multi_process?        @default(N)
+  verification_code        String?                          @db.VarChar(32)
+  license_seat_count       Int?                             @default(0)
+  created_at               DateTime?                        @db.DateTime(0)
+  updated_at               DateTime?                        @db.DateTime(0)
+  inactive_at              DateTime?                        @db.DateTime(0)
+  deleted_at               DateTime?                        @db.DateTime(0)
+  crm_id                   String?                          @db.VarChar(255)
+  billing_account_id       String?                          @db.VarChar(255)
+
+  @@index([delinquent_at], map: "delinquent_at")
+  @@index([demo_expired_at], map: "demo_expired_at")
+  @@index([primary_data_center], map: "primary_data_center")
+  @@index([status], map: "status")
+  @@index([u_id, name, company_name], map: "u_id")
+}
+
+model z_components {
+  id           Int       @id
+  u_id         String    @db.VarChar(255)
+  zuora_id     String    @db.VarChar(255)
+  name         String?   @db.VarChar(255)
+  handle       String?   @db.VarChar(255)
+  description  String?   @db.VarChar(255)
+  z_product_id Int?
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+}
+
+model z_components_old {
+  id          Int       @id
+  u_id        String?   @db.VarChar(32)
+  sku         String?   @db.VarChar(32)
+  name        String?   @db.VarChar(255)
+  handle      String    @db.VarChar(255)
+  type        String?   @db.VarChar(50)
+  price_type  String?   @db.VarChar(50)
+  description String?   @db.VarChar(1024)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([handle], map: "handle")
+  @@index([sku], map: "sku")
+  @@index([u_id], map: "u_id")
+}
+
+model z_features {
+  id             Int       @id
+  u_id           String    @db.VarChar(255)
+  zuora_id       String    @db.VarChar(255)
+  name           String?   @db.VarChar(255)
+  handle         String?   @db.VarChar(255)
+  type           String?   @db.VarChar(255)
+  model          String?   @db.VarChar(255)
+  uom            String?   @db.VarChar(255)
+  sku            String?   @db.VarChar(255)
+  price          String?   @db.VarChar(255)
+  z_component_id Int?
+  created_at     DateTime? @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+  deleted_at     DateTime? @db.DateTime(0)
+}
+
+model z_product_add_ons {
+  id          Int       @id
+  u_id        String?   @db.VarChar(32)
+  zuora_id    String    @db.VarChar(255)
+  sku         String?   @db.VarChar(32)
+  name        String?   @db.VarChar(255)
+  handle      String    @db.VarChar(255)
+  type        String?   @db.VarChar(50)
+  price_type  String?   @db.VarChar(50)
+  description String?   @db.VarChar(1024)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([handle], map: "handle")
+  @@index([sku], map: "sku")
+  @@index([u_id], map: "u_id")
+}
+
+model z_product_component_features {
+  id           Int       @id
+  u_id         String?   @db.VarChar(32)
+  product_id   Int
+  component_id Int
+  feature_id   Int
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+
+  @@index([component_id], map: "component_id")
+  @@index([feature_id], map: "feature_id")
+}
+
+model z_product_components {
+  id           Int       @id
+  u_id         String?   @db.VarChar(32)
+  product_id   Int
+  component_id Int
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+
+  @@index([component_id], map: "component_id")
+}
+
+model z_product_features {
+  id           Int       @id
+  u_id         String?   @db.VarChar(32)
+  component_id Int
+  name         String?   @db.VarChar(255)
+  handle       String    @db.VarChar(255)
+  type         String?   @db.VarChar(50)
+  is_default   Int?      @default(0)
+  description  String?   @db.VarChar(1024)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+
+  @@index([component_id], map: "component_id")
+  @@index([handle], map: "handle")
+  @@index([u_id], map: "u_id")
+}
+
+model z_products {
+  id          Int       @id
+  u_id        String?   @db.VarChar(255)
+  zuora_id    String    @db.VarChar(255)
+  sku         String?   @db.VarChar(255)
+  name        String?   @db.VarChar(255)
+  handle      String?   @db.VarChar(255)
+  type        String?   @db.VarChar(255)
+  price_type  String?   @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+}
+
+model z_products_old {
+  id          Int       @id
+  u_id        String?   @db.VarChar(32)
+  sku         String?   @db.VarChar(32)
+  name        String?   @db.VarChar(255)
+  handle      String    @db.VarChar(255)
+  type        String?   @db.VarChar(50)
+  price_type  String?   @db.VarChar(50)
+  description String?   @db.VarChar(1024)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([handle], map: "handle")
+  @@index([sku], map: "sku")
+  @@index([u_id], map: "u_id")
+}
+
+model z_subscription_history {
+  id                      Int       @id
+  account_id              String?   @db.VarChar(255)
+  account_number          String?   @db.VarChar(255)
+  account_name            String?   @db.VarChar(255)
+  subscription_number     String?   @db.VarChar(255)
+  order_number            String?   @db.VarChar(255)
+  status                  String?   @db.VarChar(20)
+  subscription_json       String?   @db.LongText
+  contract_effective_date DateTime? @db.DateTime(0)
+  subscription_start_date DateTime? @db.DateTime(0)
+  subscription_end_date   DateTime? @db.DateTime(0)
+  term_start_date         DateTime? @db.DateTime(0)
+  term_end_date           DateTime? @db.DateTime(0)
+  created_at              DateTime? @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([account_number], map: "account_number")
+  @@index([created_at], map: "created_at")
+  @@index([subscription_number], map: "subscription_number")
+}
+
+model z_subscription_order_rate_plan_charges {
+  id                            Int       @id
+  z_rate_plan_charge_id         String?   @db.VarChar(50)
+  z_order_id                    String?   @db.VarChar(50)
+  z_cataloug_charge_id          String?   @db.VarChar(50)
+  z_product_rate_plan_charge_id String?   @db.VarChar(50)
+  subscription_number           String    @db.VarChar(255)
+  rate_number                   String?   @db.VarChar(50)
+  rate_type                     String?   @db.VarChar(50)
+  order_name                    String?   @db.VarChar(255)
+  model                         String?   @db.VarChar(50)
+  price_summary                 String?   @db.VarChar(50)
+  currency                      String?   @db.VarChar(50)
+  price                         String?   @db.VarChar(50)
+  billing_day                   Int?      @default(0)
+  list_price_base               String?   @db.VarChar(50)
+  billing_period                String?   @db.VarChar(50)
+  billing_timing                String?   @db.VarChar(50)
+  quantity                      String?   @db.VarChar(10)
+  effective_start_date          DateTime? @db.Date
+  effective_end_date            DateTime? @db.Date
+  processed_through_date        DateTime? @db.Date
+  charged_through_date          DateTime? @db.Date
+  description                   String?   @db.Text
+  created_at                    DateTime? @db.DateTime(0)
+  updated_at                    DateTime? @db.DateTime(0)
+  deleted_at                    DateTime? @db.DateTime(0)
+
+  @@index([z_product_rate_plan_charge_id], map: "z_product_rate_plan_charge_id")
+  @@index([z_rate_plan_charge_id], map: "z_rate_plan_charge_id")
+}
+
+model z_subscription_orders {
+  id                Int       @id
+  z_order_id        String?   @db.VarChar(50)
+  z_subscription_id String?   @db.VarChar(50)
+  z_product_id      String?   @db.VarChar(50)
+  z_product_name    String?   @db.VarChar(50)
+  sku               String?   @db.VarChar(50)
+  rate_plan_id      String?   @db.VarChar(50)
+  rate_plan_name    String?   @db.VarChar(255)
+  created_at        DateTime? @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+  deleted_at        DateTime? @db.DateTime(0)
+
+  @@index([sku], map: "sku")
+  @@index([z_order_id], map: "z_order_id")
+  @@index([z_subscription_id], map: "z_subscription_id")
+}
+
+model z_subscriptions {
+  id                       Int       @id
+  u_id                     String?   @db.VarChar(32)
+  z_id                     String?   @db.VarChar(50)
+  z_account_id             String?   @db.VarChar(50)
+  z_account_number         String?   @db.VarChar(50)
+  account_name             String?   @db.VarChar(255)
+  subscription_number      String?   @db.VarChar(255)
+  term_type                String?   @db.VarChar(50)
+  invoice_separately       String?   @db.VarChar(50)
+  contract_effective_date  DateTime? @db.Date
+  service_activation_date  DateTime? @db.Date
+  customer_acceptance_date DateTime? @db.Date
+  subscription_start_date  DateTime? @db.Date
+  subscription_end_date    DateTime? @db.Date
+  term_start_date          DateTime? @db.Date
+  term_end_date            DateTime? @db.Date
+  status                   String    @db.VarChar(32)
+  cancel_on                DateTime? @db.Date
+  created_at               DateTime? @db.DateTime(0)
+  updated_at               DateTime? @db.DateTime(0)
+  deleted_at               DateTime? @db.DateTime(0)
+
+  @@index([subscription_number], map: "subscription_number")
+  @@index([u_id], map: "u_id")
+  @@index([z_account_id], map: "z_account_id")
+}
+
+model z_subscriptions_copy {
+  id                       Int       @id
+  u_id                     String?   @db.VarChar(32)
+  z_id                     String?   @db.VarChar(50)
+  z_account_id             String?   @db.VarChar(50)
+  z_account_number         String?   @db.VarChar(50)
+  account_name             String?   @db.VarChar(255)
+  subscription_number      String?   @db.VarChar(255)
+  term_type                String?   @db.VarChar(50)
+  invoice_separately       String?   @db.VarChar(50)
+  contract_effective_date  DateTime? @db.Date
+  service_activation_date  DateTime? @db.Date
+  customer_acceptance_date DateTime? @db.Date
+  subscription_start_date  DateTime? @db.Date
+  subscription_end_date    DateTime? @db.Date
+  term_start_date          DateTime? @db.Date
+  term_end_date            DateTime? @db.Date
+  status                   String    @db.VarChar(32)
+  created_at               DateTime? @db.DateTime(0)
+  updated_at               DateTime? @db.DateTime(0)
+  deleted_at               DateTime? @db.DateTime(0)
+
+  @@index([u_id], map: "u_id")
+  @@index([z_account_id], map: "z_account_id")
+}
+
+model z_users {
+  id                        Int                     @id
+  u_id                      String                  @db.VarChar(32)
+  account_id                Int
+  email                     String                  @db.VarChar(255)
+  salt                      String                  @db.VarChar(255)
+  algo                      String                  @db.VarChar(32)
+  password                  String                  @db.VarChar(255)
+  first_name                String?                 @db.VarChar(255)
+  last_name                 String?                 @db.VarChar(255)
+  title                     String                  @db.VarChar(255)
+  email_verification_key    String?                 @db.VarChar(255)
+  verify                    z_users_verify?         @default(NO)
+  ip_address                String?                 @db.VarChar(32)
+  last_login_at             DateTime?               @db.DateTime(0)
+  created_at                DateTime?               @db.DateTime(0)
+  updated_at                DateTime?               @db.DateTime(0)
+  deleted_at                DateTime?               @db.DateTime(0)
+  google_id                 String?                 @db.VarChar(100)
+  registration_server       String?                 @db.VarChar(20)
+  avatar                    String?                 @db.VarChar(255)
+  remote_session            z_users_remote_session? @default(NO)
+  remote_session_expired_at DateTime?               @db.DateTime(0)
+  log_debug_level           Int                     @default(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([u_id, email, first_name, last_name], map: "u_id")
+}
+
+model zt_components {
+  id           Int       @id
+  u_id         String    @db.VarChar(255)
+  zuora_id     String    @db.VarChar(255)
+  name         String?   @db.VarChar(255)
+  handle       String?   @db.VarChar(255)
+  description  String?   @db.VarChar(255)
+  z_product_id Int?
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+}
+
+model zt_features {
+  id             Int       @id
+  u_id           String    @db.VarChar(255)
+  zuora_id       String    @db.VarChar(255)
+  name           String?   @db.VarChar(255)
+  handle         String?   @db.VarChar(255)
+  type           String?   @db.VarChar(255)
+  model          String?   @db.VarChar(255)
+  uom            String?   @db.VarChar(255)
+  sku            String?   @db.VarChar(255)
+  price          String?   @db.VarChar(255)
+  z_component_id Int?
+  created_at     DateTime? @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+  deleted_at     DateTime? @db.DateTime(0)
+}
+
+model zt_products {
+  id          Int       @id
+  u_id        String?   @db.VarChar(255)
+  zuora_id    String    @db.VarChar(255)
+  sku         String?   @db.VarChar(255)
+  name        String?   @db.VarChar(255)
+  handle      String?   @db.VarChar(255)
+  type        String?   @db.VarChar(255)
+  price_type  String?   @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+}
+
+enum did_order_items_did_order_type {
+  MOVE
+  RELEASE
+  BUY
+  REPLACE
+  BUY_DEV
+  REPLACE_DEV
+  ORDERING
+  RELEASE_DEV
+  ORDERING_DEV
+  MOVE_DEV
+  IMPORT
+  IMPORT_DEV
+}
+
+enum did_order_items_archive_did_order_type {
+  MOVE
+  RELEASE
+  BUY
+  REPLACE
+  BUY_DEV
+  REPLACE_DEV
+  ORDERING
+  RELEASE_DEV
+  ORDERING_DEV
+  MOVE_DEV
+  IMPORT
+  IMPORT_DEV
+}
+
+enum did_orders_type {
+  MOVE
+  RELEASE
+  BUY
+  REPLACE
+  BUY_DEV
+  REPLACE_DEV
+  ORDERING
+  RELEASE_DEV
+  ORDERING_DEV
+  MOVE_DEV
+  IMPORT
+  IMPORT_DEV
+}
+
+enum did_orders_archive_type {
+  MOVE
+  RELEASE
+  BUY
+  REPLACE
+  BUY_DEV
+  REPLACE_DEV
+  ORDERING
+  RELEASE_DEV
+  ORDERING_DEV
+  MOVE_DEV
+  IMPORT
+  IMPORT_DEV
+}
+
+enum error_log_type {
+  API
+  SCRIPT
+}
+
+enum queue_tasks_processed {
+  YES
+  NO
+}
+
+enum queue_tasks_backup_processed {
+  YES
+  NO
+}
+
+enum cyneric_sms_to_inbound_state {
+  PASS
+  FAIL
+}
+
+enum did_vendor_configuration_voip_provider {
+  FIVE @map("5")
+  NINE @map("9")
+}
+
+enum feature_flag_enabled {
+  YES
+  NO
+}
+
+enum global_statetracker_active {
+  Y
+  N
+}
+
+enum lerg_X {
+  EMPTY_ENUM_VALUE @map("")
+  ZERO             @map("0")
+  ONE              @map("1")
+  TWO              @map("2")
+  THREE            @map("3")
+  FOUR             @map("4")
+  FIVE             @map("5")
+  SIX              @map("6")
+  SEVEN            @map("7")
+  EIGHT            @map("8")
+  NINE             @map("9")
+  x
+}
+
+enum provider_rates_type {
+  VOICE
+  SMS
+  EMAIL
+  SPEECH_TO_TEXT
+  RVM_COST
+  PAY_PER_ACTION
+  PAY_PER_ACTION_VX
+  PAY_PER_ACTION_RVM
+  TEXT_TO_SPEECH
+  DIALOGFLOW
+  INTENT_DETECTION
+}
+
+enum release_logs_type {
+  BUG
+  FEATURE
+}
+
+enum sinch_order_queue_action {
+  ENABLE_SMS
+  DISABLE_SMS
+  MESSAGING_CAMPAIGN_ADD
+  MESSAGING_CAMPAIGN_REMOVE
+}
+
+enum system_status_logs_platform {
+  OMNI
+  MD
+}
+
+enum vendors_priority {
+  ONE   @map("1")
+  TWO   @map("2")
+  THREE @map("3")
+  FOUR  @map("4")
+  FIVE  @map("5")
+}
+
+enum wl_accounts_account_type {
+  MAIN
+  SUB
+}
+
+enum account_groups_status {
+  ACTIVE
+  INACTIVE
+}
+
+enum account_info_additional_lead_field {
+  Y
+  N
+}
+
+enum account_info_backup_additional_lead_field {
+  Y
+  N
+}
+
+enum carrier_options_type {
+  HOST
+  NUMBER
+  CARRIER
+}
+
+enum cyneric_sms_to_inbound_failed_state {
+  DELETE_ANI
+  CREATE_ANI
+}
+
+enum did_vendor_configuration_number_type {
+  REGULAR
+  TOLLFREE
+}
+
+enum ftc_dnc_days_processed {
+  ZERO @map("0")
+  ONE  @map("1")
+}
+
+enum payment_profiles_is_active {
+  Y
+  N
+}
+
+enum payment_profiles_dev_is_active {
+  Y
+  N
+}
+
+enum provider_rates_role_type {
+  BASIC
+  ENHANCED
+  AZURE
+  OPENAI
+}
+
+enum reputation_check_csv_upload_status {
+  NEW
+  PROCESSING
+  PROCESSED
+}
+
+enum survey_questions_type {
+  CHECKBOX
+  RADIO
+  TEXT
+}
+
+enum system_status_logs_type {
+  BROWNOUT
+  BLACKOUT
+}
+
+enum transaction_logs_type {
+  OUTBOUND
+  INBOUND
+  OUTBOUND_VB
+  OUTBOUND_RVM
+  SMS
+  INBOUND_SMS
+  EMAIL
+  SMS_BULK
+  EMAIL_BULK
+  SPEECH_TO_TEXT
+  RVM_COST
+  OUTBOUND_VX
+  TEXT_TO_SPEECH
+  INTENT_DETECTION
+}
+
+enum z_account_info_additional_lead_field {
+  Y
+  N
+}
+
+enum account_billing_type {
+  LICENSE
+  SHARE
+}
+
+enum account_billing_dev_type {
+  LICENSE
+  SHARE
+}
+
+enum account_cyneric_type {
+  OUTBOUND
+  INBOUND
+  OUTBOUND_VB
+  OUTBOUND_RVM
+  SMS
+  INBOUND_SMS
+  EMAIL
+  SMS_BULK
+  EMAIL_BULK
+  OUTBOUND_VX
+  SPEECH_TO_TEXT
+  RVM_COST
+  PAY_PER_ACTION
+  PAY_PER_ACTION_VX
+  PAY_PER_ACTION_RVM
+  VA
+  TEXT_TO_SPEECH
+  DIALOGFLOW
+  INTENT_DETECTION
+}
+
+enum account_info_preview_dial_restriction {
+  Y
+  N
+}
+
+enum account_info_backup_preview_dial_restriction {
+  Y
+  N
+}
+
+enum accounts_status {
+  NEW
+  ACTIVE
+  INACTIVE
+  DEMO
+  ACTIVE_DEMO
+  INACTIVE_DEMO
+  DELINQUENT
+  ACTIVE_OVERRIDE
+  TEST_ACCOUNT
+  ACTIVE_TRIAL
+  INACTIVE_TRIAL
+  DELETED
+  REJECTED
+  DELINQUENT_DEMO
+}
+
+enum featured_features_active {
+  Y
+  N
+}
+
+enum payment_profiles_is_default {
+  Y
+  N
+}
+
+enum payment_profiles_dev_is_default {
+  Y
+  N
+}
+
+enum polaris_api_method {
+  GET
+  POST
+  PUT
+  DELETE
+}
+
+enum reputation_check_csv_upload_mode {
+  CLEAR
+  FLAGGED
+  MIXED
+  CHECKED
+}
+
+enum reputation_test_numbers_os {
+  ios
+  android
+}
+
+enum z_account_billing_type {
+  LICENSE
+  SHARE
+}
+
+enum z_account_info_preview_dial_restriction {
+  Y
+  N
+}
+
+enum z_accounts_status {
+  NEW
+  ACTIVE
+  INACTIVE
+  DEMO
+  ACTIVE_DEMO
+  INACTIVE_DEMO
+  DELINQUENT
+  ACTIVE_OVERRIDE
+  TEST_ACCOUNT
+  ACTIVE_TRIAL
+  INACTIVE_TRIAL
+  DELETED
+  REJECTED
+  DELINQUENT_DEMO
+}
+
+enum account_cyneric_unlimited {
+  Y
+  N
+}
+
+enum account_dialer_settings_billable {
+  Y
+  N
+}
+
+enum account_providers_type {
+  VOICE
+  SMS
+  VOICEMAIL_DROP
+  EMAIL
+}
+
+enum accounts_account_type {
+  REGULAR
+  DIVR
+  VB
+  RVM
+  Ringless_Voicemail @map("Ringless Voicemail")
+  MANUAL
+  CALL_CATALYST
+}
+
+enum carrier_options_status {
+  Y
+  N
+}
+
+enum did_order_items_type {
+  INBOUND
+  INBOUND_SMS
+  TOLLFREE
+  DIALIN
+  SMS
+}
+
+enum did_order_items_archive_type {
+  INBOUND
+  INBOUND_SMS
+  TOLLFREE
+  DIALIN
+  SMS
+}
+
+enum did_vendor_configuration_environment {
+  TRR_STAGING
+  TRR_DEV
+  TRR_BETA
+  TRR_PROD
+  CYNERIC
+  VOICE_ALERTS
+}
+
+enum email_templates_departnemt {
+  SALES
+  MARKETING
+  SUPPORT
+  ENGINEERING
+}
+
+enum product_component_price_type {
+  COST
+  QUANTITY
+}
+
+enum product_component_bk_price_type {
+  COST
+  QUANTITY
+}
+
+enum product_component_dev_price_type {
+  COST
+  QUANTITY
+}
+
+enum survey_questions_status {
+  ACTIVE
+  INACTIVE
+}
+
+enum vendors_status {
+  active
+  inactive
+}
+
+enum z_accounts_account_type {
+  REGULAR
+  DIVR
+  VB
+  RVM
+  Ringless_Voicemail @map("Ringless Voicemail")
+  MANUAL
+}
+
+enum account_providers_sub_type {
+  OUTBOUND
+  INBOUND
+  OUTBOUND_VB
+  OUTBOUND_RVM
+  SMS
+  INBOUND_SMS
+  EMAIL
+  SMS_BULK
+  EMAIL_BULK
+  OUTBOUND_VX
+  SPEECH_TO_TEXT
+  RVM_COST
+  PAY_PER_ACTION
+  PAY_PER_ACTION_VX
+  PAY_PER_ACTION_RVM
+  VA
+  TEXT_TO_SPEECH
+  DIALOGFLOW
+}
+
+enum acl_paths_permission_type {
+  R
+  W
+  D
+}
+
+enum acl_paths_polaris_permission_type {
+  R
+  W
+  D
+}
+
+enum acl_rules_require_acl {
+  YES
+  NO
+}
+
+enum acl_rules_polaris_require_acl {
+  YES
+  NO
+}
+
+enum active_defense_accounts_enabled {
+  Y
+  N
+}
+
+enum did_vendor_configuration_data_center {
+  DT
+  LV
+}
+
+enum generic_settings_active {
+  Y
+  N
+}
+
+enum global_statetracker_method {
+  MIDNIGHT
+  START_COUNT
+}
+
+enum licenses_type {
+  AGENT
+  ADMIN
+  PBX
+  INBOUND_PREVIEW
+}
+
+enum omni_error_log_status {
+  Y
+  N
+}
+
+enum service_add_ons_type {
+  ACCOUNT
+  USER
+}
+
+enum subscriptions_type {
+  LICENSE
+  ACCOUNT_ADDONS
+  DID_NUMBERS
+  DIALIN
+}
+
+enum subscriptions_dev_type {
+  LICENSE
+  ACCOUNT_ADDONS
+  DID_NUMBERS
+  DIALIN
+}
+
+enum wl_accounts_status {
+  ACTIVE
+  INACTIVE
+  DELINQUENT
+  DELETED
+}
+
+enum wl_acl_paths_permission_type {
+  R
+  W
+  D
+}
+
+enum wl_acl_rules_require_acl {
+  YES
+  NO
+}
+
+enum account_billing_status {
+  ACTIVE
+  PENDING
+  DELETED
+}
+
+enum account_info_is_honey_pot {
+  Y
+  N
+}
+
+enum account_info_backup_is_honey_pot {
+  Y
+  N
+}
+
+enum account_providers_unlimited {
+  Y
+  N
+}
+
+enum billing_logs_refund_need {
+  Y
+  N
+}
+
+enum cron_managers_must_run {
+  Y
+  N
+}
+
+enum lb_users_status {
+  Y
+  N
+}
+
+enum leads_status {
+  NEW
+  ACTIVE
+  INACTIVE
+  DEMO
+  ACTIVE_DEMO
+  INACTIVE_DEMO
+  DELINQUENT
+  ACTIVE_OVERRIDE
+  TEST_ACCOUNT
+  REJECTED
+  AUTO_APPROVED
+  AUTO_REJECTED
+  MANUAL_APPROVED
+}
+
+enum licenses_status {
+  ACTIVE
+  INACTIVE
+  CANCELLATION_NOTICE
+  CANCELLATION_PENDING
+  CANCELLATION_REFUNDED
+  CANCELLATION_REFUND_PENDING
+  CANCELLATION_NO_REFUND
+}
+
+enum release_logs_internal {
+  Y
+  N
+}
+
+enum reports_frequency {
+  DAILY
+  WEEKLY
+  HOURLY
+  NEVER
+}
+
+enum z_account_billing_status {
+  ACTIVE
+  PENDING
+  DELETED
+}
+
+enum z_account_info_is_honey_pot {
+  Y
+  N
+}
+
+enum account_billing_dev_status {
+  ACTIVE
+  PENDING
+  DELETED
+}
+
+enum acl_rules_status {
+  Y
+  N
+}
+
+enum sinch_order_queue_status {
+  PENDING
+  PROCESSING
+  FAILED
+  COMPLETED
+  RETRY
+  WAITING
+  REJECTED
+}
+
+enum transaction_logs_refill_type {
+  AUTO
+  MANUAL
+}
+
+enum account_info_is_in_testbed {
+  Y
+  N
+  P
+}
+
+enum account_info_backup_is_in_testbed {
+  Y
+  N
+  P
+}
+
+enum billing_activity_log_refund_need {
+  Y
+  N
+}
+
+enum dids_type {
+  INBOUND
+  DIALIN
+  SMS
+  SMS_SHORTCODE
+}
+
+enum dids_archive_type {
+  INBOUND
+  DIALIN
+  SMS
+  SMS_SHORTCODE
+}
+
+enum lerg_CUSTOM {
+  ZERO @map("0")
+  ONE  @map("1")
+}
+
+enum wl_users_status {
+  Y
+  N
+}
+
+enum z_account_info_is_in_testbed {
+  Y
+  N
+  P
+}
+
+enum ccid_reputation_data_data_type {
+  MONTHLY
+  WEEKLY
+  DAILY
+  THRESHOLD
+}
+
+enum cron_managers_run_once_aday {
+  Y
+  N
+}
+
+enum cron_managers_status {
+  Y
+  N
+}
+
+enum polaris_users_verify {
+  NO
+  YES
+}
+
+enum reputation_test_numbers_type {
+  mobile
+  app
+}
+
+enum z_users_verify {
+  NO
+  YES
+}
+
+enum product_component_view_type {
+  BASIC
+  ADVANCED
+}
+
+enum product_component_dev_view_type {
+  BASIC
+  ADVANCED
+}
+
+enum users_verify {
+  NO
+  YES
+}
+
+enum dids_stage {
+  NEW
+  IMPORT
+  DID_PROVIDER
+  VOICE_PROVIDER
+  ACTIVE
+  INACTIVE
+}
+
+enum dids_archive_stage {
+  NEW
+  IMPORT
+  DID_PROVIDER
+  VOICE_PROVIDER
+  ACTIVE
+  INACTIVE
+}
+
+enum did_order_items_status {
+  NEW
+  ORDERING
+  PENDING
+  PENDING_IMPORT
+  PROCESSING
+  PROCESSED
+  ERROR
+  RETRY
+  RELEASE_FAILED
+  ASSIGN_FAILED
+  OMNI_LOOKUP_FAILED
+  IMPORT_FAILED
+  COMPLETE
+  REFUNDED
+  MAX_RETRIES_REACHED
+}
+
+enum did_order_items_archive_status {
+  NEW
+  ORDERING
+  PENDING
+  PENDING_IMPORT
+  PROCESSING
+  PROCESSED
+  ERROR
+  RETRY
+  RELEASE_FAILED
+  ASSIGN_FAILED
+  OMNI_LOOKUP_FAILED
+  IMPORT_FAILED
+  COMPLETE
+  REFUNDED
+  MAX_RETRIES_REACHED
+}
+
+enum dids_billable {
+  YES
+  NO
+}
+
+enum dids_archive_billable {
+  YES
+  NO
+}
+
+enum leads_billing_production {
+  Y
+  N
+}
+
+enum provider_rates_is_default {
+  Y
+  N
+}
+
+enum dids_verified_status {
+  YES
+  NO
+}
+
+enum dids_archive_verified_status {
+  YES
+  NO
+}
+
+enum leads_test_account {
+  Y
+  N
+}
+
+enum account_cyneric_status {
+  NEW
+  CONNECTED
+  DISCONNECTED
+  ACTIVE
+  PENDING
+  DELETED
+}
+
+enum account_talkdesk_status {
+  INSTALL
+  TRIAL_INSTALL
+  UNINSTALLED
+}
+
+enum polaris_accounts_status {
+  NEW
+  ACTIVE
+  INACTIVE
+  DEMO
+  DELINQUENT
+  ACTIVE_OVERRIDE
+}
+
+enum reputation_test_numbers_current_state {
+  FREE
+  INCALL
+  WAIT
+  RINGING
+  OFFLINE
+  UNAUTHORIZED
+  TOO_MANY_FAILURES
+  NO_SERVICE
+  NO_WIFI_CALLING
+  STUCK
+  ADB_LOST
+}
+
+enum leads_dr_account {
+  Y
+  N
+}
+
+enum reputation_test_numbers_reboot_state {
+  NONE
+  PENDING
+  REBOOTING
+  CHARGING
+}
+
+enum z_account_info_log_lead_changes {
+  Y
+  N
+}
+
+enum account_info_log_lead_changes {
+  Y
+  N
+}
+
+enum account_info_backup_log_lead_changes {
+  Y
+  N
+}
+
+enum account_providers_status {
+  NEW
+  CONNECTED
+  DISCONNECTED
+  ACTIVE
+  PENDING
+  DELETED
+}
+
+enum z_account_info_exclude_from_revenue_report {
+  Y
+  N
+}
+
+enum account_info_exclude_from_revenue_report {
+  Y
+  N
+}
+
+enum account_info_backup_exclude_from_revenue_report {
+  Y
+  N
+}
+
+enum z_account_info_show_tos_on_agent_app {
+  Y
+  N
+}
+
+enum z_users_remote_session {
+  NO
+  YES
+}
+
+enum account_info_show_tos_on_agent_app {
+  Y
+  N
+}
+
+enum account_info_backup_show_tos_on_agent_app {
+  Y
+  N
+}
+
+enum z_account_info_billing_tab_status {
+  Y
+  N
+}
+
+enum account_info_billing_tab_status {
+  Y
+  N
+}
+
+enum account_info_backup_billing_tab_status {
+  Y
+  N
+}
+
+enum did_orders_archive_payment_status {
+  UNPAID
+  PARTIAL_PAYMENT
+  PAID
+  FAILED
+  PROCESSING
+}
+
+enum users_remote_session {
+  NO
+  YES
+}
+
+enum account_cyneric_provider_type {
+  VOICE
+  SMS
+  VOICEMAIL_DROP
+  EMAIL
+}
+
+enum did_orders_payment_status {
+  UNPAID
+  PARTIAL_PAYMENT
+  PAID
+  FAILED
+  PROCESSING
+}
+
+enum z_account_info_virtual_agent {
+  Y
+  N
+}
+
+enum account_info_virtual_agent {
+  Y
+  N
+}
+
+enum account_info_backup_virtual_agent {
+  Y
+  N
+}
+
+enum did_orders_archive_status {
+  NEW
+  ORDERING
+  PENDING
+  PROCESSING
+  PROCESSED
+  PARTIAL_PROCESSED
+  FAILED
+  BILLING_PROCESSING
+  FINISHED
+  PAYMENT_PROCESSING
+  PAYMENT_PROCESSED
+  PAYMENT_PARTIAL
+  PAYMENT_FAILED
+  AWAITING_IMPORT
+  ERROR
+  COMPLETE
+  REFUNDED
+  MAX_RETRIES_REACHED
+}
+
+enum dids_end_point_verified {
+  YES
+  NO
+}
+
+enum dids_archive_end_point_verified {
+  YES
+  NO
+}
+
+enum leads_default_audio_format {
+  MP3
+  WAV
+  LUA
+}
+
+enum leads_primary_data_center {
+  LAX
+  DT
+}
+
+enum did_orders_status {
+  NEW
+  ORDERING
+  PENDING
+  PROCESSING
+  PROCESSED
+  PARTIAL_PROCESSED
+  FAILED
+  BILLING_PROCESSING
+  FINISHED
+  PAYMENT_PROCESSING
+  PAYMENT_PROCESSED
+  PAYMENT_PARTIAL
+  PAYMENT_FAILED
+  AWAITING_IMPORT
+  ERROR
+  COMPLETE
+  REFUNDED
+  MAX_RETRIES_REACHED
+}
+
+enum dids_spam_score {
+  ZERO @map("0")
+  ONE  @map("1")
+}
+
+enum dids_archive_spam_score {
+  ZERO @map("0")
+  ONE  @map("1")
+}
+
+enum reputation_test_numbers_wifistatus {
+  ACTIVE
+  DISC
+}
+
+enum account_info_hopper_custom_field_order {
+  Y
+  N
+}
+
+enum account_info_backup_hopper_custom_field_order {
+  Y
+  N
+}
+
+enum accounts_billing_production {
+  Y
+  N
+}
+
+enum z_accounts_billing_production {
+  Y
+  N
+}
+
+enum accounts_test_account {
+  Y
+  N
+  A
+}
+
+enum z_accounts_test_account {
+  Y
+  N
+}
+
+enum wl_accounts_pay_type {
+  PPA
+  PPM
+}
+
+enum accounts_dr_account {
+  Y
+  N
+}
+
+enum reputation_test_numbers_battery_is_charging {
+  true
+  false
+}
+
+enum z_accounts_dr_account {
+  Y
+  N
+}
+
+enum accounts_default_audio_format {
+  MP3
+  WAV
+  LUA
+}
+
+enum z_accounts_default_audio_format {
+  MP3
+  WAV
+  LUA
+}
+
+enum accounts_primary_data_center {
+  LAX
+  DT
+  LAS
+  LV
+}
+
+enum z_accounts_primary_data_center {
+  LAX
+  DT
+}
+
+enum accounts_multi_process {
+  Y
+  N
+}
+
+enum z_accounts_multi_process {
+  Y
+  N
+}
+
+enum accounts_multi_process_auto_dial {
+  Y
+  N
+}
+
+enum accounts_iva_managed_service {
+  Y
+  N
+}
+
+enum accounts_externally_managed_account {
+  Y
+  N
+}
+
+enum accounts_voip_provider_env {
+  TRR_DEV
+  TRR_STAGING
+  TRR_PROD
+  CYNERIC
+  TRR_BETA
+  TRR_LVDC_PROD
+}

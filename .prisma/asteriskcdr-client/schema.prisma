@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../../.prisma/asteriskcdr-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_AS_CD")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model cdr {
+  calldate      DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  clid          String   @default("") @db.VarChar(80)
+  src           String   @default("") @db.VarChar(80)
+  dst           String   @default("") @db.VarChar(80)
+  dcontext      String   @default("") @db.VarChar(80)
+  channel       String   @default("") @db.VarChar(80)
+  dstchannel    String   @default("") @db.VarChar(80)
+  lastapp       String   @default("") @db.VarChar(80)
+  lastdata      String   @default("") @db.VarChar(80)
+  duration      Int      @default(0)
+  billsec       Int      @default(0)
+  disposition   String   @default("") @db.VarChar(45)
+  amaflags      Int      @default(0)
+  accountcode   String   @default("") @db.VarChar(20)
+  uniqueid      String   @default("") @db.VarChar(32)
+  userfield     String   @default("") @db.VarChar(255)
+  recordingfile String   @default("") @db.VarChar(255)
+  did           String   @default("") @db.VarChar(50)
+  cnum          String   @default("") @db.VarChar(40)
+  cnam          String   @default("") @db.VarChar(40)
+  outbound_cnum String   @default("") @db.VarChar(40)
+  outbound_cnam String   @default("") @db.VarChar(40)
+  dst_cnam      String   @default("") @db.VarChar(40)
+
+  @@ignore
+}
+
+model cel {
+  id          Int      @id @default(autoincrement())
+  eventtype   String   @db.VarChar(30)
+  eventtime   DateTime @db.DateTime(0)
+  cid_name    String   @db.VarChar(80)
+  cid_num     String   @db.VarChar(80)
+  cid_ani     String   @db.VarChar(80)
+  cid_rdnis   String   @db.VarChar(80)
+  cid_dnid    String   @db.VarChar(80)
+  exten       String   @db.VarChar(80)
+  context     String   @db.VarChar(80)
+  channame    String   @db.VarChar(80)
+  src         String   @db.VarChar(80)
+  dst         String   @db.VarChar(80)
+  channel     String   @db.VarChar(80)
+  dstchannel  String   @db.VarChar(80)
+  appname     String   @db.VarChar(80)
+  appdata     String   @db.VarChar(80)
+  amaflags    Int
+  accountcode String   @db.VarChar(20)
+  uniqueid    String   @db.VarChar(32)
+  linkedid    String   @db.VarChar(32)
+  peer        String   @db.VarChar(80)
+  userdeftype String   @db.VarChar(255)
+  eventextra  String   @db.VarChar(255)
+  userfield   String   @db.VarChar(255)
+
+  @@index([linkedid], map: "linkedid_index")
+  @@index([uniqueid], map: "uniqueid_index")
+}

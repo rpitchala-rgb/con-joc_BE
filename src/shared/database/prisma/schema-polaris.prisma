@@ -1,0 +1,1112 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../../.prisma/polaris-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_POL")
+}
+
+model accounts {
+  id                     Int             @id @default(autoincrement())
+  u_id                   String          @db.VarChar(32)
+  external_account_id    Int
+  name                   String          @db.VarChar(255)
+  company_name           String?         @db.VarChar(255)
+  address                String?         @db.VarChar(255)
+  address_2              String?         @db.VarChar(255)
+  city                   String?         @db.VarChar(255)
+  state                  String?         @db.VarChar(255)
+  zipcode                String?         @db.VarChar(10)
+  country                String?         @db.VarChar(255)
+  phone                  String?         @db.VarChar(20)
+  website                String?         @db.VarChar(255)
+  local_gmt              String?         @db.VarChar(20)
+  cluster_node           String?         @db.VarChar(50)
+  site_id                Int?
+  billing_id             Int?
+  status                 accounts_status @default(NEW)
+  impersonate_key        String?         @db.VarChar(255)
+  impersonate_expired_at DateTime?       @db.DateTime(0)
+  created_at             DateTime?       @db.DateTime(0)
+  updated_at             DateTime?       @db.DateTime(0)
+  deleted_at             DateTime?       @db.DateTime(0)
+
+  @@index([site_id], map: "site_id")
+  @@index([status], map: "status")
+  @@index([u_id, name, company_name], map: "u_id")
+}
+
+model acl_access_profile {
+  id           Int                             @id @default(autoincrement())
+  profile_id   Int
+  section_name String                          @db.VarChar(255)
+  allow_read   acl_access_profile_allow_read   @default(YES)
+  allow_write  acl_access_profile_allow_write  @default(YES)
+  allow_delete acl_access_profile_allow_delete @default(YES)
+  created_at   DateTime                        @db.DateTime(0)
+  updated_at   DateTime?                       @db.DateTime(0)
+  deleted_at   DateTime?                       @db.DateTime(0)
+  account_id   Int
+
+  @@index([section_name], map: "acl_id")
+  @@index([profile_id], map: "profile_id")
+}
+
+model acl_access_profile_main {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+  account_id Int
+}
+
+model assets {
+  id                 Int          @id @default(autoincrement())
+  account_id         Int
+  user_id            Int
+  type               assets_type? @default(ICON)
+  original_filename  String?      @db.VarChar(255)
+  original_extension String?      @db.VarChar(255)
+  mime_type          String?      @db.VarChar(50)
+  file_size          Int?
+  url                String?      @db.VarChar(255)
+  path               String?      @db.VarChar(255)
+  cuts               String?      @db.Text
+  created_at         DateTime     @db.DateTime(0)
+  updated_at         DateTime?    @db.DateTime(0)
+  deleted_at         DateTime?    @db.DateTime(0)
+}
+
+model award_queue {
+  id          Int                  @id @default(autoincrement())
+  account_id  Int
+  users_id    Int
+  description String?              @db.Text
+  claimed     award_queue_claimed? @default(NO)
+  type_id     Int
+  type        award_queue_type?    @default(LEVEL)
+  created_at  DateTime             @db.DateTime(0)
+  updated_at  DateTime?            @db.DateTime(0)
+  deleted_at  DateTime?            @db.DateTime(0)
+}
+
+model bets {
+  id           Int               @id @default(autoincrement())
+  account_id   Int
+  name         String?           @db.VarChar(255)
+  ticket_price Int
+  description  String?           @db.Text
+  deadline     DateTime?         @db.DateTime(0)
+  options      String            @db.Text
+  icon         String?           @db.Text
+  distributed  bets_distributed? @default(NO)
+  created_at   DateTime          @db.DateTime(0)
+  updated_at   DateTime?         @db.DateTime(0)
+  deleted_at   DateTime?         @db.DateTime(0)
+}
+
+model campaign_kpis {
+  id               Int                   @id @default(autoincrement())
+  campaign_id      Int
+  kpi_id           Int
+  goal_daily       Float?
+  goal_weekly      Float?
+  goal_monthly     Float?
+  goal_quarterly   Float?
+  goal_semi_annual Float?
+  goal_annual      Float?
+  weight           Int?
+  status           campaign_kpis_status? @default(Y)
+  created_at       DateTime?             @db.DateTime(0)
+  updated_at       DateTime?             @db.DateTime(0)
+  deleted_at       DateTime?             @db.DateTime(0)
+
+  @@index([campaign_id, kpi_id], map: "campaign_id")
+}
+
+model campaign_users {
+  id            Int       @id @default(autoincrement())
+  campaign_id   Int
+  user_id       Int
+  user_group_id Int?
+  created_at    DateTime  @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+  deleted_at    DateTime? @db.DateTime(0)
+
+  @@index([campaign_id, user_id, user_group_id, created_at], map: "campaign_id")
+  @@index([deleted_at], map: "deleted_at")
+}
+
+model campaigns {
+  id                Int                    @id @default(autoincrement())
+  u_id              String                 @db.VarChar(32)
+  account_id        Int
+  name              String                 @db.VarChar(255)
+  type              String?                @db.VarChar(255)
+  manage_by         Int?
+  coaching_goals    Int?
+  recognition_goals Int?
+  default_goal      campaigns_default_goal @default(goal_daily)
+  minimum_weight    Int
+  start_date        DateTime?              @db.Date
+  end_date          DateTime?              @db.Date
+  created_at        DateTime?              @db.DateTime(0)
+  updated_at        DateTime?              @db.DateTime(0)
+  deleted_at        DateTime?              @db.DateTime(0)
+
+  @@index([u_id, name, created_at], map: "u_id")
+}
+
+model certifications {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  requirement String?   @db.Text
+  avatar      String?   @db.Text
+  description String?   @db.Text
+  created_at  DateTime  @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+  account_id  Int
+}
+
+model challenges {
+  id           Int                      @id @default(autoincrement())
+  account_id   Int
+  criteria     String?                  @db.Text
+  users_id     String?                  @db.Text
+  creator_id   Int?
+  work_related challenges_work_related? @default(NO)
+  name         String                   @db.VarChar(255)
+  description  String?                  @db.Text
+  icon         String?                  @db.VarChar(255)
+  price        Int?
+  accept_by    DateTime?                @db.DateTime(0)
+  end_date     DateTime?                @db.DateTime(0)
+  done         challenges_done?         @default(NO)
+  created_at   DateTime                 @db.DateTime(0)
+  updated_at   DateTime?                @db.DateTime(0)
+  deleted_at   DateTime?                @db.DateTime(0)
+}
+
+model courses {
+  id                  Int                  @id @default(autoincrement()) @db.UnsignedInt
+  u_id                String?              @db.VarChar(32)
+  account_id          Int
+  session_ids         String?              @db.Text
+  user_ids            String?              @db.Text
+  name                String?              @db.VarChar(255)
+  description         String?              @db.VarChar(255)
+  percentage_approval Int?
+  tags                String?              @db.Text
+  enable_timer        courses_enable_timer @default(N)
+  cover_images        String?              @db.Text
+  created_at          DateTime?            @db.DateTime(0)
+  updated_at          DateTime?            @db.DateTime(0)
+  deleted_at          DateTime?            @db.DateTime(0)
+}
+
+model data {
+  id          Int       @id @default(autoincrement())
+  account_id  Int
+  user_id     Int
+  campaign_id Int
+  entry_date  DateTime  @db.Date
+  field_1     Decimal?  @db.Decimal(15, 3)
+  field_2     Decimal?  @db.Decimal(15, 3)
+  field_3     Decimal?  @db.Decimal(15, 3)
+  field_4     Decimal?  @db.Decimal(15, 3)
+  field_5     Decimal?  @db.Decimal(15, 3)
+  field_6     Decimal?  @db.Decimal(15, 3)
+  field_7     Decimal?  @db.Decimal(15, 3)
+  field_8     Decimal?  @db.Decimal(15, 3)
+  field_9     Decimal?  @db.Decimal(15, 3)
+  field_10    Decimal?  @db.Decimal(15, 3)
+  field_11    Decimal?  @db.Decimal(15, 3)
+  field_12    Decimal?  @db.Decimal(15, 3)
+  field_13    Decimal?  @db.Decimal(15, 3)
+  field_14    Decimal?  @db.Decimal(15, 3)
+  field_15    Decimal?  @db.Decimal(15, 3)
+  field_16    Decimal?  @db.Decimal(15, 3)
+  field_17    Decimal?  @db.Decimal(15, 3)
+  field_18    Decimal?  @db.Decimal(15, 3)
+  field_19    Decimal?  @db.Decimal(15, 3)
+  field_20    Decimal?  @db.Decimal(15, 3)
+  field_21    Decimal?  @db.Decimal(15, 3)
+  field_22    Decimal?  @db.Decimal(15, 3)
+  field_23    Decimal?  @db.Decimal(15, 3)
+  field_24    Decimal?  @db.Decimal(15, 3)
+  field_25    Decimal?  @db.Decimal(15, 3)
+  field_26    Decimal?  @db.Decimal(15, 3)
+  field_27    Decimal?  @db.Decimal(15, 3)
+  field_28    Decimal?  @db.Decimal(15, 3)
+  field_29    Decimal?  @db.Decimal(15, 3)
+  field_30    Decimal?  @db.Decimal(15, 3)
+  field_31    Decimal?  @db.Decimal(15, 3)
+  field_32    Decimal?  @db.Decimal(15, 3)
+  field_33    Decimal?  @db.Decimal(15, 3)
+  field_34    Decimal?  @db.Decimal(15, 3)
+  field_35    Decimal?  @db.Decimal(15, 3)
+  field_36    Decimal?  @db.Decimal(15, 3)
+  field_37    Decimal?  @db.Decimal(15, 3)
+  field_38    Decimal?  @db.Decimal(15, 3)
+  field_39    Decimal?  @db.Decimal(15, 3)
+  field_40    Decimal?  @db.Decimal(15, 3)
+  field_41    Decimal?  @db.Decimal(15, 3)
+  field_42    Decimal?  @db.Decimal(15, 3)
+  field_43    Decimal?  @db.Decimal(15, 3)
+  field_44    Decimal?  @db.Decimal(15, 3)
+  field_45    Decimal?  @db.Decimal(15, 3)
+  field_46    Decimal?  @db.Decimal(15, 3)
+  field_47    Decimal?  @db.Decimal(15, 3)
+  field_48    Decimal?  @db.Decimal(15, 3)
+  field_49    Decimal?  @db.Decimal(15, 3)
+  field_50    Decimal?  @db.Decimal(15, 3)
+  field_51    Decimal?  @db.Decimal(15, 3)
+  field_52    Decimal?  @db.Decimal(15, 3)
+  field_53    Decimal?  @db.Decimal(15, 3)
+  field_54    Decimal?  @db.Decimal(15, 3)
+  field_55    Decimal?  @db.Decimal(15, 3)
+  field_56    Decimal?  @db.Decimal(15, 3)
+  field_57    Decimal?  @db.Decimal(15, 3)
+  field_58    Decimal?  @db.Decimal(15, 3)
+  field_59    Decimal?  @db.Decimal(15, 3)
+  field_60    Decimal?  @db.Decimal(15, 3)
+  field_61    Decimal?  @db.Decimal(15, 3)
+  field_62    Decimal?  @db.Decimal(15, 3)
+  field_63    Decimal?  @db.Decimal(15, 3)
+  field_64    Decimal?  @db.Decimal(15, 3)
+  field_65    Decimal?  @db.Decimal(15, 3)
+  field_66    Decimal?  @db.Decimal(15, 3)
+  field_67    Decimal?  @db.Decimal(15, 3)
+  field_68    Decimal?  @db.Decimal(15, 3)
+  field_69    Decimal?  @db.Decimal(15, 3)
+  field_70    Decimal?  @db.Decimal(15, 3)
+  field_71    Decimal?  @db.Decimal(15, 3)
+  field_72    Decimal?  @db.Decimal(15, 3)
+  field_73    Decimal?  @db.Decimal(15, 3)
+  field_74    Decimal?  @db.Decimal(15, 3)
+  field_75    Decimal?  @db.Decimal(15, 3)
+  field_76    Decimal?  @db.Decimal(15, 3)
+  field_77    Decimal?  @db.Decimal(15, 3)
+  field_78    Decimal?  @db.Decimal(15, 3)
+  field_79    Decimal?  @db.Decimal(15, 3)
+  field_80    Decimal?  @db.Decimal(15, 3)
+  field_81    Decimal?  @db.Decimal(15, 3)
+  field_82    Decimal?  @db.Decimal(15, 3)
+  field_83    Decimal?  @db.Decimal(15, 3)
+  field_84    Decimal?  @db.Decimal(15, 3)
+  field_85    Decimal?  @db.Decimal(15, 3)
+  field_86    Decimal?  @db.Decimal(15, 3)
+  field_87    Decimal?  @db.Decimal(15, 3)
+  field_88    Decimal?  @db.Decimal(15, 3)
+  field_89    Decimal?  @db.Decimal(15, 3)
+  field_90    Decimal?  @db.Decimal(15, 3)
+  field_91    Decimal?  @db.Decimal(15, 3)
+  field_92    Decimal?  @db.Decimal(15, 3)
+  field_93    Decimal?  @db.Decimal(15, 3)
+  field_94    Decimal?  @db.Decimal(15, 3)
+  field_95    Decimal?  @db.Decimal(15, 3)
+  field_96    Decimal?  @db.Decimal(15, 3)
+  field_97    Decimal?  @db.Decimal(15, 3)
+  field_98    Decimal?  @db.Decimal(15, 3)
+  field_99    Decimal?  @db.Decimal(15, 3)
+  field_100   Decimal?  @db.Decimal(15, 3)
+  created_at  DateTime  @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([account_id], map: "account_id")
+  @@index([campaign_id], map: "campaign_id")
+  @@index([entry_date], map: "entry_date")
+  @@index([field_1], map: "field_1")
+  @@index([field_2], map: "field_2")
+  @@index([field_3], map: "field_3")
+  @@index([field_4], map: "field_4")
+  @@index([field_5], map: "field_5")
+  @@index([field_6], map: "field_6")
+  @@index([id], map: "id")
+  @@index([user_id], map: "user_id")
+}
+
+model data_fields {
+  id              Int                          @id @default(autoincrement())
+  u_id            String                       @db.VarChar(32)
+  account_id      Int
+  name            String?                      @db.VarChar(255)
+  code            String?                      @db.VarChar(255)
+  description     String?                      @db.VarChar(255)
+  measure_unit    data_fields_measure_unit?    @default(QUANTITY)
+  kpi_order       data_fields_kpi_order?       @default(UP)
+  kpi_calculation data_fields_kpi_calculation? @default(SUM)
+  advanced_config Boolean                      @default(false)
+  formula         String?                      @db.Text
+  field_map_to    String?                      @db.VarChar(20)
+  created_at      DateTime?                    @db.DateTime(0)
+  updated_at      DateTime?                    @db.DateTime(0)
+  deleted_at      DateTime?                    @db.DateTime(0)
+
+  @@index([field_map_to], map: "field_map_to")
+  @@index([u_id, account_id, code, created_at], map: "u_id")
+}
+
+model data_reward {
+  id          Int                     @id @default(autoincrement())
+  reward_type data_reward_reward_type @default(goal_daily)
+  account_id  Int
+  user_id     Int
+  campaign_id Int
+  entry_date  DateTime                @db.Date
+  field_1     Decimal?                @db.Decimal(15, 3)
+  field_2     Decimal?                @db.Decimal(15, 3)
+  field_3     Decimal?                @db.Decimal(15, 3)
+  field_4     Decimal?                @db.Decimal(15, 3)
+  field_5     Decimal?                @db.Decimal(15, 3)
+  field_6     Decimal?                @db.Decimal(15, 3)
+  field_7     Decimal?                @db.Decimal(15, 3)
+  field_8     Decimal?                @db.Decimal(15, 3)
+  field_9     Decimal?                @db.Decimal(15, 3)
+  field_10    Decimal?                @db.Decimal(15, 3)
+  field_11    Decimal?                @db.Decimal(15, 3)
+  field_12    Decimal?                @db.Decimal(15, 3)
+  field_13    Decimal?                @db.Decimal(15, 3)
+  field_14    Decimal?                @db.Decimal(15, 3)
+  field_15    Decimal?                @db.Decimal(15, 3)
+  field_16    Decimal?                @db.Decimal(15, 3)
+  field_17    Decimal?                @db.Decimal(15, 3)
+  field_18    Decimal?                @db.Decimal(15, 3)
+  field_19    Decimal?                @db.Decimal(15, 3)
+  field_20    Decimal?                @db.Decimal(15, 3)
+  field_21    Decimal?                @db.Decimal(15, 3)
+  field_22    Decimal?                @db.Decimal(15, 3)
+  field_23    Decimal?                @db.Decimal(15, 3)
+  field_24    Decimal?                @db.Decimal(15, 3)
+  field_25    Decimal?                @db.Decimal(15, 3)
+  field_26    Decimal?                @db.Decimal(15, 3)
+  field_27    Decimal?                @db.Decimal(15, 3)
+  field_28    Decimal?                @db.Decimal(15, 3)
+  field_29    Decimal?                @db.Decimal(15, 3)
+  field_30    Decimal?                @db.Decimal(15, 3)
+  field_31    Decimal?                @db.Decimal(15, 3)
+  field_32    Decimal?                @db.Decimal(15, 3)
+  field_33    Decimal?                @db.Decimal(15, 3)
+  field_34    Decimal?                @db.Decimal(15, 3)
+  field_35    Decimal?                @db.Decimal(15, 3)
+  field_36    Decimal?                @db.Decimal(15, 3)
+  field_37    Decimal?                @db.Decimal(15, 3)
+  field_38    Decimal?                @db.Decimal(15, 3)
+  field_39    Decimal?                @db.Decimal(15, 3)
+  field_40    Decimal?                @db.Decimal(15, 3)
+  field_41    Decimal?                @db.Decimal(15, 3)
+  field_42    Decimal?                @db.Decimal(15, 3)
+  field_43    Decimal?                @db.Decimal(15, 3)
+  field_44    Decimal?                @db.Decimal(15, 3)
+  field_45    Decimal?                @db.Decimal(15, 3)
+  field_46    Decimal?                @db.Decimal(15, 3)
+  field_47    Decimal?                @db.Decimal(15, 3)
+  field_48    Decimal?                @db.Decimal(15, 3)
+  field_49    Decimal?                @db.Decimal(15, 3)
+  field_50    Decimal?                @db.Decimal(15, 3)
+  field_51    Decimal?                @db.Decimal(15, 3)
+  field_52    Decimal?                @db.Decimal(15, 3)
+  field_53    Decimal?                @db.Decimal(15, 3)
+  field_54    Decimal?                @db.Decimal(15, 3)
+  field_55    Decimal?                @db.Decimal(15, 3)
+  field_56    Decimal?                @db.Decimal(15, 3)
+  field_57    Decimal?                @db.Decimal(15, 3)
+  field_58    Decimal?                @db.Decimal(15, 3)
+  field_59    Decimal?                @db.Decimal(15, 3)
+  field_60    Decimal?                @db.Decimal(15, 3)
+  field_61    Decimal?                @db.Decimal(15, 3)
+  field_62    Decimal?                @db.Decimal(15, 3)
+  field_63    Decimal?                @db.Decimal(15, 3)
+  field_64    Decimal?                @db.Decimal(15, 3)
+  field_65    Decimal?                @db.Decimal(15, 3)
+  field_66    Decimal?                @db.Decimal(15, 3)
+  field_67    Decimal?                @db.Decimal(15, 3)
+  field_68    Decimal?                @db.Decimal(15, 3)
+  field_69    Decimal?                @db.Decimal(15, 3)
+  field_70    Decimal?                @db.Decimal(15, 3)
+  field_71    Decimal?                @db.Decimal(15, 3)
+  field_72    Decimal?                @db.Decimal(15, 3)
+  field_73    Decimal?                @db.Decimal(15, 3)
+  field_74    Decimal?                @db.Decimal(15, 3)
+  field_75    Decimal?                @db.Decimal(15, 3)
+  field_76    Decimal?                @db.Decimal(15, 3)
+  field_77    Decimal?                @db.Decimal(15, 3)
+  field_78    Decimal?                @db.Decimal(15, 3)
+  field_79    Decimal?                @db.Decimal(15, 3)
+  field_80    Decimal?                @db.Decimal(15, 3)
+  field_81    Decimal?                @db.Decimal(15, 3)
+  field_82    Decimal?                @db.Decimal(15, 3)
+  field_83    Decimal?                @db.Decimal(15, 3)
+  field_84    Decimal?                @db.Decimal(15, 3)
+  field_85    Decimal?                @db.Decimal(15, 3)
+  field_86    Decimal?                @db.Decimal(15, 3)
+  field_87    Decimal?                @db.Decimal(15, 3)
+  field_88    Decimal?                @db.Decimal(15, 3)
+  field_89    Decimal?                @db.Decimal(15, 3)
+  field_90    Decimal?                @db.Decimal(15, 3)
+  field_91    Decimal?                @db.Decimal(15, 3)
+  field_92    Decimal?                @db.Decimal(15, 3)
+  field_93    Decimal?                @db.Decimal(15, 3)
+  field_94    Decimal?                @db.Decimal(15, 3)
+  field_95    Decimal?                @db.Decimal(15, 3)
+  field_96    Decimal?                @db.Decimal(15, 3)
+  field_97    Decimal?                @db.Decimal(15, 3)
+  field_98    Decimal?                @db.Decimal(15, 3)
+  field_99    Decimal?                @db.Decimal(15, 3)
+  field_100   Decimal?                @db.Decimal(15, 3)
+  created_at  DateTime                @db.DateTime(0)
+  updated_at  DateTime?               @db.DateTime(0)
+  deleted_at  DateTime?               @db.DateTime(0)
+}
+
+model experience {
+  id         Int       @id @default(autoincrement())
+  account_id Int
+  user_id    Int
+  experience Int
+  level      Int       @default(1)
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model group_users {
+  id         Int       @id @default(autoincrement())
+  group_id   Int
+  user_id    Int
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  @@index([group_id, user_id, created_at], map: "group_id")
+}
+
+model groups {
+  id          Int       @id @default(autoincrement())
+  u_id        String    @db.VarChar(32)
+  account_id  Int
+  name        String    @db.VarChar(255)
+  description String    @db.VarChar(255)
+  created_by  Int
+  created_at  DateTime  @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([account_id, name, created_by], map: "account_id")
+  @@index([u_id], map: "u_id")
+}
+
+model karma_levels {
+  id         Int       @id @default(autoincrement())
+  u_id       String    @db.VarChar(32)
+  account_id Int
+  level      String    @db.VarChar(255)
+  point      Int
+  color      String    @db.VarChar(255)
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+
+  @@index([u_id, account_id, created_at], map: "u_id")
+}
+
+model karma_point_logs {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  karma_type_id Int
+  point         Int?
+  created_at    DateTime? @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+  deleted_at    DateTime? @db.DateTime(0)
+
+  @@index([user_id, karma_type_id, created_at], map: "user_id")
+}
+
+model karma_points {
+  id            Int                       @id @default(autoincrement())
+  u_id          String                    @db.VarChar(32)
+  account_id    Int
+  karma_type_id Int
+  point         Int?
+  accumulable   karma_points_accumulable? @default(N)
+  created_at    DateTime?                 @db.DateTime(0)
+  updated_at    DateTime?                 @db.DateTime(0)
+  deleted_at    DateTime?                 @db.DateTime(0)
+
+  @@index([accumulable], map: "accumulable")
+  @@index([u_id, account_id, karma_type_id, created_at], map: "u_id")
+}
+
+model karma_types {
+  id          Int       @id @default(autoincrement())
+  u_id        String    @db.VarChar(32)
+  account_id  Int
+  action      String    @db.VarChar(255)
+  name        String?   @db.VarChar(255)
+  description String?   @db.Text
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+
+  @@index([u_id, action], map: "u_id")
+}
+
+model kpi_goal_reward {
+  id          Int                  @id @default(autoincrement())
+  kpi_id      Int
+  campaign_id Int
+  goal        kpi_goal_reward_goal
+  reward      Float
+  account_id  Int
+  created_at  DateTime             @db.DateTime(0)
+  updated_at  DateTime?            @db.DateTime(0)
+  deleted_at  DateTime?            @db.DateTime(0)
+
+  @@index([kpi_id, campaign_id, account_id], map: "kpi_id")
+}
+
+model lesson_files {
+  id         Int      @id @default(autoincrement())
+  u_id       String   @unique(map: "u_id") @db.VarChar(32)
+  lesson_id  Int?
+  name       String   @db.VarChar(255)
+  file_data  Bytes
+  file_type  String?  @db.VarChar(50)
+  file_size  Int?
+  account_id Int
+  created_at DateTime @db.DateTime(0)
+
+  @@index([lesson_id], map: "lesson_id")
+}
+
+model lessons {
+  id           Int                  @id @default(autoincrement()) @db.UnsignedInt
+  u_id         String?              @db.VarChar(32)
+  account_id   Int?
+  session_id   Int?
+  title        String?              @db.VarChar(255)
+  content      String?              @db.Text
+  passed       lessons_passed       @default(N)
+  reward_value Int?
+  enable_timer lessons_enable_timer @default(N)
+  actual_time  Int?
+  time         Int?
+  created_at   DateTime?            @db.DateTime(0)
+  updated_at   DateTime?            @db.DateTime(0)
+  deleted_at   DateTime?            @db.DateTime(0)
+}
+
+model lessons_old {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  u_id       String?   @db.VarChar(32)
+  account_id Int?
+  session_id Int?
+  quiz_id    Int?
+  title      String?   @db.VarChar(255)
+  content    String?   @db.Text
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model levels {
+  id         Int       @id @default(autoincrement())
+  account_id Int
+  name       String?   @db.Text
+  level      Int
+  icon       String?   @db.Text
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model missions {
+  id            Int       @id @default(autoincrement())
+  account_id    Int
+  name          String?   @db.VarChar(255)
+  requirements  String?   @db.Text
+  description   String?   @db.Text
+  icon          String?   @db.Text
+  reward_amount Int       @default(0)
+  created_at    DateTime  @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+  deleted_at    DateTime? @db.DateTime(0)
+}
+
+model polaris_api {
+  id          Int                 @id @default(autoincrement())
+  name        String              @db.VarChar(255)
+  section     String?             @db.VarChar(255)
+  action      String              @db.VarChar(255)
+  method      polaris_api_method? @default(GET)
+  description String?             @db.MediumText
+  created_at  DateTime?           @db.DateTime(0)
+  updated_at  DateTime?           @db.DateTime(0)
+  deleted_at  DateTime?           @db.DateTime(0)
+
+  @@index([created_at, deleted_at], map: "created_at")
+  @@index([section], map: "section")
+}
+
+model polaris_api_payload {
+  id               Int       @unique(map: "id")
+  parameters       String?   @db.MediumText
+  response         String?   @db.Text
+  example_response String?   @db.Text
+  editable         String?   @db.MediumText
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+
+  @@index([created_at, deleted_at], map: "created_at")
+}
+
+model session_logs {
+  id              Int                    @id @default(autoincrement()) @db.UnsignedInt
+  account_id      Int
+  user_id         Int
+  session_id      Int
+  current_seconds Int?
+  finished        session_logs_finished? @default(N)
+  created_at      DateTime?              @db.DateTime(0)
+  updated_at      DateTime?              @db.DateTime(0)
+  deleted_at      DateTime?              @db.DateTime(0)
+}
+
+model store_items {
+  id                Int                 @id @default(autoincrement())
+  account_id        Int
+  status            store_items_status? @default(ACTIVE)
+  type              store_items_type?   @default(DIGITAL)
+  name              String?             @db.VarChar(255)
+  icon              String?             @db.Text
+  quantity          Int?                @default(0)
+  description       String?             @db.Text
+  level_requirement Int?                @default(1)
+  cost              Float?
+  created_at        DateTime            @db.DateTime(0)
+  updated_at        DateTime?           @db.DateTime(0)
+  deleted_at        DateTime?           @db.DateTime(0)
+}
+
+model study_session {
+  id                    Int                                 @id @default(autoincrement()) @db.UnsignedInt
+  u_id                  String?                             @db.VarChar(32)
+  name                  String?                             @db.VarChar(255)
+  account_id            Int
+  course_id             Int?
+  lesson_ids            String?                             @db.Text
+  deadline              DateTime?                           @db.DateTime(0)
+  duration              Int?
+  access_after_duration study_session_access_after_duration @default(N)
+  created_at            DateTime?                           @db.DateTime(0)
+  updated_at            DateTime?                           @db.DateTime(0)
+  deleted_at            DateTime?                           @db.DateTime(0)
+}
+
+model surveys {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  u_id       String?   @db.VarChar(32)
+  account_id Int
+  name       String?   @db.VarChar(255)
+  questions  String?   @db.Text
+  deadline   DateTime? @db.DateTime(0)
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model test_results {
+  id         Int                 @id @default(autoincrement()) @db.UnsignedInt
+  u_id       String?             @db.VarChar(32)
+  account_id Int
+  test_id    Int
+  user_id    Int
+  result     String?             @db.Text
+  passed     test_results_passed @default(N)
+  created_at DateTime?           @db.DateTime(0)
+  updated_at DateTime?           @db.DateTime(0)
+  deleted_at DateTime?           @db.DateTime(0)
+}
+
+model tests {
+  id                  Int                @id @default(autoincrement()) @db.UnsignedInt
+  u_id                String?            @db.VarChar(32)
+  account_id          Int
+  name                String?            @db.VarChar(255)
+  status              tests_status       @default(INACTIVE)
+  reward_value        Int
+  number_of_questions Int                @default(10)
+  allow_back          tests_allow_back   @default(N)
+  test_duration       Int                @default(5)
+  random_order        tests_random_order @default(N)
+  time_before_retake  Int?               @default(0)
+  questions           String?            @db.Text
+  success_percent     Int                @default(70)
+  result_type         tests_result_type  @default(score_only)
+  number_of_time      Int
+  lesson_id           Int?
+  deadline            DateTime?          @db.DateTime(0)
+  created_at          DateTime?          @db.DateTime(0)
+  updated_at          DateTime?          @db.DateTime(0)
+  deleted_at          DateTime?          @db.DateTime(0)
+}
+
+model transactions {
+  id          Int                @id @default(autoincrement())
+  account_id  Int
+  user_id     Int
+  description String?            @db.Text
+  amount      Float
+  balance     Float
+  type        transactions_type? @default(LESSON)
+  type_id     Int
+  campaign_id Int?
+  goal_time   String?            @db.VarChar(255)
+  created_at  DateTime           @db.DateTime(0)
+  updated_at  DateTime?          @db.DateTime(0)
+  deleted_at  DateTime?          @db.DateTime(0)
+}
+
+model upload_files {
+  id                 Int       @id @default(autoincrement())
+  u_id               String    @unique(map: "u_id") @db.VarChar(32)
+  campaign_id        Int?
+  name               String    @db.VarChar(255)
+  options            String?   @db.MediumText
+  file_data          Bytes
+  file_type          String?   @db.VarChar(4)
+  file_size          Int?
+  row_count          Int?
+  row_processed      Int?
+  process_started_at DateTime? @db.DateTime(0)
+  status             Int?
+  account_id         Int
+  created_at         DateTime  @db.DateTime(0)
+  upload_results     Bytes?
+
+  @@index([campaign_id], map: "campaign_id")
+}
+
+model user_accepted_challenge {
+  id           Int                          @id @default(autoincrement())
+  account_id   Int
+  user_id      Int
+  challenge_id Int
+  won          user_accepted_challenge_won? @default(NO)
+  created_at   DateTime                     @db.DateTime(0)
+  updated_at   DateTime?                    @db.DateTime(0)
+  deleted_at   DateTime?                    @db.DateTime(0)
+}
+
+model user_achieved_kpis {
+  id          Int       @id @default(autoincrement())
+  account_id  Int
+  user_id     Int
+  campaign_id Int?
+  kpi_id      Int
+  goal_time   String?   @db.VarChar(255)
+  score       Int?
+  created_at  DateTime  @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+}
+
+model user_achieved_missions {
+  id         Int       @id @default(autoincrement())
+  account_id Int
+  user_id    Int
+  mission_id Int
+  created_at DateTime  @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
+}
+
+model user_bet_ticket {
+  id             Int       @id @default(autoincrement())
+  account_id     Int
+  user_id        Int
+  bet_id         Int
+  tickets_bought Int
+  option         String    @db.VarChar(255)
+  created_at     DateTime  @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+  deleted_at     DateTime? @db.DateTime(0)
+}
+
+model user_certifications {
+  id               Int       @id @default(autoincrement())
+  user_id          Int
+  certification_id Int
+  created_at       DateTime  @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+  deleted_at       DateTime? @db.DateTime(0)
+  account_id       Int
+}
+
+model user_completed_tasks {
+  id         Int                        @id @default(autoincrement())
+  account_id Int
+  user_id    Int
+  type       user_completed_tasks_type? @default(TEST)
+  type_id    Int
+  created_at DateTime                   @db.DateTime(0)
+  updated_at DateTime?                  @db.DateTime(0)
+  deleted_at DateTime?                  @db.DateTime(0)
+}
+
+model user_task_rewards {
+  id            Int                     @id @default(autoincrement())
+  account_id    Int
+  user_id       Int
+  type          user_task_rewards_type? @default(TEST)
+  type_id       Int
+  reward_amount Int
+  created_at    DateTime                @db.DateTime(0)
+  updated_at    DateTime?               @db.DateTime(0)
+  deleted_at    DateTime?               @db.DateTime(0)
+}
+
+model users {
+  id                 Int       @id @default(autoincrement())
+  u_id               String    @db.VarChar(32)
+  account_id         Int
+  acl_access_profile Int?
+  external_user_id   Int
+  email              String    @db.VarChar(255)
+  first_name         String?   @db.VarChar(255)
+  last_name          String?   @db.VarChar(255)
+  title              String    @db.VarChar(255)
+  level              Int       @default(1)
+  experience         Int       @default(0)
+  ip_address         String?   @db.VarChar(32)
+  avatar             String?   @db.Text
+  frame              String?   @db.VarChar(255)
+  last_login_at      DateTime? @db.DateTime(0)
+  created_at         DateTime? @db.DateTime(0)
+  updated_at         DateTime? @db.DateTime(0)
+  deleted_at         DateTime? @db.DateTime(0)
+  google_id          String?   @db.VarChar(100)
+
+  @@index([account_id], map: "account_id")
+  @@index([u_id, email, first_name, last_name], map: "u_id")
+}
+
+enum data_reward_reward_type {
+  goal_daily
+  goal_weekly
+  goal_monthly
+  goal_quarterly
+  goal_semi_annual
+  goal_annual
+}
+
+enum store_items_status {
+  ACTIVE
+  INACTIVE
+}
+
+enum acl_access_profile_allow_read {
+  NO
+  YES
+}
+
+enum assets_type {
+  AVATAR
+  ICON
+}
+
+enum kpi_goal_reward_goal {
+  goal_daily
+  goal_weekly
+  goal_monthly
+  goal_quarterly
+  goal_semi_annual
+  goal_annual
+}
+
+enum store_items_type {
+  FRAME
+  PHYSICAL
+  DIGITAL
+}
+
+enum user_completed_tasks_type {
+  LESSON
+  TEST
+  SESSION
+  COURSE
+}
+
+enum user_task_rewards_type {
+  LESSON
+  TEST
+  SESSION
+  COURSE
+}
+
+enum acl_access_profile_allow_write {
+  NO
+  YES
+}
+
+enum award_queue_claimed {
+  YES
+  NO
+}
+
+enum polaris_api_method {
+  GET
+  POST
+  PUT
+  DELETE
+}
+
+enum tests_status {
+  ACTIVE
+  INACTIVE
+}
+
+enum user_accepted_challenge_won {
+  YES
+  NO
+}
+
+enum acl_access_profile_allow_delete {
+  NO
+  YES
+}
+
+enum challenges_work_related {
+  YES
+  NO
+}
+
+enum karma_points_accumulable {
+  N
+  Y
+}
+
+enum session_logs_finished {
+  Y
+  N
+}
+
+enum award_queue_type {
+  MISSION
+  CHALLENGE
+  LEVEL
+}
+
+enum data_fields_measure_unit {
+  QUANTITY
+  PERCENT
+  CURRENCY
+  TIME_MIN
+  TIME_SEC
+}
+
+enum lessons_passed {
+  Y
+  N
+}
+
+enum test_results_passed {
+  N
+  Y
+}
+
+enum transactions_type {
+  KPI
+  LESSON
+  TEST
+  DIGITAL
+  MISSION
+  GIFT
+  FRAME
+  PHYSICAL
+  ADJUSTMENT
+  BET
+  CHALLENGE
+}
+
+enum data_fields_kpi_order {
+  UP
+  DOWN
+}
+
+enum tests_allow_back {
+  Y
+  N
+}
+
+enum bets_distributed {
+  YES
+  NO
+}
+
+enum campaigns_default_goal {
+  goal_daily
+  goal_weekly
+  goal_monthly
+  goal_quarterly
+  goal_semi_annual
+  goal_annual
+}
+
+enum data_fields_kpi_calculation {
+  SUM
+  AVG
+  MIN
+  MAX
+}
+
+enum lessons_enable_timer {
+  Y
+  N
+}
+
+enum study_session_access_after_duration {
+  N
+  Y
+}
+
+enum courses_enable_timer {
+  Y
+  N
+}
+
+enum tests_random_order {
+  N
+  Y
+}
+
+enum campaign_kpis_status {
+  Y
+  N
+}
+
+enum challenges_done {
+  YES
+  NO
+}
+
+enum tests_result_type {
+  score_only
+  each_step
+  end_only
+}
+
+enum accounts_status {
+  NEW
+  ACTIVE
+  INACTIVE
+  DEMO
+  DELINQUENT
+  ACTIVE_OVERRIDE
+}

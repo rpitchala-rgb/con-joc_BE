@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../../.prisma/omni-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_OMNI")
+}
+
+model api_tokens {
+  id           Int      @id @default(autoincrement())
+  token        String   @db.VarChar(64)
+  user_id      Int
+  account_id   Int
+  cluster_node String   @db.VarChar(4)
+  user_agent   String   @db.VarChar(255)
+  ip_address   String   @db.VarChar(15)
+  expires_at   DateTime @db.DateTime(0)
+  created_at   DateTime @db.DateTime(0)
+
+  @@index([token], map: "token")
+}
+
+model polaris_api_tokens {
+  id           Int      @id @default(autoincrement())
+  token        String   @db.VarChar(64)
+  user_id      Int
+  account_id   Int
+  cluster_node String   @db.VarChar(4)
+  user_agent   String   @db.VarChar(255)
+  ip_address   String   @db.VarChar(15)
+  expires_at   DateTime @db.DateTime(0)
+  created_at   DateTime @db.DateTime(0)
+
+  @@index([token], map: "token")
+}
+
+model sessions {
+  sess_id       Bytes    @id @db.VarBinary(128)
+  sess_data     String   @db.Text
+  sess_time     Int      @db.UnsignedInt
+  sess_lifetime Int      @db.MediumInt
+  modify_date   DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([sess_lifetime], map: "sess_lifetime")
+  @@index([sess_time], map: "sess_time")
+}
+
+model sessions_copy {
+  sess_id       Bytes  @id @db.VarBinary(128)
+  sess_data     String @db.Text
+  sess_time     Int    @db.UnsignedInt
+  sess_lifetime Int    @db.MediumInt
+
+  @@index([sess_lifetime], map: "sess_lifetime")
+  @@index([sess_time], map: "sess_time")
+}
+
+model test {
+  id   Int     @id @default(autoincrement())
+  name String? @db.VarChar(255)
+}

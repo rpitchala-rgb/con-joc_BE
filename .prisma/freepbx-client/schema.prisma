@@ -1,0 +1,931 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../../.prisma/freepbx-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_FBX")
+}
+
+model admin {
+  variable String @id @default("") @db.VarChar(20)
+  value    String @default("") @db.VarChar(80)
+}
+
+model ampusers {
+  username       String @id @db.VarChar(255)
+  password_sha1  String @db.VarChar(40)
+  extension_low  String @default("") @db.VarChar(20)
+  extension_high String @default("") @db.VarChar(20)
+  deptname       String @default("") @db.VarChar(20)
+  sections       Bytes  @db.Blob
+}
+
+model announcement {
+  announcement_id Int     @id @default(autoincrement())
+  description     String? @db.VarChar(50)
+  recording_id    Int?
+  allow_skip      Int?
+  post_dest       String? @db.VarChar(255)
+  return_ivr      Boolean @default(false)
+  noanswer        Boolean @default(false)
+  repeat_msg      String  @default("") @db.VarChar(2)
+  context         String  @db.VarChar(255)
+}
+
+model backup {
+  id          Int     @id @default(autoincrement())
+  name        String? @db.VarChar(50)
+  description String? @db.VarChar(255)
+  immortal    String? @db.VarChar(25)
+  data        String? @db.LongText
+}
+
+model backup_cache {
+  id       String  @id @unique(map: "id") @db.VarChar(50)
+  manifest String? @db.LongText
+}
+
+model backup_details {
+  backup_id Int
+  key       String? @db.VarChar(50)
+  index     String? @db.VarChar(25)
+  value     String? @db.VarChar(250)
+  uid       Int     @id @default(autoincrement())
+}
+
+model backup_items {
+  backup_id Int
+  type      String? @db.VarChar(50)
+  path      String? @db.Text
+  exclude   String? @db.Text
+  uid       Int     @id @default(autoincrement())
+}
+
+model backup_server_details {
+  server_id Int
+  key       String? @db.VarChar(50)
+  value     String? @db.VarChar(250)
+  uid       Int     @id @default(autoincrement())
+}
+
+model backup_servers {
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(50)
+  desc     String? @db.VarChar(255)
+  type     String? @db.VarChar(50)
+  readonly String? @db.VarChar(250)
+  immortal String? @db.VarChar(25)
+  data     String? @db.LongText
+}
+
+model backup_template_details {
+  template_id Int
+  type        String? @db.VarChar(50)
+  path        String? @db.Text
+  exclude     String? @db.Text
+  uid         Int     @id @default(autoincrement())
+}
+
+model backup_templates {
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(50)
+  desc     String? @db.VarChar(255)
+  immortal String? @db.VarChar(25)
+  data     String? @db.LongText
+}
+
+model callback {
+  callback_id Int     @id @default(autoincrement())
+  description String? @db.VarChar(50)
+  callbacknum String? @db.VarChar(100)
+  destination String? @db.VarChar(50)
+  sleep       Int?
+  deptname    String? @db.VarChar(50)
+  context     String  @db.VarChar(50)
+}
+
+model callrecording {
+  callrecording_id   Int     @id @default(autoincrement())
+  callrecording_mode String? @db.VarChar(50)
+  description        String? @db.VarChar(50)
+  dest               String? @db.VarChar(255)
+}
+
+model callrecording_module {
+  extension     String? @db.VarChar(50)
+  cidnum        String? @default("") @db.VarChar(50)
+  callrecording String? @db.VarChar(10)
+  display       String? @db.VarChar(20)
+  uid           Int     @id @default(autoincrement())
+}
+
+model cidlookup {
+  cidlookup_id         Int     @id @default(autoincrement())
+  description          String  @db.VarChar(50)
+  sourcetype           String  @db.VarChar(100)
+  cache                Boolean @default(false)
+  deptname             String? @db.VarChar(30)
+  http_host            String? @db.VarChar(30)
+  http_port            String? @db.VarChar(30)
+  http_username        String? @db.VarChar(30)
+  http_password        String? @db.VarChar(30)
+  http_path            String? @db.VarChar(100)
+  http_query           String? @db.VarChar(100)
+  mysql_host           String? @db.VarChar(60)
+  mysql_dbname         String? @db.VarChar(60)
+  mysql_query          String? @db.Text
+  mysql_username       String? @db.VarChar(30)
+  mysql_password       String? @db.VarChar(30)
+  mysql_charset        String? @db.VarChar(30)
+  opencnam_account_sid String? @db.VarChar(34)
+  opencnam_auth_token  String? @db.VarChar(34)
+}
+
+model cidlookup_incoming {
+  cidlookup_id Int
+  extension    String? @db.VarChar(50)
+  cidnum       String? @db.VarChar(30)
+  uid          Int     @id @default(autoincrement())
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model contactdir_details {
+  extension String? @db.VarChar(10)
+  type      String? @db.VarChar(20)
+  val       String? @db.VarChar(100)
+
+  @@ignore
+}
+
+model contactdir_list {
+  extension     String? @db.VarChar(10)
+  user_name     String  @db.VarChar(150)
+  server_id     String  @db.VarChar(15)
+  id            String  @id @db.VarChar(25)
+  first_name    String? @db.VarChar(255)
+  last_name     String? @db.VarChar(255)
+  email         String? @db.VarChar(150)
+  tel           String? @db.VarChar(25)
+  tel_spdial    String? @db.VarChar(3)
+  home          String? @db.VarChar(25)
+  home_spdial   String? @db.VarChar(3)
+  mobile        String? @db.VarChar(25)
+  mobile_spdial String? @db.VarChar(3)
+  lastupdate    String? @db.VarChar(15)
+  mgcbtn        String? @default("0") @db.VarChar(10)
+  grammer       String? @db.VarChar(50)
+}
+
+model contactdir_server_types {
+  id          Int    @id @default(autoincrement())
+  server_type String @db.VarChar(255)
+}
+
+model contactdir_servers {
+  id           Int     @id @default(autoincrement())
+  server_type  Int
+  display_name String  @db.VarChar(64)
+  host         String  @db.VarChar(255)
+  port         String  @db.VarChar(8)
+  usessl       Boolean
+}
+
+model cronmanager {
+  module   String  @default("") @db.VarChar(24)
+  id       String  @default("") @db.VarChar(24)
+  time     String? @db.VarChar(5)
+  freq     Int     @default(0)
+  lasttime Int     @default(0)
+  command  String  @default("") @db.VarChar(255)
+
+  @@id([module, id])
+}
+
+model custom_destinations {
+  custom_dest String @id @default("") @db.VarChar(80)
+  description String @default("") @db.VarChar(40)
+  notes       String @default("") @db.VarChar(255)
+}
+
+model custom_extensions {
+  custom_exten String @id @default("") @db.VarChar(80)
+  description  String @default("") @db.VarChar(40)
+  notes        String @default("") @db.VarChar(255)
+}
+
+model dahdi {
+  id      String @default("-1") @db.VarChar(20)
+  keyword String @default("") @db.VarChar(30)
+  data    String @default("") @db.VarChar(255)
+  flags   Int    @default(0)
+
+  @@id([id, keyword])
+}
+
+model dahdichandids {
+  channel     Int    @id @default(0)
+  description String @default("") @db.VarChar(40)
+  did         String @default("") @db.VarChar(60)
+}
+
+model daynight {
+  ext   String @default("") @db.VarChar(10)
+  dmode String @default("") @db.VarChar(40)
+  dest  String @default("") @db.VarChar(255)
+
+  @@id([ext, dmode, dest])
+}
+
+model devices {
+  id            String  @id @default("") @db.VarChar(20)
+  tech          String  @default("") @db.VarChar(10)
+  dial          String  @default("") @db.VarChar(50)
+  devicetype    String  @default("") @db.VarChar(5)
+  user          String? @db.VarChar(50)
+  description   String? @db.VarChar(50)
+  emergency_cid String? @db.VarChar(100)
+}
+
+model directory_details {
+  id                  Int                               @id @default(autoincrement())
+  dirname             String?                           @db.VarChar(50)
+  description         String?                           @db.VarChar(150)
+  announcement        Int?
+  callid_prefix       String?                           @db.VarChar(10)
+  alert_info          String?                           @db.VarChar(50)
+  repeat_loops        String?                           @db.VarChar(3)
+  repeat_recording    Int?
+  invalid_recording   Int?
+  invalid_destination String?                           @db.VarChar(50)
+  retivr              String?                           @db.VarChar(5)
+  say_extension       String?                           @db.VarChar(5)
+  projectx_global     directory_details_projectx_global @default(dbgenerated("0"))
+}
+
+model directory_entries {
+  e_id       Int     @default(0)
+  name       String? @db.VarChar(50)
+  type       String? @db.VarChar(25)
+  foreign_id String? @db.VarChar(25)
+  audio      String? @db.VarChar(50)
+  dial       String? @default("") @db.VarChar(50)
+  id         Int
+  uid        Int     @id @default(autoincrement())
+}
+
+model extensions {
+  context     String  @default("default") @db.VarChar(45)
+  extension   String  @default("") @db.VarChar(45)
+  priority    String  @default("1") @db.VarChar(5)
+  application String  @default("") @db.VarChar(45)
+  args        String? @db.VarChar(255)
+  descr       String? @db.Text
+  flags       Int     @default(0)
+
+  @@id([context, extension, priority])
+}
+
+model fax_details {
+  key   String? @unique(map: "key") @db.VarChar(50)
+  value String? @db.VarChar(510)
+  uid   Int     @id @default(autoincrement())
+}
+
+model fax_incoming {
+  cidnum        String? @db.VarChar(20)
+  extension     String? @db.VarChar(50)
+  detection     String? @db.VarChar(20)
+  detectionwait String? @db.VarChar(5)
+  destination   String? @db.VarChar(50)
+  legacy_email  String? @db.VarChar(50)
+  uid           Int     @id @default(autoincrement())
+}
+
+model fax_users {
+  user            String  @id @unique(map: "user") @default("") @db.VarChar(15)
+  faxenabled      String? @db.VarChar(10)
+  faxemail        String? @db.Text
+  faxattachformat String? @db.VarChar(10)
+}
+
+model featurecodes {
+  modulename  String  @default("") @db.VarChar(50)
+  featurename String  @default("") @db.VarChar(50)
+  description String  @default("") @db.VarChar(200)
+  defaultcode String? @db.VarChar(20)
+  customcode  String? @db.VarChar(20)
+  enabled     Int     @default(0) @db.TinyInt
+  providedest Int     @default(0) @db.TinyInt
+
+  @@id([modulename, featurename])
+  @@index([enabled], map: "enabled")
+}
+
+model findmefollow {
+  grpnum         String  @id @db.VarChar(20)
+  strategy       String  @db.VarChar(50)
+  grptime        Int     @db.SmallInt
+  grppre         String? @db.VarChar(100)
+  grplist        String  @db.VarChar(255)
+  annmsg_id      Int?
+  postdest       String? @db.VarChar(255)
+  dring          String? @db.VarChar(255)
+  remotealert_id Int?
+  needsconf      String? @db.VarChar(10)
+  toolate_id     Int?
+  pre_ring       Int     @default(0) @db.SmallInt
+  ringing        String? @db.VarChar(80)
+}
+
+model freepbx_log {
+  id      Int               @id @default(autoincrement())
+  time    DateTime          @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  section String?           @db.VarChar(50)
+  level   freepbx_log_level @default(error)
+  status  Int               @default(0)
+  message String            @db.Text
+
+  @@index([time, level], map: "time")
+}
+
+model freepbx_settings {
+  keyword     String   @id @default("") @db.VarChar(50)
+  value       String?  @db.VarChar(255)
+  name        String?  @db.VarChar(80)
+  level       Boolean? @default(false)
+  description String?  @db.Text
+  type        String?  @db.VarChar(25)
+  options     String?  @db.Text
+  defaultval  String?  @db.VarChar(255)
+  readonly    Boolean? @default(false)
+  hidden      Boolean? @default(false)
+  category    String?  @db.VarChar(50)
+  module      String?  @db.VarChar(25)
+  emptyok     Boolean? @default(true)
+  sortorder   Int?     @default(0)
+}
+
+model freepbx_users {
+  id                Int     @id @default(autoincrement())
+  username          String? @unique(map: "username_UNIQUE") @db.VarChar(255)
+  description       String? @db.VarChar(250)
+  password          String? @db.VarChar(255)
+  default_extension String  @default("none") @db.VarChar(45)
+  fname             String? @db.VarChar(100)
+  lname             String? @db.VarChar(100)
+  title             String? @db.VarChar(100)
+  department        String? @db.VarChar(100)
+  email             String? @db.VarChar(100)
+  cell              String? @db.VarChar(100)
+  work              String? @db.VarChar(100)
+  home              String? @db.VarChar(100)
+}
+
+model freepbx_users_settings {
+  uid    Int     @id
+  module String  @db.Char(65)
+  key    String  @db.Char(255)
+  val    Bytes
+  type   String? @db.Char(16)
+
+  @@unique([uid, module, key], map: "index4")
+  @@index([uid, key], map: "index2")
+  @@index([module, uid], map: "index6")
+}
+
+model globals {
+  variable String @id @db.VarChar(255)
+  value    String @db.VarChar(255)
+}
+
+model hotelwakeup {
+  maxretries          Int     @id
+  waittime            Int
+  retrytime           Int
+  extensionlength     Int
+  cid                 String? @db.VarChar(30)
+  cnam                String? @db.VarChar(30)
+  operator_mode       Int
+  operator_extensions String? @db.VarChar(30)
+  application         String? @db.VarChar(30)
+  data                String? @db.VarChar(30)
+}
+
+model hotelwakeup_calls {
+  time        Int     @id
+  ext         Int
+  maxretries  Int
+  retrytime   Int
+  waittime    Int
+  cid         String? @db.VarChar(30)
+  cnam        String? @db.VarChar(30)
+  application String? @db.VarChar(30)
+  data        String? @db.VarChar(30)
+  tempdir     String? @db.VarChar(100)
+  outdir      String? @db.VarChar(100)
+  filename    String? @db.VarChar(100)
+  frequency   Int
+}
+
+model iax {
+  id      String @default("-1") @db.VarChar(20)
+  keyword String @default("") @db.VarChar(30)
+  data    String @db.VarChar(255)
+  flags   Int    @default(0)
+
+  @@id([id, keyword])
+}
+
+model iaxsettings {
+  keyword String  @default("") @db.VarChar(50)
+  data    String  @default("") @db.VarChar(255)
+  seq     Boolean @default(false)
+  type    Boolean @default(false)
+
+  @@id([keyword, seq, type])
+}
+
+model incoming {
+  cidnum       String   @id @default("") @db.VarChar(20)
+  extension    String   @db.VarChar(50)
+  destination  String?  @db.VarChar(50)
+  faxexten     String?  @db.VarChar(20)
+  faxemail     String?  @db.VarChar(50)
+  answer       Boolean?
+  wait         Int?
+  privacyman   Boolean?
+  alertinfo    String?  @db.VarChar(255)
+  ringing      String?  @db.VarChar(20)
+  mohclass     String   @default("default") @db.VarChar(80)
+  description  String?  @db.VarChar(80)
+  grppre       String?  @db.VarChar(80)
+  delay_answer Int?
+  pricid       String?  @db.VarChar(20)
+  pmmaxretries String?  @db.VarChar(2)
+  pmminlength  String?  @db.VarChar(2)
+}
+
+model indications_zonelist {
+  name String @db.VarChar(80)
+  iso  String @id @db.VarChar(20)
+  conf Bytes? @db.Blob
+}
+
+model ivr_details {
+  id                      Int     @id @default(autoincrement())
+  name                    String? @db.VarChar(50)
+  description             String? @db.VarChar(150)
+  announcement            Int?
+  directdial              String? @db.VarChar(50)
+  invalid_loops           String? @db.VarChar(10)
+  invalid_retry_recording String? @db.VarChar(25)
+  invalid_destination     String? @db.VarChar(50)
+  invalid_recording       String? @db.VarChar(25)
+  retvm                   String? @db.VarChar(8)
+  timeout_time            Int?
+  timeout_recording       String? @db.VarChar(25)
+  timeout_retry_recording String? @db.VarChar(25)
+  timeout_destination     String? @db.VarChar(50)
+  timeout_loops           String? @db.VarChar(10)
+  timeout_append_announce Boolean @default(true)
+  invalid_append_announce Boolean @default(true)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model ivr_entries {
+  ivr_id    Int
+  selection String? @db.VarChar(10)
+  dest      String? @db.VarChar(50)
+  ivr_ret   Boolean @default(false)
+
+  @@ignore
+}
+
+model logfile_logfiles {
+  name     String  @id @default("") @db.VarChar(25)
+  debug    String? @db.VarChar(25)
+  dtmf     String? @db.VarChar(25)
+  error    String? @db.VarChar(25)
+  fax      String? @db.VarChar(25)
+  notice   String? @db.VarChar(25)
+  verbose  String? @db.VarChar(25)
+  warning  String? @db.VarChar(25)
+  security String? @db.VarChar(25)
+}
+
+model logfile_settings {
+  key   String  @id @default("") @db.VarChar(100)
+  value String? @db.VarChar(255)
+}
+
+model manager {
+  manager_id Int     @id @default(autoincrement())
+  name       String  @db.VarChar(15)
+  secret     String? @db.VarChar(50)
+  deny       String? @db.VarChar(255)
+  permit     String? @db.VarChar(255)
+  read       String? @db.VarChar(255)
+  write      String? @db.VarChar(255)
+}
+
+model meetme {
+  exten       String  @db.VarChar(50)
+  options     String? @db.VarChar(15)
+  userpin     String? @db.VarChar(50)
+  adminpin    String? @db.VarChar(50)
+  description String? @db.VarChar(50)
+  joinmsg_id  Int?
+  music       String? @db.VarChar(80)
+  users       Int?    @default(0) @db.TinyInt
+  uid         Int     @id @default(autoincrement())
+  context     String  @db.VarChar(50)
+}
+
+model miscapps {
+  miscapps_id Int     @id @default(autoincrement())
+  ext         String? @db.VarChar(50)
+  description String? @db.VarChar(50)
+  dest        String? @db.VarChar(255)
+}
+
+model miscdests {
+  id          Int    @id @default(autoincrement())
+  description String @db.VarChar(100)
+  destdial    String @db.VarChar(100)
+  context     String @db.VarChar(255)
+}
+
+model module_xml {
+  id   String @id @default("xml") @db.VarChar(20)
+  time Int    @default(0)
+  data Bytes  @db.MediumBlob
+}
+
+model modules {
+  id         Int    @id @default(autoincrement())
+  modulename String @default("") @db.VarChar(50)
+  version    String @default("") @db.VarChar(20)
+  enabled    Int    @default(0) @db.TinyInt
+}
+
+model notifications {
+  module        String @default("") @db.VarChar(24)
+  id            String @default("") @db.VarChar(24)
+  level         Int    @default(0)
+  display_text  String @default("") @db.VarChar(255)
+  extended_text Bytes  @db.Blob
+  link          String @default("") @db.VarChar(255)
+  reset         Int    @default(0) @db.TinyInt
+  candelete     Int    @default(0) @db.TinyInt
+  timestamp     Int    @default(0)
+
+  @@id([module, id])
+}
+
+model outbound_route_patterns {
+  route_id             Int
+  match_pattern_prefix String @default("") @db.VarChar(60)
+  match_pattern_pass   String @default("") @db.VarChar(60)
+  match_cid            String @default("") @db.VarChar(60)
+  prepend_digits       String @default("") @db.VarChar(100)
+
+  @@id([route_id, match_pattern_prefix, match_pattern_pass, match_cid, prepend_digits])
+}
+
+model outbound_route_sequence {
+  route_id Int
+  seq      Int
+
+  @@id([route_id, seq])
+}
+
+model outbound_route_trunks {
+  route_id Int
+  trunk_id Int
+  seq      Int
+
+  @@id([route_id, trunk_id, seq])
+}
+
+model outbound_routes {
+  route_id           Int     @id @default(autoincrement())
+  name               String? @db.VarChar(40)
+  outcid             String? @db.VarChar(40)
+  outcid_mode        String? @db.VarChar(20)
+  password           String? @db.VarChar(30)
+  emergency_route    String? @db.VarChar(4)
+  intracompany_route String? @db.VarChar(4)
+  mohclass           String? @db.VarChar(80)
+  time_group_id      Int?
+  dest               String? @db.VarChar(255)
+}
+
+model outroutemsg {
+  keyword String @id @default("") @db.VarChar(40)
+  data    String @db.VarChar(10)
+}
+
+model paging_autoanswer {
+  useragent String @db.VarChar(255)
+  var       String @db.VarChar(20)
+  setting   String @db.VarChar(255)
+
+  @@id([useragent, var])
+}
+
+model paging_config {
+  page_group  String @id @default("") @db.VarChar(255)
+  force_page  Int
+  duplex      Int    @default(0)
+  description String @default("") @db.VarChar(255)
+}
+
+model paging_groups {
+  page_number String @default("") @db.VarChar(50)
+  ext         String @default("") @db.VarChar(25)
+
+  @@id([page_number, ext])
+}
+
+model parkplus {
+  id                  Int     @id @default(autoincrement())
+  defaultlot          String  @default("no") @db.VarChar(10)
+  type                String  @default("public") @db.VarChar(10)
+  name                String  @default("") @db.VarChar(40)
+  parkext             String  @default("") @db.VarChar(40)
+  parkpos             String  @default("") @db.VarChar(40)
+  numslots            Int     @default(4)
+  parkingtime         Int     @default(45)
+  parkedmusicclass    String? @default("default") @db.VarChar(100)
+  generatefc          String  @default("yes") @db.VarChar(10)
+  generatehints       String  @default("yes") @db.VarChar(10)
+  findslot            String  @default("first") @db.VarChar(10)
+  parkedplay          String  @default("both") @db.VarChar(10)
+  parkedcalltransfers String  @default("caller") @db.VarChar(10)
+  parkedcallreparking String  @default("caller") @db.VarChar(10)
+  alertinfo           String  @default("") @db.VarChar(254)
+  cidpp               String  @default("") @db.VarChar(100)
+  autocidpp           String  @default("none") @db.VarChar(10)
+  announcement_id     Int?
+  comebacktoorigin    String  @default("yes") @db.VarChar(10)
+  dest                String  @default("app-blackhole,hangup,1") @db.VarChar(100)
+}
+
+model pinset_usage {
+  pinsets_id Int
+  dispname   String @default("") @db.VarChar(30)
+  foreign_id String @default("") @db.VarChar(30)
+
+  @@id([dispname, foreign_id])
+}
+
+model pinsets {
+  pinsets_id  Int      @id @default(autoincrement())
+  passwords   String?  @db.LongText
+  description String?  @db.VarChar(50)
+  addtocdr    Boolean?
+  deptname    String?  @db.VarChar(50)
+}
+
+model presencestate_list {
+  id      Int     @id @default(autoincrement())
+  type    String? @db.VarChar(25)
+  message String? @db.VarChar(80)
+}
+
+model presencestate_prefs {
+  extension String  @db.VarChar(20)
+  item_id   Int
+  pref      String? @db.VarChar(25)
+
+  @@id([extension, item_id])
+}
+
+model queueprio {
+  queueprio_id   Int     @id @default(autoincrement())
+  queue_priority String? @db.VarChar(50)
+  description    String? @db.VarChar(50)
+  dest           String? @db.VarChar(255)
+  context        String  @db.VarChar(50)
+}
+
+model queues_config {
+  extension         String   @id @default("") @db.VarChar(20)
+  descr             String   @default("") @db.VarChar(35)
+  grppre            String   @default("") @db.VarChar(100)
+  alertinfo         String   @default("") @db.VarChar(254)
+  ringing           Boolean  @default(false)
+  maxwait           String   @default("") @db.VarChar(8)
+  password          String   @default("") @db.VarChar(20)
+  ivr_id            String   @default("0") @db.VarChar(8)
+  dest              String   @default("") @db.VarChar(50)
+  cwignore          Boolean  @default(false)
+  queuewait         Boolean? @default(false)
+  use_queue_context Boolean? @default(false)
+  togglehint        Boolean? @default(false)
+  qnoanswer         Boolean? @default(false)
+  callconfirm       Boolean? @default(false)
+  callconfirm_id    Int?
+  qregex            String?  @db.VarChar(255)
+  agentannounce_id  Int?
+  joinannounce_id   Int?
+  monitor_type      String?  @db.VarChar(5)
+  monitor_heard     Int?
+  monitor_spoken    Int?
+}
+
+model queues_details {
+  id      String @default("-1") @db.VarChar(45)
+  keyword String @default("") @db.VarChar(30)
+  data    String @default("") @db.VarChar(150)
+  flags   Int    @default(0)
+
+  @@id([id, keyword, data])
+}
+
+model recordings {
+  id          Int      @id @default(autoincrement())
+  displayname String?  @db.VarChar(50)
+  filename    Bytes?   @db.Blob
+  description String?  @db.VarChar(254)
+  fcode       Boolean? @default(false)
+  fcode_pass  String?  @db.VarChar(20)
+}
+
+model ringgroups {
+  grpnum         String  @id @db.VarChar(20)
+  strategy       String  @db.VarChar(50)
+  grptime        Int     @db.SmallInt
+  grppre         String? @db.VarChar(100)
+  grplist        String  @db.VarChar(255)
+  annmsg_id      Int?
+  postdest       String? @db.VarChar(255)
+  description    String  @db.VarChar(35)
+  alertinfo      String? @db.VarChar(255)
+  remotealert_id Int?
+  needsconf      String? @db.VarChar(10)
+  toolate_id     Int?
+  ringing        String? @db.VarChar(80)
+  cwignore       String? @db.VarChar(10)
+  cfignore       String? @db.VarChar(10)
+  cpickup        String? @db.VarChar(10)
+  recording      String? @default("dontcare") @db.VarChar(10)
+}
+
+model setcid {
+  cid_id      Int     @id @default(autoincrement())
+  cid_name    String? @db.VarChar(150)
+  cid_num     String? @db.VarChar(150)
+  description String? @db.VarChar(50)
+  dest        String? @db.VarChar(255)
+}
+
+model sip {
+  id      String @default("-1") @db.VarChar(20)
+  keyword String @default("") @db.VarChar(30)
+  data    String @db.VarChar(255)
+  flags   Int    @default(0)
+
+  @@id([id, keyword])
+}
+
+model sipsettings {
+  keyword String  @default("") @db.VarChar(50)
+  data    String  @default("") @db.VarChar(255)
+  seq     Boolean @default(false)
+  type    Boolean @default(false)
+
+  @@id([keyword, seq, type])
+}
+
+model timeconditions {
+  timeconditions_id Int      @id @default(autoincrement())
+  displayname       String?  @db.VarChar(50)
+  time              Int?
+  truegoto          String?  @db.VarChar(50)
+  falsegoto         String?  @db.VarChar(50)
+  deptname          String?  @db.VarChar(50)
+  generate_hint     Boolean? @default(false)
+  priority          String?  @db.VarChar(50)
+  context           String   @db.VarChar(50)
+}
+
+model timegroups_details {
+  id          Int    @id @default(autoincrement())
+  timegroupid Int    @default(0)
+  time        String @default("") @db.VarChar(100)
+}
+
+model timegroups_groups {
+  id          Int    @id @default(autoincrement())
+  description String @default("") @db.VarChar(50)
+  context     String @db.VarChar(255)
+}
+
+model trunk_dialpatterns {
+  trunkid              Int    @default(0)
+  match_pattern_prefix String @default("") @db.VarChar(50)
+  match_pattern_pass   String @default("") @db.VarChar(50)
+  prepend_digits       String @default("") @db.VarChar(50)
+  seq                  Int    @default(0)
+
+  @@id([trunkid, match_pattern_prefix, match_pattern_pass, prepend_digits, seq])
+}
+
+model trunks {
+  trunkid       Int     @default(0)
+  name          String  @default("") @db.VarChar(50)
+  tech          String  @db.VarChar(20)
+  outcid        String  @default("") @db.VarChar(40)
+  keepcid       String? @default("off") @db.VarChar(4)
+  maxchans      String? @default("") @db.VarChar(6)
+  failscript    String  @default("") @db.VarChar(255)
+  dialoutprefix String  @default("") @db.VarChar(255)
+  channelid     String  @default("") @db.VarChar(255)
+  usercontext   String? @db.VarChar(255)
+  provider      String? @db.VarChar(40)
+  disabled      String? @default("off") @db.VarChar(4)
+  continue      String? @default("off") @db.VarChar(4)
+
+  @@id([trunkid, tech, channelid])
+}
+
+model ttsengines {
+  id   Int     @id @default(autoincrement())
+  name String? @db.VarChar(50)
+  path String? @db.VarChar(255)
+}
+
+model users {
+  extension        String  @default("") @db.VarChar(20)
+  password         String? @db.VarChar(20)
+  name             String? @db.VarChar(50)
+  voicemail        String? @db.VarChar(50)
+  ringtimer        Int?
+  noanswer         String? @db.VarChar(100)
+  recording        String? @db.VarChar(50)
+  outboundcid      String? @db.VarChar(255)
+  sipname          String? @db.VarChar(50)
+  noanswer_cid     String  @default("") @db.VarChar(20)
+  busy_cid         String  @default("") @db.VarChar(20)
+  chanunavail_cid  String  @default("") @db.VarChar(20)
+  noanswer_dest    String  @default("") @db.VarChar(255)
+  busy_dest        String  @default("") @db.VarChar(255)
+  chanunavail_dest String  @default("") @db.VarChar(255)
+  mohclass         String? @default("default") @db.VarChar(80)
+  uid              Int     @id @default(autoincrement())
+
+  @@index([voicemail], map: "voice_mail")
+}
+
+model vmblast {
+  grpnum      Int    @id
+  description String @db.VarChar(35)
+  audio_label Int    @default(-1)
+  password    String @db.VarChar(20)
+}
+
+model vmblast_groups {
+  grpnum String @default("") @db.VarChar(50)
+  ext    String @default("") @db.VarChar(25)
+
+  @@id([grpnum, ext])
+}
+
+model voicemail_admin {
+  variable String @id @default("") @db.VarChar(30)
+  value    String @default("") @db.VarChar(80)
+}
+
+model webrtc_clients {
+  user      String @unique(map: "user") @db.VarChar(255)
+  device    String @unique(map: "device") @db.VarChar(255)
+  realm     String @db.VarChar(80)
+  username  String @db.VarChar(80)
+  sipuri    String @db.VarChar(80)
+  password  String @db.VarChar(80)
+  websocket String @db.VarChar(80)
+  breaker   String @db.VarChar(80)
+  cid       String @db.VarChar(80)
+  uid       Int    @id @default(autoincrement())
+}
+
+model webrtc_settings {
+  key   String @unique(map: "key") @db.VarChar(255)
+  value String @db.Text
+  uid   Int    @id @default(autoincrement())
+}
+
+enum freepbx_log_level {
+  error
+  warning
+  debug
+  devel_debug @map("devel-debug")
+}
+
+enum directory_details_projectx_global {
+  ZERO @map("0")
+  ONE  @map("1")
+}
