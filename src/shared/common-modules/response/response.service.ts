@@ -52,4 +52,9 @@ export class ResponseService {
     };
   }
 
+  success<T>(data: T, options?: { success?: boolean; code?: number; message?: string }): { success: boolean; code: number; message?: string; data: T } {
+    const { success = true, code = 200, } = options ?? {};
+    return { success, code, data };
+  }
+
 }

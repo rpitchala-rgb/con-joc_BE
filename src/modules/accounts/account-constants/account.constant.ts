@@ -66,6 +66,14 @@ export const ACCOUNT = {
   },
 
   OPTIONS: {
+
+    TRR_ENVIRONMENT: {
+      TRR_DEV: 'TRR (Development)',
+      TRR_STAGING: 'TRR (Staging)',
+      TRR_PROD: 'TRR (Production)',
+      TRR_BETA: 'TRR (Beta)',
+    },
+    
     OPERATORS: [
       { value: '=', name: '=' },
       { value: '!=', name: '!=' },

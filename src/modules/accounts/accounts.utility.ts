@@ -6,54 +6,54 @@ import { AccountsService } from './accounts.service';
 @Injectable()
 export class AccountsUtility {
 
-    constructor() {}
-    public getPaginationLinks(total: number, limit: number) {
-    const totalPages = Math.ceil(total / limit);
-
-    const pages: Record<number, number> = {};
-
-    const firstPages = Math.min(5, totalPages);
-
-    for (let i = 0; i < firstPages; i++) {
-      const offset = i * limit;
-      pages[offset] = i + 1;
-    }
-
-    if (totalPages > 5) {
-      const lastPageIndex = totalPages - 1;
-      const lastOffset = lastPageIndex * limit;
-
-      pages[lastOffset] = totalPages;
-    }
-
-    return pages;
-  }
+  constructor() { }
+ 
 
   async formatExportData(results: any[]): Promise<any> {
-      const allowedFields = [
-      'id', 'u_id', 'name', 'company_name', 'country', 'website',
-      'local_gmt', 'status', 'master_server', 'cluster_node',
-      'account_type', 'default_caller_id', 'default_gmt',
-      'extend_delinquent_period', 'minimum_seat',
-      'minimum_seat_expired_at', 'contract_start_date',
-      'created_at', 'updated_at', 'billing_production',
-      'test_account', 'tier', 'multi_process',
-      'multi_process_auto_dial', 'license_seat_count',
-      'security_compliance', 'primary_data_center',
-      'default_audio_format', 'billing_account_id',
-      'z_account_id', 'billing_system', 'trr_system',
-      'iva_managed_service', 'externally_managed_account',
-      'voip_provider_env', 'host_group_name',
-      'use_hostgroup', 'migration_mode',
-      'client_tier', 'sale_rep_id', 'csm_rep_id', 'voip_provider'
-    ];
+  const allowedFields = [
+    'id', 'u_id', 'name', 'company_name', 'country', 'website',
+    'local_gmt', 'status', 'master_server', 'cluster_node',
+    'account_type', 'default_caller_id', 'default_gmt',
+    'extend_delinquent_period', 'minimum_seat',
+    'minimum_seat_expired_at', 'contract_start_date',
+    'created_at', 'updated_at', 'billing_production',
+    'test_account', 'tier', 'multi_process',
+    'multi_process_auto_dial', 'license_seat_count',
+    'security_compliance', 'primary_data_center',
+    'default_audio_format', 'billing_account_id',
+    'z_account_id', 'billing_system', 'trr_system',
+    'iva_managed_service', 'externally_managed_account',
+    'voip_provider_env', 'host_group_name',
+    'use_hostgroup', 'migration_mode',
+    'client_tier', 'sale_rep_id', 'csm_rep_id', 'voip_provider'
+  ];
 
-    const filteredResults = results.map((row: any) => {
-      const filtered = Object.fromEntries(
-        Object.entries(row).filter(([key]) => allowedFields.includes(key))
-      );
-      return { 
-        default_gmt_options: ACCOUNT.DEFAULT_GMT,
+  const filteredResults = results.map((row: any) => {
+    const data = { ...row };
+
+    data.client_tier = data.client_tier ?? null;
+    data.sale_rep_id = data.sale_rep_id ?? null;
+    data.csm_rep_id = data.csm_rep_id ?? null;
+
+    data.migration_mode = data.migration_mode || '';
+
+    if (data.trr_system == 5) {
+      data.voip_provider = ACCOUNT.VOIP_PROVIDER.CYNERIC;
+    } else if (data.trr_system == 9) {
+      data.voip_provider =
+        ACCOUNT.VOIP_PROVIDER[data.voip_provider_env] ||
+        ACCOUNT.VOIP_PROVIDER.TRR_BETA;
+    }
+
+    const filtered = Object.fromEntries(
+      Object.entries(data).filter(([key]) => allowedFields.includes(key))
+    );
+
+    return {
+      trr_environment_options: ACCOUNT.OPTIONS.TRR_ENVIRONMENT,
+      operators: ACCOUNT.OPTIONS.OPERATORS,
+      cluster_node_options: ACCOUNT.OPTIONS.CLUSTER_NODE,
+       default_gmt_options: ACCOUNT.DEFAULT_GMT,
         country_options: ACCOUNT.COUNTRY,
         billing_production_options: ACCOUNT.BILLING_SYSTEM,
         test_account_options: ACCOUNT.TEST_ACCOUNT,
@@ -68,20 +68,11 @@ export class AccountsUtility {
         migration_mode_options: ACCOUNT.MIGRATION_MODE,
         iva_managed_service_options: ACCOUNT.IVA_MANAGED_SERVICE,
         externally_managed_account_options: ACCOUNT.EXTERNALLY_MANAGED_ACCOUNT,
-        ...filtered,
-      };
-    });
-    return filteredResults;
-}
+         ...filtered,
+    };
+  });
 
-
-formatDateForMySQL(date: string | Date): string {
-  const d = new Date(date);
-
-  const pad = (n: number) => n.toString().padStart(2, '0');
-
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
-         `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  return filteredResults;
 }
 
 }
