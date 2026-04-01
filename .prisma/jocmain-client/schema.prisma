@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../../.prisma/jocmain-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_JOC_MAIN")
+}
+
+model member_log {
+  id            Int                @id @default(autoincrement()) @db.UnsignedInt
+  ip_address    String             @db.VarChar(20)
+  created_at    DateTime           @db.DateTime(0)
+  member_id     Int
+  section       String?            @db.VarChar(100)
+  sub_section   String?            @db.VarChar(100)
+  action        member_log_action? @default(SAVE)
+  altered       String?            @db.VarChar(100)
+  data          String?            @db.MediumText
+  original_data String?            @db.MediumText
+  account_id    Int?
+
+  @@index([ip_address, created_at, member_id, section, sub_section, action, altered], map: "ip_address")
+}
+
+model members {
+  id                     Int             @id @default(autoincrement())
+  u_id                   String          @db.VarChar(32)
+  username               String          @db.VarChar(255)
+  first_name             String?         @db.VarChar(255)
+  last_name              String?         @db.VarChar(255)
+  google_id              String          @db.VarChar(255)
+  email                  String          @db.VarChar(255)
+  salt                   String          @db.VarChar(255)
+  algo                   String          @db.VarChar(32)
+  password               String          @db.VarChar(255)
+  email_verification_key String          @db.VarChar(255)
+  verify                 members_verify? @default(NO)
+  google_key             String?         @db.VarChar(255)
+  acl_access_profile     Int?
+  user_level             Int?            @default(1) @db.TinyInt
+  created_at             DateTime?       @db.DateTime(0)
+  updated_at             DateTime?       @db.DateTime(0)
+  deleted_at             DateTime?       @db.DateTime(0)
+}
+
+model member_acl_paths {
+  id              Int                              @id @default(autoincrement())
+  u_id            String                           @db.VarChar(32)
+  section_name    String                           @db.VarChar(255)
+  name            String                           @db.VarChar(255)
+  route_name      String                           @db.VarChar(255)
+  path            String                           @db.VarChar(255)
+  permission_type member_acl_paths_permission_type @default(R)
+  created_at      DateTime                         @db.DateTime(0)
+  updated_at      DateTime?                        @db.DateTime(0)
+  deleted_at      DateTime?                        @db.DateTime(0)
+
+  @@unique([u_id, path], map: "u_id")
+  @@index([section_name], map: "parent_id")
+}
+
+model member_acl_rules {
+  id                 Int                          @id @default(autoincrement())
+  u_id               String                       @unique(map: "u_id") @db.VarChar(32)
+  parent_id          Int
+  app                String                       @db.VarChar(20)
+  minimum_tier_level Int?
+  name               String                       @db.VarChar(255)
+  section_name       String                       @db.VarChar(255)
+  require_acl        member_acl_rules_require_acl @default(NO)
+  tutorial_url       String?                      @db.VarChar(255)
+  created_at         DateTime                     @db.DateTime(0)
+  updated_at         DateTime?                    @db.DateTime(0)
+  deleted_at         DateTime?                    @db.DateTime(0)
+
+  @@index([parent_id], map: "parent_id")
+}
+
+enum member_log_action {
+  SAVE
+  DELETE
+}
+
+enum members_verify {
+  NO
+  YES
+}
+
+enum member_acl_paths_permission_type {
+  R
+  W
+  D
+}
+
+enum member_acl_rules_require_acl {
+  YES
+  NO
+}

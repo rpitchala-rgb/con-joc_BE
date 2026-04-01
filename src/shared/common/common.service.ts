@@ -27,4 +27,12 @@ export class CommonService {
       `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
   }
 
+  convertBigIntToJSON(data: any): any {
+  return JSON.parse(
+    JSON.stringify(data, (_, value) =>
+      typeof value === 'bigint' ? Number(value) : value,
+    ),
+  );
+}
+
 }

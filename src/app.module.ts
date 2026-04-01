@@ -11,6 +11,9 @@ import { AccountsModule } from './modules/accounts/accounts.module';
 import { DatabaseModule } from './shared/database/database.module';
 import { DidOrdersModule } from './modules/did-orders/did-orders.module';
 import { AccountGroupsModule } from './modules/account-groups/account-groups.module';
+import { UserModule } from './modules/user/user.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
+import { MemberLogModule } from './modules/member-log/member-log.module';
 
 
 @Module({
@@ -24,7 +27,10 @@ import { AccountGroupsModule } from './modules/account-groups/account-groups.mod
     DatabaseModule,
     AccountsModule,
     DidOrdersModule,
-    AccountGroupsModule
+    AccountGroupsModule,
+    UserModule,
+    TransactionsModule,
+    MemberLogModule
     
   ],
   controllers: [AppController],

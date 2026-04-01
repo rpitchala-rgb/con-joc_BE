@@ -228,5 +228,66 @@ export const ACCOUNT = {
         REGILAR: 'Regular',
         DIVR: 'DIVR|VB|RVM',
         CALL_CATALYST: 'Call Catalyst',
-    }
+    },
+
+  // Full status options matching PHP $status_options
+  FULL_STATUS_OPTIONS: {
+    NEW: 'New',
+    ACTIVE: 'Active',
+    INACTIVE: 'Inactive',
+    DEMO: 'Demo',
+    ACTIVE_DEMO: 'Active Demo',
+    INACTIVE_DEMO: 'Inactive Demo',
+    ACTIVE_TRIAL: 'Active Trial',
+    INACTIVE_TRIAL: 'Inactive Trial',
+    DELINQUENT: 'Delinquent',
+    ACTIVE_OVERRIDE: 'Active Override',
+    TEST_ACCOUNT: 'Test Account',
+    DELETED: 'Deleted',
+    DELINQUENT_DEMO: 'Delinquent Demo',
+  },
+
+  // Full account type options matching PHP $account_type_options
+  FULL_ACCOUNT_TYPE_OPTIONS: {
+    REGULAR: 'Regular',
+    DIVR: 'DIVR|VB|RVM',
+    CALL_CATALYST: 'Call Catalyst',
+  },
+
+  // Cluster server names matching PHP Constant::$cluster_server
+  CLUSTER_SERVER: [
+    'cluster_5',
+    'cluster_7',
+    'cluster_8',
+    'cluster_9',
+    'cluster_10',
+    'cluster_11',
+    'cluster_12',
+    'cluster_13',
+  ],
+
+  FILTER_BY_LIST: [
+    { value: 'id',                 name: 'Id',                     type: '1' },
+    { value: 'name',               name: 'Name',                   type: '1' },
+    { value: 'company_name',       name: 'Company Name',           type: '1' },
+    { value: 'status',             name: 'Status',                 type: '2' },
+    { value: 'billing_production', name: 'Billing',                type: '2' },
+    { value: 'cluster_node',       name: 'Cluster',                type: '2' },
+    { value: 'tier',               name: 'Platform',               type: '2' },
+    { value: 'license_seat_count', name: 'Active Seats',           type: '1' },
+    { value: 'client_tier',        name: 'Customer Tier',          type: '2' },
+    { value: 'sale_rep_id',        name: 'Account Representative', type: '2' },
+    { value: 'csm_rep_id',         name: 'CSM Representative',     type: '2' },
+    { value: 'voip_provider_env',  name: 'Voip Provider',          type: '2' },
+    { value: 'account_type',       name: 'Account Type',           type: '2' },
+  ],
+
+  ORDER_BY_LIST: [
+    { value: 'id',                 name: 'Id',           type: '1' },
+    { value: 'name',               name: 'Name',         type: '1' },
+    { value: 'company_name',       name: 'Company Name', type: '1' },
+    { value: 'status',             name: 'Status',       type: '2' },
+    { value: 'billing_production', name: 'Billing',      type: '2' },
+    { value: 'cluster_node',       name: 'Cluster',      type: '2' },
+  ],
 };
