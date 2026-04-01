@@ -13,18 +13,25 @@ export class AccountsController {
   async get(@Body() searchAccountDto: SearchAccountDto): Promise<any> {
     try{
       const result = await this.accountsService.searchAction(searchAccountDto);
-      const responseOptions= {
-        success: true,
-        code: 200,
-      }
-      return this.responseService.createSuccessResponse(responseOptions,result);
+      return this.responseService.success(result);
     }catch(error){
-      // const status = error.message === 'No data found' ? 404 : 500;
-      // const message =error.message === 'No data found' ? 'No accounts found matching the criteria' : 'An error occurred while fetching accounts';
-      // return this.responseService.createErrorResponse( status,message);
       throw new Error(error);
     }
    
   }
-  
+
+  @Get("options")
+  async optionsAction(): Promise<any> {
+    try {
+     const result = await this.accountsService.getAccountOptions();
+     const responseOptions = {
+      success: true,
+      code: 200,
+     }
+     return{ ...responseOptions, operators: result.operators, filters: result.filters, data: result.data };
+    } catch (error) {
+      return this.responseService.createErrorResponse(500,"Internal Server Error!");
+    }
+  }
+
 }

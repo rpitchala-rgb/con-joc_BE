@@ -157,12 +157,13 @@ model account_dialer_settings {
 }
 
 model account_group_accounts {
-  id               Int       @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   account_group_id Int
   account_id       Int
-  created_at       DateTime? @db.DateTime(0)
-  updated_at       DateTime? @db.DateTime(0)
-  deleted_at       DateTime? @db.DateTime(0)
+  created_at       DateTime?      @db.DateTime(0)
+  updated_at       DateTime?      @db.DateTime(0)
+  deleted_at       DateTime?      @db.DateTime(0)
+  account_groups   account_groups @relation(fields: [account_group_id], references: [id])
 
   @@index([account_group_id], map: "account_group_id")
   @@index([account_id], map: "account_id")
@@ -170,15 +171,16 @@ model account_group_accounts {
 }
 
 model account_group_users {
-  id               Int       @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   account_group_id Int
   from_account_id  Int
   from_user_id     Int
   to_account_id    Int
   to_user_id       Int
-  created_at       DateTime? @db.DateTime(0)
-  updated_at       DateTime? @db.DateTime(0)
-  deleted_at       DateTime? @db.DateTime(0)
+  created_at       DateTime?      @db.DateTime(0)
+  updated_at       DateTime?      @db.DateTime(0)
+  deleted_at       DateTime?      @db.DateTime(0)
+  account_groups   account_groups @relation(fields: [account_group_id], references: [id])
 
   @@index([account_group_id], map: "account_group_id")
   @@index([deleted_at], map: "deleted_at")
@@ -189,13 +191,15 @@ model account_group_users {
 }
 
 model account_groups {
-  id          Int                   @id @default(autoincrement())
-  name        String                @db.VarChar(50)
-  description String?               @db.VarChar(255)
-  status      account_groups_status @default(INACTIVE)
-  created_at  DateTime?             @db.DateTime(0)
-  updated_at  DateTime?             @db.DateTime(0)
-  deleted_at  DateTime?             @db.DateTime(0)
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar(50)
+  description            String?                  @db.VarChar(255)
+  status                 account_groups_status    @default(INACTIVE)
+  created_at             DateTime?                @db.DateTime(0)
+  updated_at             DateTime?                @db.DateTime(0)
+  deleted_at             DateTime?                @db.DateTime(0)
+  accountGroupAccounts   account_group_accounts[]
+  accountGroupUsers      account_group_users[]
 
   @@index([deleted_at], map: "deleted_at")
   @@index([status], map: "status")

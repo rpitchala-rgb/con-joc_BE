@@ -5,27 +5,32 @@ import {
   IsBoolean,
   IsArray,
   ValidateNested,
+  IsNotEmpty,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 
 
 // 🔹 Select Option DTO
 class SelectOptionDto {
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
   @IsOptional()
   @IsString()
   name: string;
 
   @IsOptional()
+   @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
   @IsString()
   operator: string;
 
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
   @IsOptional()
-  value: any; // can be string | number | array
+  value: unknown
 }
 
 // 🔹 Order Option DTO
 class OrderOptionDto {
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
   @IsOptional()
   @IsString()
   name: string;
@@ -37,9 +42,9 @@ class OrderOptionDto {
 
 export class SearchAccountDto {
 
-   @IsOptional()
   @IsString()
-  inputValue?: string;
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+  inputValue: string;
 
   @IsOptional()
   @Type(() => Number)
