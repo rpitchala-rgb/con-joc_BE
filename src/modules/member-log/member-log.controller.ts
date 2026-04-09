@@ -20,9 +20,10 @@ export class MemberLogController {
       }
       return { ...responseOptions, data: result.data };
     } catch (error) {
-      const status = error.message === "Post Data Missing!" ? 402 : 500;
-      const message = error.message === "Post Data Missing!" ? "Post Data Missing!" : "Internal Server Error!";
-      return this.responseService.createErrorResponse(status,message);
+      const success = error.message === "Post Data Missing!" ? false : false;
+      const code  = error.message === "Post Data Missing!" ? 402 : 500;
+      const text = error.message === "Post Data Missing!" ? "Post Data Missing!" : "Internal Server Error!";
+      return this.responseService.createErrorResponse(success, code, text);
     }
   }
 
@@ -36,7 +37,10 @@ export class MemberLogController {
       }
       return { ...respnseOptions, data: result };
     } catch (error) {
-      throw new Error(error);
+      const success = error.message === "Post Data Missing!" ? false : false;
+      const code  = error.message === "Post Data Missing!" ? 402 : 500;
+      const text = error.message === "Post Data Missing!" ? "Post Data Missing!" : "Internal Server Error!";
+      return this.responseService.createErrorResponse(success, code, text);
     }
   }
 

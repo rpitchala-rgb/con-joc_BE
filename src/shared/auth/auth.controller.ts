@@ -21,9 +21,9 @@ export class AuthController {
             }
             //return this.responseService.createSuccessResponse(responseOptions,result., );
         } catch (error) {
-            const status = error.message === "Invalid credentials" ? 404 : 500;
-            const message = error.message === "Invalid credentials" ? "Invalid credentials" : "getErrorMessage";
-            return this.responseService.createErrorResponse(status, message);
+            const code = error.message === "Invalid credentials" ? 404 : 500;
+            const text = error.message === "Invalid credentials" ? "Invalid credentials" : "Internal Server Error";
+            return this.responseService.createErrorResponse(false, code, text);
         }
 
     }

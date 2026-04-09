@@ -33,9 +33,9 @@ export class UserController {
       return { success: true, code: 200, result: result.username, data: result.data };
 
     }catch(error){
-      const status = error.message === "User not found" ? 404 : 500;
-      const message = error.message === "User not found" ? "User not found" : "Internal server error.";
-      return this.responseService.createErrorResponse(status, message);
+      const code = error.message === "User not found" ? 404 : 500;
+      const text = error.message === "User not found" ? "User not found" : "Internal server error.";
+      return this.responseService.createErrorResponse(false, code, text);
     }
   }
 }
