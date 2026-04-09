@@ -2,11 +2,13 @@
 import { Injectable } from '@nestjs/common';
 import { ACCOUNT } from './account-constants/account.constant';
 import { AccountsService } from './accounts.service';
+import { SubscriptionActionService } from '../../shared/common-functions/subscriptionAction';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AccountsUtility {
 
-  constructor() { }
+  constructor(private readonly subscriptionActionService: SubscriptionActionService) { }
  
 
   async formatExportData(results: any[]): Promise<any> {
@@ -74,5 +76,136 @@ export class AccountsUtility {
 
   return filteredResults;
 }
+
+  public sanitizeAlphaNumeric(value?: string): string {
+    return (value || '').replace(/[^a-zA-Z0-9 ]/g, '')?.trim();
+  }
+
+  public formatAccountName(company?: string): string {
+    return (company || '').toLowerCase().replace(/ /g, '_');
+  }
+
+  public generateRandomString(length: number): string {
+    return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+  }
+
+  public hashPassword(password: string, salt: string): string {
+    return crypto.createHash('sha256').update(password + salt).digest('hex');
+  }
+
+  public buildObjectLimitation(): Record<string, number> {
+    const limitations: Record<string, number> = {};
+    for (const key of Object.keys(ACCOUNT.TALKPRO_OBJECT_LIMITATIONS)) {
+      limitations[key] = 0;
+    }
+    return limitations;
+  }
+
+  public jsonSettingsFormatted(
+    settings: string | null,
+    settingType: string,
+    settingValue: string | null = null,
+    method = 'get',
+    parentObjectKey: string | null = null,
+  ): string | null {
+    if (method === 'set') {
+      return this.jsonSettingsSetter(
+        settings,
+        settingType,
+        settingValue,
+        parentObjectKey,
+      );
+    }
+
+    return this.jsonSettingsGetter(settings, settingType);
+  }
+
+  public jsonSettingsSetter(
+    settings: string | null,
+    settingType: string,
+    settingValue: string | null,
+    parentObjectKey: string | null = null,
+  ): string {
+    const parsed = settings ? JSON.parse(settings) : {};
+
+    if (parentObjectKey) {
+      if (!parsed[parentObjectKey] || typeof parsed[parentObjectKey] !== 'object') {
+        parsed[parentObjectKey] = {};
+      }
+      parsed[parentObjectKey][settingType] = settingValue;
+    } else {
+      parsed[settingType] = settingValue;
+    }
+
+    return JSON.stringify(parsed);
+  }
+
+  public jsonSettingsGetter(settings: string | null, settingType: string): string | null {
+    if (!settings) {
+      return null;
+    }
+
+    const parsed = JSON.parse(settings);
+    return parsed[settingType] ?? null;
+  }
+
+  async createTestAccountFakeSubscription(_accountId: number): Promise<void> {
+    return;
+  }
+
+  async cancelSubscription(accountId: number, cancellationMessage: string): Promise<void> {
+    // Call the actual subscription cancellation service
+    const result = await this.subscriptionActionService.cancelSubscription(
+      accountId,
+      cancellationMessage,
+    );
+
+    if (!result.success) {
+      console.error(
+        `Subscription cancellation failed for account ${accountId}:`,
+        result.errors,
+      );
+    } else {
+      console.log(`Subscription successfully canceled for account ${accountId}`);
+    }
+  }
+
+  public formatDateForMySQL(date: Date): string {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  }
+
+  public jsonSettingsBuilder(account: any): string | null {
+    let jsonSettings: string | null = null;
+    const attestationLevel =
+      account.test_account === ACCOUNT.OPTIONS.TEST_ACCOUNT.Y
+        ? ACCOUNT.JSON_SETTINGS.TEST_ACCOUNT_ATTESTATION_LEVEL
+        : ACCOUNT.JSON_SETTINGS.DEFAULT_ATTESTATION_LEVEL;
+    jsonSettings = this.jsonSettingsFormatted(
+      jsonSettings,
+      ACCOUNT.JSON_SETTINGS.ATTESTATION_LEVEL,
+      attestationLevel,
+      'set',
+    );
+    jsonSettings = this.jsonSettingsFormatted(
+      jsonSettings,
+      ACCOUNT.JSON_SETTINGS.ENABLE_PASSWORD_ROTATION,
+      ACCOUNT.JSON_SETTINGS.DEFAULT_FLAG,
+      'set',
+    );
+    jsonSettings = this.jsonSettingsFormatted(
+      jsonSettings,
+      ACCOUNT.JSON_SETTINGS.ENABLE_CONTACT_EMAIL_VALIDATION,
+      ACCOUNT.JSON_SETTINGS.DEFAULT_FLAG,
+      'set',
+    );
+    jsonSettings = this.jsonSettingsFormatted(
+      jsonSettings,
+      ACCOUNT.JSON_SETTINGS.ENABLE_MULTI_FACTORED_AUTHENTICATION,
+      ACCOUNT.JSON_SETTINGS.DEFAULT_FLAG,
+      'set',
+    );
+    return jsonSettings;
+  }
 
 }

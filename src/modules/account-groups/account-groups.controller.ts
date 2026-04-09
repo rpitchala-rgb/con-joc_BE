@@ -54,9 +54,10 @@ export class AccountGroupsController {
     return responseOptions;
 
   }catch(error){
-    const status = error.message === "Account Group not found " ? 404 : 500;
-    const message = error.message === "Account Group not found " ? "Account Group not found " : "Internal server error.";
-    return this.responseService.createErrorResponse(status,message);
+    const success = error.message === "Account Group not found " ? false : false;
+    const code = error.message === "Account Group not found " ? 403 : 500;
+    const text = error.message === "Account Group not found " ? "Account Group not found " : "Internal server error.";
+    return this.responseService.createErrorResponse(success, code, text);
   }
  }
 

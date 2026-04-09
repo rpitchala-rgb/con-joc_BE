@@ -44,10 +44,11 @@ export class ResponseService {
   };
 }
 
-  createErrorResponse(status: number, message: string, value?: string): { status: number, message: string, value?: string } {
+  createErrorResponse(success:boolean, code: number, text: string, value?: string): {  success: boolean,code: number, text: string, value?: string } {
     return {
-      status,
-      message,
+      success,
+      code,
+      text,
       value
     };
   }
