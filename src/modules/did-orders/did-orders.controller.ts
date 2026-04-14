@@ -3,7 +3,7 @@ import { DidOrdersService } from './did-orders.service';
 import { CreateDidOrderDto } from './dto/create-did-order.dto';
 import { UpdateDidOrderDto } from './dto/update-did-order.dto';
 import { SearchDidOrderDto } from './dto/search-did-order.dto';
-import { ResponseService } from 'src/shared/common-modules/response/response.service';
+import { ResponseService } from '../../shared/common-modules/response/response.service';
 
 @Controller('projectx/did-orders')
 export class DidOrdersController {

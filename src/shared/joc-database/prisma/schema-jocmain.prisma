@@ -78,6 +78,53 @@ model member_acl_rules {
   @@index([parent_id], map: "parent_id")
 }
 
+model servers {
+  id                      Int           @id @default(autoincrement())
+  hostname                String        @db.VarChar(40)
+  provision               Int
+  close                   Int
+  state                   Int
+  type                    servers_type? @default(REGULAR)
+  last_update_time        DateTime      @db.DateTime(0)
+  cluster                 String        @db.VarChar(10)
+  master                  Int
+  master_active           Int
+  projectx_node_version   String        @default("NONE") @db.VarChar(30)
+  rvm                     servers_rvm   @default(ZERO)
+  service                 String        @db.VarChar(40)
+  provision_request_value Int
+  location                String?       @db.VarChar(5)
+  instance_id             Int           @default(1)
+  last_requested_at       DateTime?     @db.DateTime(0)
+
+  @@index([cluster], map: "cluster")
+  @@index([service], map: "service")
+}
+
+model servers_ips {
+  id         Int    @id @default(autoincrement())
+  servers_id Int
+  ip         String @db.VarChar(40)
+  comment    String @db.VarChar(30)
+  instance   Int    @default(1)
+
+  @@index([comment], map: "comment")
+  @@index([ip], map: "ip")
+  @@index([servers_id], map: "key")
+  @@index([servers_id], map: "servers_id")
+}
+
+model servers_properties {
+  id         Int    @id @default(autoincrement())
+  servers_id Int
+  name       String @db.VarChar(40)
+  value      String @db.VarChar(255)
+
+  @@index([servers_id], map: "key")
+  @@index([servers_id], map: "servers_id")
+  @@index([value], map: "value")
+}
+
 enum member_log_action {
   SAVE
   DELETE
@@ -97,4 +144,14 @@ enum member_acl_paths_permission_type {
 enum member_acl_rules_require_acl {
   YES
   NO
+}
+
+enum servers_type {
+  REGULAR
+  VB
+}
+
+enum servers_rvm {
+  ZERO @map("0")
+  ONE  @map("1")
 }

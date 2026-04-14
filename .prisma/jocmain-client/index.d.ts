@@ -33,6 +33,21 @@ export type member_acl_paths = $Result.DefaultSelection<Prisma.$member_acl_paths
  * 
  */
 export type member_acl_rules = $Result.DefaultSelection<Prisma.$member_acl_rulesPayload>
+/**
+ * Model servers
+ * 
+ */
+export type servers = $Result.DefaultSelection<Prisma.$serversPayload>
+/**
+ * Model servers_ips
+ * 
+ */
+export type servers_ips = $Result.DefaultSelection<Prisma.$servers_ipsPayload>
+/**
+ * Model servers_properties
+ * 
+ */
+export type servers_properties = $Result.DefaultSelection<Prisma.$servers_propertiesPayload>
 
 /**
  * Enums
@@ -70,6 +85,22 @@ export const member_acl_rules_require_acl: {
 
 export type member_acl_rules_require_acl = (typeof member_acl_rules_require_acl)[keyof typeof member_acl_rules_require_acl]
 
+
+export const servers_type: {
+  REGULAR: 'REGULAR',
+  VB: 'VB'
+};
+
+export type servers_type = (typeof servers_type)[keyof typeof servers_type]
+
+
+export const servers_rvm: {
+  ZERO: 'ZERO',
+  ONE: 'ONE'
+};
+
+export type servers_rvm = (typeof servers_rvm)[keyof typeof servers_rvm]
+
 }
 
 export type member_log_action = $Enums.member_log_action
@@ -87,6 +118,14 @@ export const member_acl_paths_permission_type: typeof $Enums.member_acl_paths_pe
 export type member_acl_rules_require_acl = $Enums.member_acl_rules_require_acl
 
 export const member_acl_rules_require_acl: typeof $Enums.member_acl_rules_require_acl
+
+export type servers_type = $Enums.servers_type
+
+export const servers_type: typeof $Enums.servers_type
+
+export type servers_rvm = $Enums.servers_rvm
+
+export const servers_rvm: typeof $Enums.servers_rvm
 
 /**
  * ##  Prisma Client ʲˢ
@@ -245,6 +284,36 @@ export class PrismaClient<
     * ```
     */
   get member_acl_rules(): Prisma.member_acl_rulesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.servers`: Exposes CRUD operations for the **servers** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Servers
+    * const servers = await prisma.servers.findMany()
+    * ```
+    */
+  get servers(): Prisma.serversDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.servers_ips`: Exposes CRUD operations for the **servers_ips** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Servers_ips
+    * const servers_ips = await prisma.servers_ips.findMany()
+    * ```
+    */
+  get servers_ips(): Prisma.servers_ipsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.servers_properties`: Exposes CRUD operations for the **servers_properties** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Servers_properties
+    * const servers_properties = await prisma.servers_properties.findMany()
+    * ```
+    */
+  get servers_properties(): Prisma.servers_propertiesDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -689,7 +758,10 @@ export namespace Prisma {
     member_log: 'member_log',
     members: 'members',
     member_acl_paths: 'member_acl_paths',
-    member_acl_rules: 'member_acl_rules'
+    member_acl_rules: 'member_acl_rules',
+    servers: 'servers',
+    servers_ips: 'servers_ips',
+    servers_properties: 'servers_properties'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -708,7 +780,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "member_log" | "members" | "member_acl_paths" | "member_acl_rules"
+      modelProps: "member_log" | "members" | "member_acl_paths" | "member_acl_rules" | "servers" | "servers_ips" | "servers_properties"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -976,6 +1048,204 @@ export namespace Prisma {
           }
         }
       }
+      servers: {
+        payload: Prisma.$serversPayload<ExtArgs>
+        fields: Prisma.serversFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.serversFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.serversFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload>
+          }
+          findFirst: {
+            args: Prisma.serversFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.serversFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload>
+          }
+          findMany: {
+            args: Prisma.serversFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload>[]
+          }
+          create: {
+            args: Prisma.serversCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload>
+          }
+          createMany: {
+            args: Prisma.serversCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.serversDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload>
+          }
+          update: {
+            args: Prisma.serversUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload>
+          }
+          deleteMany: {
+            args: Prisma.serversDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.serversUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.serversUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$serversPayload>
+          }
+          aggregate: {
+            args: Prisma.ServersAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServers>
+          }
+          groupBy: {
+            args: Prisma.serversGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ServersGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.serversCountArgs<ExtArgs>
+            result: $Utils.Optional<ServersCountAggregateOutputType> | number
+          }
+        }
+      }
+      servers_ips: {
+        payload: Prisma.$servers_ipsPayload<ExtArgs>
+        fields: Prisma.servers_ipsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.servers_ipsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.servers_ipsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload>
+          }
+          findFirst: {
+            args: Prisma.servers_ipsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.servers_ipsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload>
+          }
+          findMany: {
+            args: Prisma.servers_ipsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload>[]
+          }
+          create: {
+            args: Prisma.servers_ipsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload>
+          }
+          createMany: {
+            args: Prisma.servers_ipsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.servers_ipsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload>
+          }
+          update: {
+            args: Prisma.servers_ipsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload>
+          }
+          deleteMany: {
+            args: Prisma.servers_ipsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.servers_ipsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.servers_ipsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_ipsPayload>
+          }
+          aggregate: {
+            args: Prisma.Servers_ipsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServers_ips>
+          }
+          groupBy: {
+            args: Prisma.servers_ipsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Servers_ipsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.servers_ipsCountArgs<ExtArgs>
+            result: $Utils.Optional<Servers_ipsCountAggregateOutputType> | number
+          }
+        }
+      }
+      servers_properties: {
+        payload: Prisma.$servers_propertiesPayload<ExtArgs>
+        fields: Prisma.servers_propertiesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.servers_propertiesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.servers_propertiesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload>
+          }
+          findFirst: {
+            args: Prisma.servers_propertiesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.servers_propertiesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload>
+          }
+          findMany: {
+            args: Prisma.servers_propertiesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload>[]
+          }
+          create: {
+            args: Prisma.servers_propertiesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload>
+          }
+          createMany: {
+            args: Prisma.servers_propertiesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.servers_propertiesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload>
+          }
+          update: {
+            args: Prisma.servers_propertiesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload>
+          }
+          deleteMany: {
+            args: Prisma.servers_propertiesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.servers_propertiesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.servers_propertiesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$servers_propertiesPayload>
+          }
+          aggregate: {
+            args: Prisma.Servers_propertiesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServers_properties>
+          }
+          groupBy: {
+            args: Prisma.servers_propertiesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Servers_propertiesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.servers_propertiesCountArgs<ExtArgs>
+            result: $Utils.Optional<Servers_propertiesCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1076,6 +1346,9 @@ export namespace Prisma {
     members?: membersOmit
     member_acl_paths?: member_acl_pathsOmit
     member_acl_rules?: member_acl_rulesOmit
+    servers?: serversOmit
+    servers_ips?: servers_ipsOmit
+    servers_properties?: servers_propertiesOmit
   }
 
   /* Types for Logging */
@@ -5186,6 +5459,2915 @@ export namespace Prisma {
 
 
   /**
+   * Model servers
+   */
+
+  export type AggregateServers = {
+    _count: ServersCountAggregateOutputType | null
+    _avg: ServersAvgAggregateOutputType | null
+    _sum: ServersSumAggregateOutputType | null
+    _min: ServersMinAggregateOutputType | null
+    _max: ServersMaxAggregateOutputType | null
+  }
+
+  export type ServersAvgAggregateOutputType = {
+    id: number | null
+    provision: number | null
+    close: number | null
+    state: number | null
+    master: number | null
+    master_active: number | null
+    provision_request_value: number | null
+    instance_id: number | null
+  }
+
+  export type ServersSumAggregateOutputType = {
+    id: number | null
+    provision: number | null
+    close: number | null
+    state: number | null
+    master: number | null
+    master_active: number | null
+    provision_request_value: number | null
+    instance_id: number | null
+  }
+
+  export type ServersMinAggregateOutputType = {
+    id: number | null
+    hostname: string | null
+    provision: number | null
+    close: number | null
+    state: number | null
+    type: $Enums.servers_type | null
+    last_update_time: Date | null
+    cluster: string | null
+    master: number | null
+    master_active: number | null
+    projectx_node_version: string | null
+    rvm: $Enums.servers_rvm | null
+    service: string | null
+    provision_request_value: number | null
+    location: string | null
+    instance_id: number | null
+    last_requested_at: Date | null
+  }
+
+  export type ServersMaxAggregateOutputType = {
+    id: number | null
+    hostname: string | null
+    provision: number | null
+    close: number | null
+    state: number | null
+    type: $Enums.servers_type | null
+    last_update_time: Date | null
+    cluster: string | null
+    master: number | null
+    master_active: number | null
+    projectx_node_version: string | null
+    rvm: $Enums.servers_rvm | null
+    service: string | null
+    provision_request_value: number | null
+    location: string | null
+    instance_id: number | null
+    last_requested_at: Date | null
+  }
+
+  export type ServersCountAggregateOutputType = {
+    id: number
+    hostname: number
+    provision: number
+    close: number
+    state: number
+    type: number
+    last_update_time: number
+    cluster: number
+    master: number
+    master_active: number
+    projectx_node_version: number
+    rvm: number
+    service: number
+    provision_request_value: number
+    location: number
+    instance_id: number
+    last_requested_at: number
+    _all: number
+  }
+
+
+  export type ServersAvgAggregateInputType = {
+    id?: true
+    provision?: true
+    close?: true
+    state?: true
+    master?: true
+    master_active?: true
+    provision_request_value?: true
+    instance_id?: true
+  }
+
+  export type ServersSumAggregateInputType = {
+    id?: true
+    provision?: true
+    close?: true
+    state?: true
+    master?: true
+    master_active?: true
+    provision_request_value?: true
+    instance_id?: true
+  }
+
+  export type ServersMinAggregateInputType = {
+    id?: true
+    hostname?: true
+    provision?: true
+    close?: true
+    state?: true
+    type?: true
+    last_update_time?: true
+    cluster?: true
+    master?: true
+    master_active?: true
+    projectx_node_version?: true
+    rvm?: true
+    service?: true
+    provision_request_value?: true
+    location?: true
+    instance_id?: true
+    last_requested_at?: true
+  }
+
+  export type ServersMaxAggregateInputType = {
+    id?: true
+    hostname?: true
+    provision?: true
+    close?: true
+    state?: true
+    type?: true
+    last_update_time?: true
+    cluster?: true
+    master?: true
+    master_active?: true
+    projectx_node_version?: true
+    rvm?: true
+    service?: true
+    provision_request_value?: true
+    location?: true
+    instance_id?: true
+    last_requested_at?: true
+  }
+
+  export type ServersCountAggregateInputType = {
+    id?: true
+    hostname?: true
+    provision?: true
+    close?: true
+    state?: true
+    type?: true
+    last_update_time?: true
+    cluster?: true
+    master?: true
+    master_active?: true
+    projectx_node_version?: true
+    rvm?: true
+    service?: true
+    provision_request_value?: true
+    location?: true
+    instance_id?: true
+    last_requested_at?: true
+    _all?: true
+  }
+
+  export type ServersAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which servers to aggregate.
+     */
+    where?: serversWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers to fetch.
+     */
+    orderBy?: serversOrderByWithRelationInput | serversOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: serversWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned servers
+    **/
+    _count?: true | ServersCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ServersAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ServersSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServersMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServersMaxAggregateInputType
+  }
+
+  export type GetServersAggregateType<T extends ServersAggregateArgs> = {
+        [P in keyof T & keyof AggregateServers]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServers[P]>
+      : GetScalarType<T[P], AggregateServers[P]>
+  }
+
+
+
+
+  export type serversGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: serversWhereInput
+    orderBy?: serversOrderByWithAggregationInput | serversOrderByWithAggregationInput[]
+    by: ServersScalarFieldEnum[] | ServersScalarFieldEnum
+    having?: serversScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServersCountAggregateInputType | true
+    _avg?: ServersAvgAggregateInputType
+    _sum?: ServersSumAggregateInputType
+    _min?: ServersMinAggregateInputType
+    _max?: ServersMaxAggregateInputType
+  }
+
+  export type ServersGroupByOutputType = {
+    id: number
+    hostname: string
+    provision: number
+    close: number
+    state: number
+    type: $Enums.servers_type | null
+    last_update_time: Date
+    cluster: string
+    master: number
+    master_active: number
+    projectx_node_version: string
+    rvm: $Enums.servers_rvm
+    service: string
+    provision_request_value: number
+    location: string | null
+    instance_id: number
+    last_requested_at: Date | null
+    _count: ServersCountAggregateOutputType | null
+    _avg: ServersAvgAggregateOutputType | null
+    _sum: ServersSumAggregateOutputType | null
+    _min: ServersMinAggregateOutputType | null
+    _max: ServersMaxAggregateOutputType | null
+  }
+
+  type GetServersGroupByPayload<T extends serversGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServersGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServersGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServersGroupByOutputType[P]>
+            : GetScalarType<T[P], ServersGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type serversSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    hostname?: boolean
+    provision?: boolean
+    close?: boolean
+    state?: boolean
+    type?: boolean
+    last_update_time?: boolean
+    cluster?: boolean
+    master?: boolean
+    master_active?: boolean
+    projectx_node_version?: boolean
+    rvm?: boolean
+    service?: boolean
+    provision_request_value?: boolean
+    location?: boolean
+    instance_id?: boolean
+    last_requested_at?: boolean
+  }, ExtArgs["result"]["servers"]>
+
+
+
+  export type serversSelectScalar = {
+    id?: boolean
+    hostname?: boolean
+    provision?: boolean
+    close?: boolean
+    state?: boolean
+    type?: boolean
+    last_update_time?: boolean
+    cluster?: boolean
+    master?: boolean
+    master_active?: boolean
+    projectx_node_version?: boolean
+    rvm?: boolean
+    service?: boolean
+    provision_request_value?: boolean
+    location?: boolean
+    instance_id?: boolean
+    last_requested_at?: boolean
+  }
+
+  export type serversOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hostname" | "provision" | "close" | "state" | "type" | "last_update_time" | "cluster" | "master" | "master_active" | "projectx_node_version" | "rvm" | "service" | "provision_request_value" | "location" | "instance_id" | "last_requested_at", ExtArgs["result"]["servers"]>
+
+  export type $serversPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "servers"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      hostname: string
+      provision: number
+      close: number
+      state: number
+      type: $Enums.servers_type | null
+      last_update_time: Date
+      cluster: string
+      master: number
+      master_active: number
+      projectx_node_version: string
+      rvm: $Enums.servers_rvm
+      service: string
+      provision_request_value: number
+      location: string | null
+      instance_id: number
+      last_requested_at: Date | null
+    }, ExtArgs["result"]["servers"]>
+    composites: {}
+  }
+
+  type serversGetPayload<S extends boolean | null | undefined | serversDefaultArgs> = $Result.GetResult<Prisma.$serversPayload, S>
+
+  type serversCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<serversFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServersCountAggregateInputType | true
+    }
+
+  export interface serversDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['servers'], meta: { name: 'servers' } }
+    /**
+     * Find zero or one Servers that matches the filter.
+     * @param {serversFindUniqueArgs} args - Arguments to find a Servers
+     * @example
+     * // Get one Servers
+     * const servers = await prisma.servers.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends serversFindUniqueArgs>(args: SelectSubset<T, serversFindUniqueArgs<ExtArgs>>): Prisma__serversClient<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Servers that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {serversFindUniqueOrThrowArgs} args - Arguments to find a Servers
+     * @example
+     * // Get one Servers
+     * const servers = await prisma.servers.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends serversFindUniqueOrThrowArgs>(args: SelectSubset<T, serversFindUniqueOrThrowArgs<ExtArgs>>): Prisma__serversClient<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Servers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serversFindFirstArgs} args - Arguments to find a Servers
+     * @example
+     * // Get one Servers
+     * const servers = await prisma.servers.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends serversFindFirstArgs>(args?: SelectSubset<T, serversFindFirstArgs<ExtArgs>>): Prisma__serversClient<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Servers that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serversFindFirstOrThrowArgs} args - Arguments to find a Servers
+     * @example
+     * // Get one Servers
+     * const servers = await prisma.servers.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends serversFindFirstOrThrowArgs>(args?: SelectSubset<T, serversFindFirstOrThrowArgs<ExtArgs>>): Prisma__serversClient<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Servers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serversFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Servers
+     * const servers = await prisma.servers.findMany()
+     * 
+     * // Get first 10 Servers
+     * const servers = await prisma.servers.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serversWithIdOnly = await prisma.servers.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends serversFindManyArgs>(args?: SelectSubset<T, serversFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Servers.
+     * @param {serversCreateArgs} args - Arguments to create a Servers.
+     * @example
+     * // Create one Servers
+     * const Servers = await prisma.servers.create({
+     *   data: {
+     *     // ... data to create a Servers
+     *   }
+     * })
+     * 
+     */
+    create<T extends serversCreateArgs>(args: SelectSubset<T, serversCreateArgs<ExtArgs>>): Prisma__serversClient<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Servers.
+     * @param {serversCreateManyArgs} args - Arguments to create many Servers.
+     * @example
+     * // Create many Servers
+     * const servers = await prisma.servers.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends serversCreateManyArgs>(args?: SelectSubset<T, serversCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Servers.
+     * @param {serversDeleteArgs} args - Arguments to delete one Servers.
+     * @example
+     * // Delete one Servers
+     * const Servers = await prisma.servers.delete({
+     *   where: {
+     *     // ... filter to delete one Servers
+     *   }
+     * })
+     * 
+     */
+    delete<T extends serversDeleteArgs>(args: SelectSubset<T, serversDeleteArgs<ExtArgs>>): Prisma__serversClient<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Servers.
+     * @param {serversUpdateArgs} args - Arguments to update one Servers.
+     * @example
+     * // Update one Servers
+     * const servers = await prisma.servers.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends serversUpdateArgs>(args: SelectSubset<T, serversUpdateArgs<ExtArgs>>): Prisma__serversClient<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Servers.
+     * @param {serversDeleteManyArgs} args - Arguments to filter Servers to delete.
+     * @example
+     * // Delete a few Servers
+     * const { count } = await prisma.servers.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends serversDeleteManyArgs>(args?: SelectSubset<T, serversDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Servers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serversUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Servers
+     * const servers = await prisma.servers.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends serversUpdateManyArgs>(args: SelectSubset<T, serversUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Servers.
+     * @param {serversUpsertArgs} args - Arguments to update or create a Servers.
+     * @example
+     * // Update or create a Servers
+     * const servers = await prisma.servers.upsert({
+     *   create: {
+     *     // ... data to create a Servers
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Servers we want to update
+     *   }
+     * })
+     */
+    upsert<T extends serversUpsertArgs>(args: SelectSubset<T, serversUpsertArgs<ExtArgs>>): Prisma__serversClient<$Result.GetResult<Prisma.$serversPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Servers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serversCountArgs} args - Arguments to filter Servers to count.
+     * @example
+     * // Count the number of Servers
+     * const count = await prisma.servers.count({
+     *   where: {
+     *     // ... the filter for the Servers we want to count
+     *   }
+     * })
+    **/
+    count<T extends serversCountArgs>(
+      args?: Subset<T, serversCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServersCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Servers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServersAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServersAggregateArgs>(args: Subset<T, ServersAggregateArgs>): Prisma.PrismaPromise<GetServersAggregateType<T>>
+
+    /**
+     * Group by Servers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {serversGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends serversGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: serversGroupByArgs['orderBy'] }
+        : { orderBy?: serversGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, serversGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServersGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the servers model
+   */
+  readonly fields: serversFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for servers.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__serversClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the servers model
+   */
+  interface serversFieldRefs {
+    readonly id: FieldRef<"servers", 'Int'>
+    readonly hostname: FieldRef<"servers", 'String'>
+    readonly provision: FieldRef<"servers", 'Int'>
+    readonly close: FieldRef<"servers", 'Int'>
+    readonly state: FieldRef<"servers", 'Int'>
+    readonly type: FieldRef<"servers", 'servers_type'>
+    readonly last_update_time: FieldRef<"servers", 'DateTime'>
+    readonly cluster: FieldRef<"servers", 'String'>
+    readonly master: FieldRef<"servers", 'Int'>
+    readonly master_active: FieldRef<"servers", 'Int'>
+    readonly projectx_node_version: FieldRef<"servers", 'String'>
+    readonly rvm: FieldRef<"servers", 'servers_rvm'>
+    readonly service: FieldRef<"servers", 'String'>
+    readonly provision_request_value: FieldRef<"servers", 'Int'>
+    readonly location: FieldRef<"servers", 'String'>
+    readonly instance_id: FieldRef<"servers", 'Int'>
+    readonly last_requested_at: FieldRef<"servers", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * servers findUnique
+   */
+  export type serversFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * Filter, which servers to fetch.
+     */
+    where: serversWhereUniqueInput
+  }
+
+  /**
+   * servers findUniqueOrThrow
+   */
+  export type serversFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * Filter, which servers to fetch.
+     */
+    where: serversWhereUniqueInput
+  }
+
+  /**
+   * servers findFirst
+   */
+  export type serversFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * Filter, which servers to fetch.
+     */
+    where?: serversWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers to fetch.
+     */
+    orderBy?: serversOrderByWithRelationInput | serversOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for servers.
+     */
+    cursor?: serversWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of servers.
+     */
+    distinct?: ServersScalarFieldEnum | ServersScalarFieldEnum[]
+  }
+
+  /**
+   * servers findFirstOrThrow
+   */
+  export type serversFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * Filter, which servers to fetch.
+     */
+    where?: serversWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers to fetch.
+     */
+    orderBy?: serversOrderByWithRelationInput | serversOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for servers.
+     */
+    cursor?: serversWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of servers.
+     */
+    distinct?: ServersScalarFieldEnum | ServersScalarFieldEnum[]
+  }
+
+  /**
+   * servers findMany
+   */
+  export type serversFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * Filter, which servers to fetch.
+     */
+    where?: serversWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers to fetch.
+     */
+    orderBy?: serversOrderByWithRelationInput | serversOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing servers.
+     */
+    cursor?: serversWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers.
+     */
+    skip?: number
+    distinct?: ServersScalarFieldEnum | ServersScalarFieldEnum[]
+  }
+
+  /**
+   * servers create
+   */
+  export type serversCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * The data needed to create a servers.
+     */
+    data: XOR<serversCreateInput, serversUncheckedCreateInput>
+  }
+
+  /**
+   * servers createMany
+   */
+  export type serversCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many servers.
+     */
+    data: serversCreateManyInput | serversCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * servers update
+   */
+  export type serversUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * The data needed to update a servers.
+     */
+    data: XOR<serversUpdateInput, serversUncheckedUpdateInput>
+    /**
+     * Choose, which servers to update.
+     */
+    where: serversWhereUniqueInput
+  }
+
+  /**
+   * servers updateMany
+   */
+  export type serversUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update servers.
+     */
+    data: XOR<serversUpdateManyMutationInput, serversUncheckedUpdateManyInput>
+    /**
+     * Filter which servers to update
+     */
+    where?: serversWhereInput
+    /**
+     * Limit how many servers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * servers upsert
+   */
+  export type serversUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * The filter to search for the servers to update in case it exists.
+     */
+    where: serversWhereUniqueInput
+    /**
+     * In case the servers found by the `where` argument doesn't exist, create a new servers with this data.
+     */
+    create: XOR<serversCreateInput, serversUncheckedCreateInput>
+    /**
+     * In case the servers was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<serversUpdateInput, serversUncheckedUpdateInput>
+  }
+
+  /**
+   * servers delete
+   */
+  export type serversDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+    /**
+     * Filter which servers to delete.
+     */
+    where: serversWhereUniqueInput
+  }
+
+  /**
+   * servers deleteMany
+   */
+  export type serversDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which servers to delete
+     */
+    where?: serversWhereInput
+    /**
+     * Limit how many servers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * servers without action
+   */
+  export type serversDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers
+     */
+    select?: serversSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers
+     */
+    omit?: serversOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model servers_ips
+   */
+
+  export type AggregateServers_ips = {
+    _count: Servers_ipsCountAggregateOutputType | null
+    _avg: Servers_ipsAvgAggregateOutputType | null
+    _sum: Servers_ipsSumAggregateOutputType | null
+    _min: Servers_ipsMinAggregateOutputType | null
+    _max: Servers_ipsMaxAggregateOutputType | null
+  }
+
+  export type Servers_ipsAvgAggregateOutputType = {
+    id: number | null
+    servers_id: number | null
+    instance: number | null
+  }
+
+  export type Servers_ipsSumAggregateOutputType = {
+    id: number | null
+    servers_id: number | null
+    instance: number | null
+  }
+
+  export type Servers_ipsMinAggregateOutputType = {
+    id: number | null
+    servers_id: number | null
+    ip: string | null
+    comment: string | null
+    instance: number | null
+  }
+
+  export type Servers_ipsMaxAggregateOutputType = {
+    id: number | null
+    servers_id: number | null
+    ip: string | null
+    comment: string | null
+    instance: number | null
+  }
+
+  export type Servers_ipsCountAggregateOutputType = {
+    id: number
+    servers_id: number
+    ip: number
+    comment: number
+    instance: number
+    _all: number
+  }
+
+
+  export type Servers_ipsAvgAggregateInputType = {
+    id?: true
+    servers_id?: true
+    instance?: true
+  }
+
+  export type Servers_ipsSumAggregateInputType = {
+    id?: true
+    servers_id?: true
+    instance?: true
+  }
+
+  export type Servers_ipsMinAggregateInputType = {
+    id?: true
+    servers_id?: true
+    ip?: true
+    comment?: true
+    instance?: true
+  }
+
+  export type Servers_ipsMaxAggregateInputType = {
+    id?: true
+    servers_id?: true
+    ip?: true
+    comment?: true
+    instance?: true
+  }
+
+  export type Servers_ipsCountAggregateInputType = {
+    id?: true
+    servers_id?: true
+    ip?: true
+    comment?: true
+    instance?: true
+    _all?: true
+  }
+
+  export type Servers_ipsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which servers_ips to aggregate.
+     */
+    where?: servers_ipsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers_ips to fetch.
+     */
+    orderBy?: servers_ipsOrderByWithRelationInput | servers_ipsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: servers_ipsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers_ips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers_ips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned servers_ips
+    **/
+    _count?: true | Servers_ipsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Servers_ipsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Servers_ipsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Servers_ipsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Servers_ipsMaxAggregateInputType
+  }
+
+  export type GetServers_ipsAggregateType<T extends Servers_ipsAggregateArgs> = {
+        [P in keyof T & keyof AggregateServers_ips]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServers_ips[P]>
+      : GetScalarType<T[P], AggregateServers_ips[P]>
+  }
+
+
+
+
+  export type servers_ipsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: servers_ipsWhereInput
+    orderBy?: servers_ipsOrderByWithAggregationInput | servers_ipsOrderByWithAggregationInput[]
+    by: Servers_ipsScalarFieldEnum[] | Servers_ipsScalarFieldEnum
+    having?: servers_ipsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Servers_ipsCountAggregateInputType | true
+    _avg?: Servers_ipsAvgAggregateInputType
+    _sum?: Servers_ipsSumAggregateInputType
+    _min?: Servers_ipsMinAggregateInputType
+    _max?: Servers_ipsMaxAggregateInputType
+  }
+
+  export type Servers_ipsGroupByOutputType = {
+    id: number
+    servers_id: number
+    ip: string
+    comment: string
+    instance: number
+    _count: Servers_ipsCountAggregateOutputType | null
+    _avg: Servers_ipsAvgAggregateOutputType | null
+    _sum: Servers_ipsSumAggregateOutputType | null
+    _min: Servers_ipsMinAggregateOutputType | null
+    _max: Servers_ipsMaxAggregateOutputType | null
+  }
+
+  type GetServers_ipsGroupByPayload<T extends servers_ipsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Servers_ipsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Servers_ipsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Servers_ipsGroupByOutputType[P]>
+            : GetScalarType<T[P], Servers_ipsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type servers_ipsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    servers_id?: boolean
+    ip?: boolean
+    comment?: boolean
+    instance?: boolean
+  }, ExtArgs["result"]["servers_ips"]>
+
+
+
+  export type servers_ipsSelectScalar = {
+    id?: boolean
+    servers_id?: boolean
+    ip?: boolean
+    comment?: boolean
+    instance?: boolean
+  }
+
+  export type servers_ipsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "servers_id" | "ip" | "comment" | "instance", ExtArgs["result"]["servers_ips"]>
+
+  export type $servers_ipsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "servers_ips"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      servers_id: number
+      ip: string
+      comment: string
+      instance: number
+    }, ExtArgs["result"]["servers_ips"]>
+    composites: {}
+  }
+
+  type servers_ipsGetPayload<S extends boolean | null | undefined | servers_ipsDefaultArgs> = $Result.GetResult<Prisma.$servers_ipsPayload, S>
+
+  type servers_ipsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<servers_ipsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Servers_ipsCountAggregateInputType | true
+    }
+
+  export interface servers_ipsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['servers_ips'], meta: { name: 'servers_ips' } }
+    /**
+     * Find zero or one Servers_ips that matches the filter.
+     * @param {servers_ipsFindUniqueArgs} args - Arguments to find a Servers_ips
+     * @example
+     * // Get one Servers_ips
+     * const servers_ips = await prisma.servers_ips.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends servers_ipsFindUniqueArgs>(args: SelectSubset<T, servers_ipsFindUniqueArgs<ExtArgs>>): Prisma__servers_ipsClient<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Servers_ips that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {servers_ipsFindUniqueOrThrowArgs} args - Arguments to find a Servers_ips
+     * @example
+     * // Get one Servers_ips
+     * const servers_ips = await prisma.servers_ips.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends servers_ipsFindUniqueOrThrowArgs>(args: SelectSubset<T, servers_ipsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__servers_ipsClient<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Servers_ips that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_ipsFindFirstArgs} args - Arguments to find a Servers_ips
+     * @example
+     * // Get one Servers_ips
+     * const servers_ips = await prisma.servers_ips.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends servers_ipsFindFirstArgs>(args?: SelectSubset<T, servers_ipsFindFirstArgs<ExtArgs>>): Prisma__servers_ipsClient<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Servers_ips that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_ipsFindFirstOrThrowArgs} args - Arguments to find a Servers_ips
+     * @example
+     * // Get one Servers_ips
+     * const servers_ips = await prisma.servers_ips.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends servers_ipsFindFirstOrThrowArgs>(args?: SelectSubset<T, servers_ipsFindFirstOrThrowArgs<ExtArgs>>): Prisma__servers_ipsClient<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Servers_ips that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_ipsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Servers_ips
+     * const servers_ips = await prisma.servers_ips.findMany()
+     * 
+     * // Get first 10 Servers_ips
+     * const servers_ips = await prisma.servers_ips.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const servers_ipsWithIdOnly = await prisma.servers_ips.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends servers_ipsFindManyArgs>(args?: SelectSubset<T, servers_ipsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Servers_ips.
+     * @param {servers_ipsCreateArgs} args - Arguments to create a Servers_ips.
+     * @example
+     * // Create one Servers_ips
+     * const Servers_ips = await prisma.servers_ips.create({
+     *   data: {
+     *     // ... data to create a Servers_ips
+     *   }
+     * })
+     * 
+     */
+    create<T extends servers_ipsCreateArgs>(args: SelectSubset<T, servers_ipsCreateArgs<ExtArgs>>): Prisma__servers_ipsClient<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Servers_ips.
+     * @param {servers_ipsCreateManyArgs} args - Arguments to create many Servers_ips.
+     * @example
+     * // Create many Servers_ips
+     * const servers_ips = await prisma.servers_ips.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends servers_ipsCreateManyArgs>(args?: SelectSubset<T, servers_ipsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Servers_ips.
+     * @param {servers_ipsDeleteArgs} args - Arguments to delete one Servers_ips.
+     * @example
+     * // Delete one Servers_ips
+     * const Servers_ips = await prisma.servers_ips.delete({
+     *   where: {
+     *     // ... filter to delete one Servers_ips
+     *   }
+     * })
+     * 
+     */
+    delete<T extends servers_ipsDeleteArgs>(args: SelectSubset<T, servers_ipsDeleteArgs<ExtArgs>>): Prisma__servers_ipsClient<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Servers_ips.
+     * @param {servers_ipsUpdateArgs} args - Arguments to update one Servers_ips.
+     * @example
+     * // Update one Servers_ips
+     * const servers_ips = await prisma.servers_ips.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends servers_ipsUpdateArgs>(args: SelectSubset<T, servers_ipsUpdateArgs<ExtArgs>>): Prisma__servers_ipsClient<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Servers_ips.
+     * @param {servers_ipsDeleteManyArgs} args - Arguments to filter Servers_ips to delete.
+     * @example
+     * // Delete a few Servers_ips
+     * const { count } = await prisma.servers_ips.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends servers_ipsDeleteManyArgs>(args?: SelectSubset<T, servers_ipsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Servers_ips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_ipsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Servers_ips
+     * const servers_ips = await prisma.servers_ips.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends servers_ipsUpdateManyArgs>(args: SelectSubset<T, servers_ipsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Servers_ips.
+     * @param {servers_ipsUpsertArgs} args - Arguments to update or create a Servers_ips.
+     * @example
+     * // Update or create a Servers_ips
+     * const servers_ips = await prisma.servers_ips.upsert({
+     *   create: {
+     *     // ... data to create a Servers_ips
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Servers_ips we want to update
+     *   }
+     * })
+     */
+    upsert<T extends servers_ipsUpsertArgs>(args: SelectSubset<T, servers_ipsUpsertArgs<ExtArgs>>): Prisma__servers_ipsClient<$Result.GetResult<Prisma.$servers_ipsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Servers_ips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_ipsCountArgs} args - Arguments to filter Servers_ips to count.
+     * @example
+     * // Count the number of Servers_ips
+     * const count = await prisma.servers_ips.count({
+     *   where: {
+     *     // ... the filter for the Servers_ips we want to count
+     *   }
+     * })
+    **/
+    count<T extends servers_ipsCountArgs>(
+      args?: Subset<T, servers_ipsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Servers_ipsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Servers_ips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Servers_ipsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Servers_ipsAggregateArgs>(args: Subset<T, Servers_ipsAggregateArgs>): Prisma.PrismaPromise<GetServers_ipsAggregateType<T>>
+
+    /**
+     * Group by Servers_ips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_ipsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends servers_ipsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: servers_ipsGroupByArgs['orderBy'] }
+        : { orderBy?: servers_ipsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, servers_ipsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServers_ipsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the servers_ips model
+   */
+  readonly fields: servers_ipsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for servers_ips.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__servers_ipsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the servers_ips model
+   */
+  interface servers_ipsFieldRefs {
+    readonly id: FieldRef<"servers_ips", 'Int'>
+    readonly servers_id: FieldRef<"servers_ips", 'Int'>
+    readonly ip: FieldRef<"servers_ips", 'String'>
+    readonly comment: FieldRef<"servers_ips", 'String'>
+    readonly instance: FieldRef<"servers_ips", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * servers_ips findUnique
+   */
+  export type servers_ipsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_ips to fetch.
+     */
+    where: servers_ipsWhereUniqueInput
+  }
+
+  /**
+   * servers_ips findUniqueOrThrow
+   */
+  export type servers_ipsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_ips to fetch.
+     */
+    where: servers_ipsWhereUniqueInput
+  }
+
+  /**
+   * servers_ips findFirst
+   */
+  export type servers_ipsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_ips to fetch.
+     */
+    where?: servers_ipsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers_ips to fetch.
+     */
+    orderBy?: servers_ipsOrderByWithRelationInput | servers_ipsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for servers_ips.
+     */
+    cursor?: servers_ipsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers_ips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers_ips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of servers_ips.
+     */
+    distinct?: Servers_ipsScalarFieldEnum | Servers_ipsScalarFieldEnum[]
+  }
+
+  /**
+   * servers_ips findFirstOrThrow
+   */
+  export type servers_ipsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_ips to fetch.
+     */
+    where?: servers_ipsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers_ips to fetch.
+     */
+    orderBy?: servers_ipsOrderByWithRelationInput | servers_ipsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for servers_ips.
+     */
+    cursor?: servers_ipsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers_ips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers_ips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of servers_ips.
+     */
+    distinct?: Servers_ipsScalarFieldEnum | Servers_ipsScalarFieldEnum[]
+  }
+
+  /**
+   * servers_ips findMany
+   */
+  export type servers_ipsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_ips to fetch.
+     */
+    where?: servers_ipsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers_ips to fetch.
+     */
+    orderBy?: servers_ipsOrderByWithRelationInput | servers_ipsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing servers_ips.
+     */
+    cursor?: servers_ipsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers_ips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers_ips.
+     */
+    skip?: number
+    distinct?: Servers_ipsScalarFieldEnum | Servers_ipsScalarFieldEnum[]
+  }
+
+  /**
+   * servers_ips create
+   */
+  export type servers_ipsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a servers_ips.
+     */
+    data: XOR<servers_ipsCreateInput, servers_ipsUncheckedCreateInput>
+  }
+
+  /**
+   * servers_ips createMany
+   */
+  export type servers_ipsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many servers_ips.
+     */
+    data: servers_ipsCreateManyInput | servers_ipsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * servers_ips update
+   */
+  export type servers_ipsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a servers_ips.
+     */
+    data: XOR<servers_ipsUpdateInput, servers_ipsUncheckedUpdateInput>
+    /**
+     * Choose, which servers_ips to update.
+     */
+    where: servers_ipsWhereUniqueInput
+  }
+
+  /**
+   * servers_ips updateMany
+   */
+  export type servers_ipsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update servers_ips.
+     */
+    data: XOR<servers_ipsUpdateManyMutationInput, servers_ipsUncheckedUpdateManyInput>
+    /**
+     * Filter which servers_ips to update
+     */
+    where?: servers_ipsWhereInput
+    /**
+     * Limit how many servers_ips to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * servers_ips upsert
+   */
+  export type servers_ipsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the servers_ips to update in case it exists.
+     */
+    where: servers_ipsWhereUniqueInput
+    /**
+     * In case the servers_ips found by the `where` argument doesn't exist, create a new servers_ips with this data.
+     */
+    create: XOR<servers_ipsCreateInput, servers_ipsUncheckedCreateInput>
+    /**
+     * In case the servers_ips was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<servers_ipsUpdateInput, servers_ipsUncheckedUpdateInput>
+  }
+
+  /**
+   * servers_ips delete
+   */
+  export type servers_ipsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+    /**
+     * Filter which servers_ips to delete.
+     */
+    where: servers_ipsWhereUniqueInput
+  }
+
+  /**
+   * servers_ips deleteMany
+   */
+  export type servers_ipsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which servers_ips to delete
+     */
+    where?: servers_ipsWhereInput
+    /**
+     * Limit how many servers_ips to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * servers_ips without action
+   */
+  export type servers_ipsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_ips
+     */
+    select?: servers_ipsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_ips
+     */
+    omit?: servers_ipsOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model servers_properties
+   */
+
+  export type AggregateServers_properties = {
+    _count: Servers_propertiesCountAggregateOutputType | null
+    _avg: Servers_propertiesAvgAggregateOutputType | null
+    _sum: Servers_propertiesSumAggregateOutputType | null
+    _min: Servers_propertiesMinAggregateOutputType | null
+    _max: Servers_propertiesMaxAggregateOutputType | null
+  }
+
+  export type Servers_propertiesAvgAggregateOutputType = {
+    id: number | null
+    servers_id: number | null
+  }
+
+  export type Servers_propertiesSumAggregateOutputType = {
+    id: number | null
+    servers_id: number | null
+  }
+
+  export type Servers_propertiesMinAggregateOutputType = {
+    id: number | null
+    servers_id: number | null
+    name: string | null
+    value: string | null
+  }
+
+  export type Servers_propertiesMaxAggregateOutputType = {
+    id: number | null
+    servers_id: number | null
+    name: string | null
+    value: string | null
+  }
+
+  export type Servers_propertiesCountAggregateOutputType = {
+    id: number
+    servers_id: number
+    name: number
+    value: number
+    _all: number
+  }
+
+
+  export type Servers_propertiesAvgAggregateInputType = {
+    id?: true
+    servers_id?: true
+  }
+
+  export type Servers_propertiesSumAggregateInputType = {
+    id?: true
+    servers_id?: true
+  }
+
+  export type Servers_propertiesMinAggregateInputType = {
+    id?: true
+    servers_id?: true
+    name?: true
+    value?: true
+  }
+
+  export type Servers_propertiesMaxAggregateInputType = {
+    id?: true
+    servers_id?: true
+    name?: true
+    value?: true
+  }
+
+  export type Servers_propertiesCountAggregateInputType = {
+    id?: true
+    servers_id?: true
+    name?: true
+    value?: true
+    _all?: true
+  }
+
+  export type Servers_propertiesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which servers_properties to aggregate.
+     */
+    where?: servers_propertiesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers_properties to fetch.
+     */
+    orderBy?: servers_propertiesOrderByWithRelationInput | servers_propertiesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: servers_propertiesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers_properties from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers_properties.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned servers_properties
+    **/
+    _count?: true | Servers_propertiesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Servers_propertiesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Servers_propertiesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Servers_propertiesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Servers_propertiesMaxAggregateInputType
+  }
+
+  export type GetServers_propertiesAggregateType<T extends Servers_propertiesAggregateArgs> = {
+        [P in keyof T & keyof AggregateServers_properties]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServers_properties[P]>
+      : GetScalarType<T[P], AggregateServers_properties[P]>
+  }
+
+
+
+
+  export type servers_propertiesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: servers_propertiesWhereInput
+    orderBy?: servers_propertiesOrderByWithAggregationInput | servers_propertiesOrderByWithAggregationInput[]
+    by: Servers_propertiesScalarFieldEnum[] | Servers_propertiesScalarFieldEnum
+    having?: servers_propertiesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Servers_propertiesCountAggregateInputType | true
+    _avg?: Servers_propertiesAvgAggregateInputType
+    _sum?: Servers_propertiesSumAggregateInputType
+    _min?: Servers_propertiesMinAggregateInputType
+    _max?: Servers_propertiesMaxAggregateInputType
+  }
+
+  export type Servers_propertiesGroupByOutputType = {
+    id: number
+    servers_id: number
+    name: string
+    value: string
+    _count: Servers_propertiesCountAggregateOutputType | null
+    _avg: Servers_propertiesAvgAggregateOutputType | null
+    _sum: Servers_propertiesSumAggregateOutputType | null
+    _min: Servers_propertiesMinAggregateOutputType | null
+    _max: Servers_propertiesMaxAggregateOutputType | null
+  }
+
+  type GetServers_propertiesGroupByPayload<T extends servers_propertiesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Servers_propertiesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Servers_propertiesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Servers_propertiesGroupByOutputType[P]>
+            : GetScalarType<T[P], Servers_propertiesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type servers_propertiesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    servers_id?: boolean
+    name?: boolean
+    value?: boolean
+  }, ExtArgs["result"]["servers_properties"]>
+
+
+
+  export type servers_propertiesSelectScalar = {
+    id?: boolean
+    servers_id?: boolean
+    name?: boolean
+    value?: boolean
+  }
+
+  export type servers_propertiesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "servers_id" | "name" | "value", ExtArgs["result"]["servers_properties"]>
+
+  export type $servers_propertiesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "servers_properties"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      servers_id: number
+      name: string
+      value: string
+    }, ExtArgs["result"]["servers_properties"]>
+    composites: {}
+  }
+
+  type servers_propertiesGetPayload<S extends boolean | null | undefined | servers_propertiesDefaultArgs> = $Result.GetResult<Prisma.$servers_propertiesPayload, S>
+
+  type servers_propertiesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<servers_propertiesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Servers_propertiesCountAggregateInputType | true
+    }
+
+  export interface servers_propertiesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['servers_properties'], meta: { name: 'servers_properties' } }
+    /**
+     * Find zero or one Servers_properties that matches the filter.
+     * @param {servers_propertiesFindUniqueArgs} args - Arguments to find a Servers_properties
+     * @example
+     * // Get one Servers_properties
+     * const servers_properties = await prisma.servers_properties.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends servers_propertiesFindUniqueArgs>(args: SelectSubset<T, servers_propertiesFindUniqueArgs<ExtArgs>>): Prisma__servers_propertiesClient<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Servers_properties that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {servers_propertiesFindUniqueOrThrowArgs} args - Arguments to find a Servers_properties
+     * @example
+     * // Get one Servers_properties
+     * const servers_properties = await prisma.servers_properties.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends servers_propertiesFindUniqueOrThrowArgs>(args: SelectSubset<T, servers_propertiesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__servers_propertiesClient<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Servers_properties that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_propertiesFindFirstArgs} args - Arguments to find a Servers_properties
+     * @example
+     * // Get one Servers_properties
+     * const servers_properties = await prisma.servers_properties.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends servers_propertiesFindFirstArgs>(args?: SelectSubset<T, servers_propertiesFindFirstArgs<ExtArgs>>): Prisma__servers_propertiesClient<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Servers_properties that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_propertiesFindFirstOrThrowArgs} args - Arguments to find a Servers_properties
+     * @example
+     * // Get one Servers_properties
+     * const servers_properties = await prisma.servers_properties.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends servers_propertiesFindFirstOrThrowArgs>(args?: SelectSubset<T, servers_propertiesFindFirstOrThrowArgs<ExtArgs>>): Prisma__servers_propertiesClient<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Servers_properties that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_propertiesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Servers_properties
+     * const servers_properties = await prisma.servers_properties.findMany()
+     * 
+     * // Get first 10 Servers_properties
+     * const servers_properties = await prisma.servers_properties.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const servers_propertiesWithIdOnly = await prisma.servers_properties.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends servers_propertiesFindManyArgs>(args?: SelectSubset<T, servers_propertiesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Servers_properties.
+     * @param {servers_propertiesCreateArgs} args - Arguments to create a Servers_properties.
+     * @example
+     * // Create one Servers_properties
+     * const Servers_properties = await prisma.servers_properties.create({
+     *   data: {
+     *     // ... data to create a Servers_properties
+     *   }
+     * })
+     * 
+     */
+    create<T extends servers_propertiesCreateArgs>(args: SelectSubset<T, servers_propertiesCreateArgs<ExtArgs>>): Prisma__servers_propertiesClient<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Servers_properties.
+     * @param {servers_propertiesCreateManyArgs} args - Arguments to create many Servers_properties.
+     * @example
+     * // Create many Servers_properties
+     * const servers_properties = await prisma.servers_properties.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends servers_propertiesCreateManyArgs>(args?: SelectSubset<T, servers_propertiesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Servers_properties.
+     * @param {servers_propertiesDeleteArgs} args - Arguments to delete one Servers_properties.
+     * @example
+     * // Delete one Servers_properties
+     * const Servers_properties = await prisma.servers_properties.delete({
+     *   where: {
+     *     // ... filter to delete one Servers_properties
+     *   }
+     * })
+     * 
+     */
+    delete<T extends servers_propertiesDeleteArgs>(args: SelectSubset<T, servers_propertiesDeleteArgs<ExtArgs>>): Prisma__servers_propertiesClient<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Servers_properties.
+     * @param {servers_propertiesUpdateArgs} args - Arguments to update one Servers_properties.
+     * @example
+     * // Update one Servers_properties
+     * const servers_properties = await prisma.servers_properties.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends servers_propertiesUpdateArgs>(args: SelectSubset<T, servers_propertiesUpdateArgs<ExtArgs>>): Prisma__servers_propertiesClient<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Servers_properties.
+     * @param {servers_propertiesDeleteManyArgs} args - Arguments to filter Servers_properties to delete.
+     * @example
+     * // Delete a few Servers_properties
+     * const { count } = await prisma.servers_properties.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends servers_propertiesDeleteManyArgs>(args?: SelectSubset<T, servers_propertiesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Servers_properties.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_propertiesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Servers_properties
+     * const servers_properties = await prisma.servers_properties.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends servers_propertiesUpdateManyArgs>(args: SelectSubset<T, servers_propertiesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Servers_properties.
+     * @param {servers_propertiesUpsertArgs} args - Arguments to update or create a Servers_properties.
+     * @example
+     * // Update or create a Servers_properties
+     * const servers_properties = await prisma.servers_properties.upsert({
+     *   create: {
+     *     // ... data to create a Servers_properties
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Servers_properties we want to update
+     *   }
+     * })
+     */
+    upsert<T extends servers_propertiesUpsertArgs>(args: SelectSubset<T, servers_propertiesUpsertArgs<ExtArgs>>): Prisma__servers_propertiesClient<$Result.GetResult<Prisma.$servers_propertiesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Servers_properties.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_propertiesCountArgs} args - Arguments to filter Servers_properties to count.
+     * @example
+     * // Count the number of Servers_properties
+     * const count = await prisma.servers_properties.count({
+     *   where: {
+     *     // ... the filter for the Servers_properties we want to count
+     *   }
+     * })
+    **/
+    count<T extends servers_propertiesCountArgs>(
+      args?: Subset<T, servers_propertiesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Servers_propertiesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Servers_properties.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Servers_propertiesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Servers_propertiesAggregateArgs>(args: Subset<T, Servers_propertiesAggregateArgs>): Prisma.PrismaPromise<GetServers_propertiesAggregateType<T>>
+
+    /**
+     * Group by Servers_properties.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {servers_propertiesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends servers_propertiesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: servers_propertiesGroupByArgs['orderBy'] }
+        : { orderBy?: servers_propertiesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, servers_propertiesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServers_propertiesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the servers_properties model
+   */
+  readonly fields: servers_propertiesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for servers_properties.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__servers_propertiesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the servers_properties model
+   */
+  interface servers_propertiesFieldRefs {
+    readonly id: FieldRef<"servers_properties", 'Int'>
+    readonly servers_id: FieldRef<"servers_properties", 'Int'>
+    readonly name: FieldRef<"servers_properties", 'String'>
+    readonly value: FieldRef<"servers_properties", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * servers_properties findUnique
+   */
+  export type servers_propertiesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_properties to fetch.
+     */
+    where: servers_propertiesWhereUniqueInput
+  }
+
+  /**
+   * servers_properties findUniqueOrThrow
+   */
+  export type servers_propertiesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_properties to fetch.
+     */
+    where: servers_propertiesWhereUniqueInput
+  }
+
+  /**
+   * servers_properties findFirst
+   */
+  export type servers_propertiesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_properties to fetch.
+     */
+    where?: servers_propertiesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers_properties to fetch.
+     */
+    orderBy?: servers_propertiesOrderByWithRelationInput | servers_propertiesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for servers_properties.
+     */
+    cursor?: servers_propertiesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers_properties from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers_properties.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of servers_properties.
+     */
+    distinct?: Servers_propertiesScalarFieldEnum | Servers_propertiesScalarFieldEnum[]
+  }
+
+  /**
+   * servers_properties findFirstOrThrow
+   */
+  export type servers_propertiesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_properties to fetch.
+     */
+    where?: servers_propertiesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers_properties to fetch.
+     */
+    orderBy?: servers_propertiesOrderByWithRelationInput | servers_propertiesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for servers_properties.
+     */
+    cursor?: servers_propertiesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers_properties from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers_properties.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of servers_properties.
+     */
+    distinct?: Servers_propertiesScalarFieldEnum | Servers_propertiesScalarFieldEnum[]
+  }
+
+  /**
+   * servers_properties findMany
+   */
+  export type servers_propertiesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * Filter, which servers_properties to fetch.
+     */
+    where?: servers_propertiesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of servers_properties to fetch.
+     */
+    orderBy?: servers_propertiesOrderByWithRelationInput | servers_propertiesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing servers_properties.
+     */
+    cursor?: servers_propertiesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` servers_properties from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` servers_properties.
+     */
+    skip?: number
+    distinct?: Servers_propertiesScalarFieldEnum | Servers_propertiesScalarFieldEnum[]
+  }
+
+  /**
+   * servers_properties create
+   */
+  export type servers_propertiesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * The data needed to create a servers_properties.
+     */
+    data: XOR<servers_propertiesCreateInput, servers_propertiesUncheckedCreateInput>
+  }
+
+  /**
+   * servers_properties createMany
+   */
+  export type servers_propertiesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many servers_properties.
+     */
+    data: servers_propertiesCreateManyInput | servers_propertiesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * servers_properties update
+   */
+  export type servers_propertiesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * The data needed to update a servers_properties.
+     */
+    data: XOR<servers_propertiesUpdateInput, servers_propertiesUncheckedUpdateInput>
+    /**
+     * Choose, which servers_properties to update.
+     */
+    where: servers_propertiesWhereUniqueInput
+  }
+
+  /**
+   * servers_properties updateMany
+   */
+  export type servers_propertiesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update servers_properties.
+     */
+    data: XOR<servers_propertiesUpdateManyMutationInput, servers_propertiesUncheckedUpdateManyInput>
+    /**
+     * Filter which servers_properties to update
+     */
+    where?: servers_propertiesWhereInput
+    /**
+     * Limit how many servers_properties to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * servers_properties upsert
+   */
+  export type servers_propertiesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * The filter to search for the servers_properties to update in case it exists.
+     */
+    where: servers_propertiesWhereUniqueInput
+    /**
+     * In case the servers_properties found by the `where` argument doesn't exist, create a new servers_properties with this data.
+     */
+    create: XOR<servers_propertiesCreateInput, servers_propertiesUncheckedCreateInput>
+    /**
+     * In case the servers_properties was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<servers_propertiesUpdateInput, servers_propertiesUncheckedUpdateInput>
+  }
+
+  /**
+   * servers_properties delete
+   */
+  export type servers_propertiesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+    /**
+     * Filter which servers_properties to delete.
+     */
+    where: servers_propertiesWhereUniqueInput
+  }
+
+  /**
+   * servers_properties deleteMany
+   */
+  export type servers_propertiesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which servers_properties to delete
+     */
+    where?: servers_propertiesWhereInput
+    /**
+     * Limit how many servers_properties to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * servers_properties without action
+   */
+  export type servers_propertiesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the servers_properties
+     */
+    select?: servers_propertiesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the servers_properties
+     */
+    omit?: servers_propertiesOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5274,6 +8456,50 @@ export namespace Prisma {
   export type Member_acl_rulesScalarFieldEnum = (typeof Member_acl_rulesScalarFieldEnum)[keyof typeof Member_acl_rulesScalarFieldEnum]
 
 
+  export const ServersScalarFieldEnum: {
+    id: 'id',
+    hostname: 'hostname',
+    provision: 'provision',
+    close: 'close',
+    state: 'state',
+    type: 'type',
+    last_update_time: 'last_update_time',
+    cluster: 'cluster',
+    master: 'master',
+    master_active: 'master_active',
+    projectx_node_version: 'projectx_node_version',
+    rvm: 'rvm',
+    service: 'service',
+    provision_request_value: 'provision_request_value',
+    location: 'location',
+    instance_id: 'instance_id',
+    last_requested_at: 'last_requested_at'
+  };
+
+  export type ServersScalarFieldEnum = (typeof ServersScalarFieldEnum)[keyof typeof ServersScalarFieldEnum]
+
+
+  export const Servers_ipsScalarFieldEnum: {
+    id: 'id',
+    servers_id: 'servers_id',
+    ip: 'ip',
+    comment: 'comment',
+    instance: 'instance'
+  };
+
+  export type Servers_ipsScalarFieldEnum = (typeof Servers_ipsScalarFieldEnum)[keyof typeof Servers_ipsScalarFieldEnum]
+
+
+  export const Servers_propertiesScalarFieldEnum: {
+    id: 'id',
+    servers_id: 'servers_id',
+    name: 'name',
+    value: 'value'
+  };
+
+  export type Servers_propertiesScalarFieldEnum = (typeof Servers_propertiesScalarFieldEnum)[keyof typeof Servers_propertiesScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -5341,6 +8567,33 @@ export namespace Prisma {
   export type member_acl_rulesOrderByRelevanceFieldEnum = (typeof member_acl_rulesOrderByRelevanceFieldEnum)[keyof typeof member_acl_rulesOrderByRelevanceFieldEnum]
 
 
+  export const serversOrderByRelevanceFieldEnum: {
+    hostname: 'hostname',
+    cluster: 'cluster',
+    projectx_node_version: 'projectx_node_version',
+    service: 'service',
+    location: 'location'
+  };
+
+  export type serversOrderByRelevanceFieldEnum = (typeof serversOrderByRelevanceFieldEnum)[keyof typeof serversOrderByRelevanceFieldEnum]
+
+
+  export const servers_ipsOrderByRelevanceFieldEnum: {
+    ip: 'ip',
+    comment: 'comment'
+  };
+
+  export type servers_ipsOrderByRelevanceFieldEnum = (typeof servers_ipsOrderByRelevanceFieldEnum)[keyof typeof servers_ipsOrderByRelevanceFieldEnum]
+
+
+  export const servers_propertiesOrderByRelevanceFieldEnum: {
+    name: 'name',
+    value: 'value'
+  };
+
+  export type servers_propertiesOrderByRelevanceFieldEnum = (typeof servers_propertiesOrderByRelevanceFieldEnum)[keyof typeof servers_propertiesOrderByRelevanceFieldEnum]
+
+
   /**
    * Field references
    */
@@ -5392,6 +8645,20 @@ export namespace Prisma {
    * Reference to a field of type 'member_acl_rules_require_acl'
    */
   export type Enummember_acl_rules_require_aclFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'member_acl_rules_require_acl'>
+    
+
+
+  /**
+   * Reference to a field of type 'servers_type'
+   */
+  export type Enumservers_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'servers_type'>
+    
+
+
+  /**
+   * Reference to a field of type 'servers_rvm'
+   */
+  export type Enumservers_rvmFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'servers_rvm'>
     
 
 
@@ -5779,6 +9046,226 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"member_acl_rules"> | Date | string
     updated_at?: DateTimeNullableWithAggregatesFilter<"member_acl_rules"> | Date | string | null
     deleted_at?: DateTimeNullableWithAggregatesFilter<"member_acl_rules"> | Date | string | null
+  }
+
+  export type serversWhereInput = {
+    AND?: serversWhereInput | serversWhereInput[]
+    OR?: serversWhereInput[]
+    NOT?: serversWhereInput | serversWhereInput[]
+    id?: IntFilter<"servers"> | number
+    hostname?: StringFilter<"servers"> | string
+    provision?: IntFilter<"servers"> | number
+    close?: IntFilter<"servers"> | number
+    state?: IntFilter<"servers"> | number
+    type?: Enumservers_typeNullableFilter<"servers"> | $Enums.servers_type | null
+    last_update_time?: DateTimeFilter<"servers"> | Date | string
+    cluster?: StringFilter<"servers"> | string
+    master?: IntFilter<"servers"> | number
+    master_active?: IntFilter<"servers"> | number
+    projectx_node_version?: StringFilter<"servers"> | string
+    rvm?: Enumservers_rvmFilter<"servers"> | $Enums.servers_rvm
+    service?: StringFilter<"servers"> | string
+    provision_request_value?: IntFilter<"servers"> | number
+    location?: StringNullableFilter<"servers"> | string | null
+    instance_id?: IntFilter<"servers"> | number
+    last_requested_at?: DateTimeNullableFilter<"servers"> | Date | string | null
+  }
+
+  export type serversOrderByWithRelationInput = {
+    id?: SortOrder
+    hostname?: SortOrder
+    provision?: SortOrder
+    close?: SortOrder
+    state?: SortOrder
+    type?: SortOrderInput | SortOrder
+    last_update_time?: SortOrder
+    cluster?: SortOrder
+    master?: SortOrder
+    master_active?: SortOrder
+    projectx_node_version?: SortOrder
+    rvm?: SortOrder
+    service?: SortOrder
+    provision_request_value?: SortOrder
+    location?: SortOrderInput | SortOrder
+    instance_id?: SortOrder
+    last_requested_at?: SortOrderInput | SortOrder
+    _relevance?: serversOrderByRelevanceInput
+  }
+
+  export type serversWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: serversWhereInput | serversWhereInput[]
+    OR?: serversWhereInput[]
+    NOT?: serversWhereInput | serversWhereInput[]
+    hostname?: StringFilter<"servers"> | string
+    provision?: IntFilter<"servers"> | number
+    close?: IntFilter<"servers"> | number
+    state?: IntFilter<"servers"> | number
+    type?: Enumservers_typeNullableFilter<"servers"> | $Enums.servers_type | null
+    last_update_time?: DateTimeFilter<"servers"> | Date | string
+    cluster?: StringFilter<"servers"> | string
+    master?: IntFilter<"servers"> | number
+    master_active?: IntFilter<"servers"> | number
+    projectx_node_version?: StringFilter<"servers"> | string
+    rvm?: Enumservers_rvmFilter<"servers"> | $Enums.servers_rvm
+    service?: StringFilter<"servers"> | string
+    provision_request_value?: IntFilter<"servers"> | number
+    location?: StringNullableFilter<"servers"> | string | null
+    instance_id?: IntFilter<"servers"> | number
+    last_requested_at?: DateTimeNullableFilter<"servers"> | Date | string | null
+  }, "id">
+
+  export type serversOrderByWithAggregationInput = {
+    id?: SortOrder
+    hostname?: SortOrder
+    provision?: SortOrder
+    close?: SortOrder
+    state?: SortOrder
+    type?: SortOrderInput | SortOrder
+    last_update_time?: SortOrder
+    cluster?: SortOrder
+    master?: SortOrder
+    master_active?: SortOrder
+    projectx_node_version?: SortOrder
+    rvm?: SortOrder
+    service?: SortOrder
+    provision_request_value?: SortOrder
+    location?: SortOrderInput | SortOrder
+    instance_id?: SortOrder
+    last_requested_at?: SortOrderInput | SortOrder
+    _count?: serversCountOrderByAggregateInput
+    _avg?: serversAvgOrderByAggregateInput
+    _max?: serversMaxOrderByAggregateInput
+    _min?: serversMinOrderByAggregateInput
+    _sum?: serversSumOrderByAggregateInput
+  }
+
+  export type serversScalarWhereWithAggregatesInput = {
+    AND?: serversScalarWhereWithAggregatesInput | serversScalarWhereWithAggregatesInput[]
+    OR?: serversScalarWhereWithAggregatesInput[]
+    NOT?: serversScalarWhereWithAggregatesInput | serversScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"servers"> | number
+    hostname?: StringWithAggregatesFilter<"servers"> | string
+    provision?: IntWithAggregatesFilter<"servers"> | number
+    close?: IntWithAggregatesFilter<"servers"> | number
+    state?: IntWithAggregatesFilter<"servers"> | number
+    type?: Enumservers_typeNullableWithAggregatesFilter<"servers"> | $Enums.servers_type | null
+    last_update_time?: DateTimeWithAggregatesFilter<"servers"> | Date | string
+    cluster?: StringWithAggregatesFilter<"servers"> | string
+    master?: IntWithAggregatesFilter<"servers"> | number
+    master_active?: IntWithAggregatesFilter<"servers"> | number
+    projectx_node_version?: StringWithAggregatesFilter<"servers"> | string
+    rvm?: Enumservers_rvmWithAggregatesFilter<"servers"> | $Enums.servers_rvm
+    service?: StringWithAggregatesFilter<"servers"> | string
+    provision_request_value?: IntWithAggregatesFilter<"servers"> | number
+    location?: StringNullableWithAggregatesFilter<"servers"> | string | null
+    instance_id?: IntWithAggregatesFilter<"servers"> | number
+    last_requested_at?: DateTimeNullableWithAggregatesFilter<"servers"> | Date | string | null
+  }
+
+  export type servers_ipsWhereInput = {
+    AND?: servers_ipsWhereInput | servers_ipsWhereInput[]
+    OR?: servers_ipsWhereInput[]
+    NOT?: servers_ipsWhereInput | servers_ipsWhereInput[]
+    id?: IntFilter<"servers_ips"> | number
+    servers_id?: IntFilter<"servers_ips"> | number
+    ip?: StringFilter<"servers_ips"> | string
+    comment?: StringFilter<"servers_ips"> | string
+    instance?: IntFilter<"servers_ips"> | number
+  }
+
+  export type servers_ipsOrderByWithRelationInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    ip?: SortOrder
+    comment?: SortOrder
+    instance?: SortOrder
+    _relevance?: servers_ipsOrderByRelevanceInput
+  }
+
+  export type servers_ipsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: servers_ipsWhereInput | servers_ipsWhereInput[]
+    OR?: servers_ipsWhereInput[]
+    NOT?: servers_ipsWhereInput | servers_ipsWhereInput[]
+    servers_id?: IntFilter<"servers_ips"> | number
+    ip?: StringFilter<"servers_ips"> | string
+    comment?: StringFilter<"servers_ips"> | string
+    instance?: IntFilter<"servers_ips"> | number
+  }, "id">
+
+  export type servers_ipsOrderByWithAggregationInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    ip?: SortOrder
+    comment?: SortOrder
+    instance?: SortOrder
+    _count?: servers_ipsCountOrderByAggregateInput
+    _avg?: servers_ipsAvgOrderByAggregateInput
+    _max?: servers_ipsMaxOrderByAggregateInput
+    _min?: servers_ipsMinOrderByAggregateInput
+    _sum?: servers_ipsSumOrderByAggregateInput
+  }
+
+  export type servers_ipsScalarWhereWithAggregatesInput = {
+    AND?: servers_ipsScalarWhereWithAggregatesInput | servers_ipsScalarWhereWithAggregatesInput[]
+    OR?: servers_ipsScalarWhereWithAggregatesInput[]
+    NOT?: servers_ipsScalarWhereWithAggregatesInput | servers_ipsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"servers_ips"> | number
+    servers_id?: IntWithAggregatesFilter<"servers_ips"> | number
+    ip?: StringWithAggregatesFilter<"servers_ips"> | string
+    comment?: StringWithAggregatesFilter<"servers_ips"> | string
+    instance?: IntWithAggregatesFilter<"servers_ips"> | number
+  }
+
+  export type servers_propertiesWhereInput = {
+    AND?: servers_propertiesWhereInput | servers_propertiesWhereInput[]
+    OR?: servers_propertiesWhereInput[]
+    NOT?: servers_propertiesWhereInput | servers_propertiesWhereInput[]
+    id?: IntFilter<"servers_properties"> | number
+    servers_id?: IntFilter<"servers_properties"> | number
+    name?: StringFilter<"servers_properties"> | string
+    value?: StringFilter<"servers_properties"> | string
+  }
+
+  export type servers_propertiesOrderByWithRelationInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    _relevance?: servers_propertiesOrderByRelevanceInput
+  }
+
+  export type servers_propertiesWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: servers_propertiesWhereInput | servers_propertiesWhereInput[]
+    OR?: servers_propertiesWhereInput[]
+    NOT?: servers_propertiesWhereInput | servers_propertiesWhereInput[]
+    servers_id?: IntFilter<"servers_properties"> | number
+    name?: StringFilter<"servers_properties"> | string
+    value?: StringFilter<"servers_properties"> | string
+  }, "id">
+
+  export type servers_propertiesOrderByWithAggregationInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    _count?: servers_propertiesCountOrderByAggregateInput
+    _avg?: servers_propertiesAvgOrderByAggregateInput
+    _max?: servers_propertiesMaxOrderByAggregateInput
+    _min?: servers_propertiesMinOrderByAggregateInput
+    _sum?: servers_propertiesSumOrderByAggregateInput
+  }
+
+  export type servers_propertiesScalarWhereWithAggregatesInput = {
+    AND?: servers_propertiesScalarWhereWithAggregatesInput | servers_propertiesScalarWhereWithAggregatesInput[]
+    OR?: servers_propertiesScalarWhereWithAggregatesInput[]
+    NOT?: servers_propertiesScalarWhereWithAggregatesInput | servers_propertiesScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"servers_properties"> | number
+    servers_id?: IntWithAggregatesFilter<"servers_properties"> | number
+    name?: StringWithAggregatesFilter<"servers_properties"> | string
+    value?: StringWithAggregatesFilter<"servers_properties"> | string
   }
 
   export type member_logCreateInput = {
@@ -6208,6 +9695,242 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type serversCreateInput = {
+    hostname: string
+    provision: number
+    close: number
+    state: number
+    type?: $Enums.servers_type | null
+    last_update_time: Date | string
+    cluster: string
+    master: number
+    master_active: number
+    projectx_node_version?: string
+    rvm?: $Enums.servers_rvm
+    service: string
+    provision_request_value: number
+    location?: string | null
+    instance_id?: number
+    last_requested_at?: Date | string | null
+  }
+
+  export type serversUncheckedCreateInput = {
+    id?: number
+    hostname: string
+    provision: number
+    close: number
+    state: number
+    type?: $Enums.servers_type | null
+    last_update_time: Date | string
+    cluster: string
+    master: number
+    master_active: number
+    projectx_node_version?: string
+    rvm?: $Enums.servers_rvm
+    service: string
+    provision_request_value: number
+    location?: string | null
+    instance_id?: number
+    last_requested_at?: Date | string | null
+  }
+
+  export type serversUpdateInput = {
+    hostname?: StringFieldUpdateOperationsInput | string
+    provision?: IntFieldUpdateOperationsInput | number
+    close?: IntFieldUpdateOperationsInput | number
+    state?: IntFieldUpdateOperationsInput | number
+    type?: NullableEnumservers_typeFieldUpdateOperationsInput | $Enums.servers_type | null
+    last_update_time?: DateTimeFieldUpdateOperationsInput | Date | string
+    cluster?: StringFieldUpdateOperationsInput | string
+    master?: IntFieldUpdateOperationsInput | number
+    master_active?: IntFieldUpdateOperationsInput | number
+    projectx_node_version?: StringFieldUpdateOperationsInput | string
+    rvm?: Enumservers_rvmFieldUpdateOperationsInput | $Enums.servers_rvm
+    service?: StringFieldUpdateOperationsInput | string
+    provision_request_value?: IntFieldUpdateOperationsInput | number
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    instance_id?: IntFieldUpdateOperationsInput | number
+    last_requested_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type serversUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    hostname?: StringFieldUpdateOperationsInput | string
+    provision?: IntFieldUpdateOperationsInput | number
+    close?: IntFieldUpdateOperationsInput | number
+    state?: IntFieldUpdateOperationsInput | number
+    type?: NullableEnumservers_typeFieldUpdateOperationsInput | $Enums.servers_type | null
+    last_update_time?: DateTimeFieldUpdateOperationsInput | Date | string
+    cluster?: StringFieldUpdateOperationsInput | string
+    master?: IntFieldUpdateOperationsInput | number
+    master_active?: IntFieldUpdateOperationsInput | number
+    projectx_node_version?: StringFieldUpdateOperationsInput | string
+    rvm?: Enumservers_rvmFieldUpdateOperationsInput | $Enums.servers_rvm
+    service?: StringFieldUpdateOperationsInput | string
+    provision_request_value?: IntFieldUpdateOperationsInput | number
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    instance_id?: IntFieldUpdateOperationsInput | number
+    last_requested_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type serversCreateManyInput = {
+    id?: number
+    hostname: string
+    provision: number
+    close: number
+    state: number
+    type?: $Enums.servers_type | null
+    last_update_time: Date | string
+    cluster: string
+    master: number
+    master_active: number
+    projectx_node_version?: string
+    rvm?: $Enums.servers_rvm
+    service: string
+    provision_request_value: number
+    location?: string | null
+    instance_id?: number
+    last_requested_at?: Date | string | null
+  }
+
+  export type serversUpdateManyMutationInput = {
+    hostname?: StringFieldUpdateOperationsInput | string
+    provision?: IntFieldUpdateOperationsInput | number
+    close?: IntFieldUpdateOperationsInput | number
+    state?: IntFieldUpdateOperationsInput | number
+    type?: NullableEnumservers_typeFieldUpdateOperationsInput | $Enums.servers_type | null
+    last_update_time?: DateTimeFieldUpdateOperationsInput | Date | string
+    cluster?: StringFieldUpdateOperationsInput | string
+    master?: IntFieldUpdateOperationsInput | number
+    master_active?: IntFieldUpdateOperationsInput | number
+    projectx_node_version?: StringFieldUpdateOperationsInput | string
+    rvm?: Enumservers_rvmFieldUpdateOperationsInput | $Enums.servers_rvm
+    service?: StringFieldUpdateOperationsInput | string
+    provision_request_value?: IntFieldUpdateOperationsInput | number
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    instance_id?: IntFieldUpdateOperationsInput | number
+    last_requested_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type serversUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    hostname?: StringFieldUpdateOperationsInput | string
+    provision?: IntFieldUpdateOperationsInput | number
+    close?: IntFieldUpdateOperationsInput | number
+    state?: IntFieldUpdateOperationsInput | number
+    type?: NullableEnumservers_typeFieldUpdateOperationsInput | $Enums.servers_type | null
+    last_update_time?: DateTimeFieldUpdateOperationsInput | Date | string
+    cluster?: StringFieldUpdateOperationsInput | string
+    master?: IntFieldUpdateOperationsInput | number
+    master_active?: IntFieldUpdateOperationsInput | number
+    projectx_node_version?: StringFieldUpdateOperationsInput | string
+    rvm?: Enumservers_rvmFieldUpdateOperationsInput | $Enums.servers_rvm
+    service?: StringFieldUpdateOperationsInput | string
+    provision_request_value?: IntFieldUpdateOperationsInput | number
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    instance_id?: IntFieldUpdateOperationsInput | number
+    last_requested_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type servers_ipsCreateInput = {
+    servers_id: number
+    ip: string
+    comment: string
+    instance?: number
+  }
+
+  export type servers_ipsUncheckedCreateInput = {
+    id?: number
+    servers_id: number
+    ip: string
+    comment: string
+    instance?: number
+  }
+
+  export type servers_ipsUpdateInput = {
+    servers_id?: IntFieldUpdateOperationsInput | number
+    ip?: StringFieldUpdateOperationsInput | string
+    comment?: StringFieldUpdateOperationsInput | string
+    instance?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type servers_ipsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    servers_id?: IntFieldUpdateOperationsInput | number
+    ip?: StringFieldUpdateOperationsInput | string
+    comment?: StringFieldUpdateOperationsInput | string
+    instance?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type servers_ipsCreateManyInput = {
+    id?: number
+    servers_id: number
+    ip: string
+    comment: string
+    instance?: number
+  }
+
+  export type servers_ipsUpdateManyMutationInput = {
+    servers_id?: IntFieldUpdateOperationsInput | number
+    ip?: StringFieldUpdateOperationsInput | string
+    comment?: StringFieldUpdateOperationsInput | string
+    instance?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type servers_ipsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    servers_id?: IntFieldUpdateOperationsInput | number
+    ip?: StringFieldUpdateOperationsInput | string
+    comment?: StringFieldUpdateOperationsInput | string
+    instance?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type servers_propertiesCreateInput = {
+    servers_id: number
+    name: string
+    value: string
+  }
+
+  export type servers_propertiesUncheckedCreateInput = {
+    id?: number
+    servers_id: number
+    name: string
+    value: string
+  }
+
+  export type servers_propertiesUpdateInput = {
+    servers_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type servers_propertiesUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    servers_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type servers_propertiesCreateManyInput = {
+    id?: number
+    servers_id: number
+    name: string
+    value: string
+  }
+
+  export type servers_propertiesUpdateManyMutationInput = {
+    servers_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type servers_propertiesUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    servers_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -6715,6 +10438,207 @@ export namespace Prisma {
     _max?: NestedEnummember_acl_rules_require_aclFilter<$PrismaModel>
   }
 
+  export type Enumservers_typeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.servers_type | Enumservers_typeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.servers_type[] | null
+    notIn?: $Enums.servers_type[] | null
+    not?: NestedEnumservers_typeNullableFilter<$PrismaModel> | $Enums.servers_type | null
+  }
+
+  export type Enumservers_rvmFilter<$PrismaModel = never> = {
+    equals?: $Enums.servers_rvm | Enumservers_rvmFieldRefInput<$PrismaModel>
+    in?: $Enums.servers_rvm[]
+    notIn?: $Enums.servers_rvm[]
+    not?: NestedEnumservers_rvmFilter<$PrismaModel> | $Enums.servers_rvm
+  }
+
+  export type serversOrderByRelevanceInput = {
+    fields: serversOrderByRelevanceFieldEnum | serversOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type serversCountOrderByAggregateInput = {
+    id?: SortOrder
+    hostname?: SortOrder
+    provision?: SortOrder
+    close?: SortOrder
+    state?: SortOrder
+    type?: SortOrder
+    last_update_time?: SortOrder
+    cluster?: SortOrder
+    master?: SortOrder
+    master_active?: SortOrder
+    projectx_node_version?: SortOrder
+    rvm?: SortOrder
+    service?: SortOrder
+    provision_request_value?: SortOrder
+    location?: SortOrder
+    instance_id?: SortOrder
+    last_requested_at?: SortOrder
+  }
+
+  export type serversAvgOrderByAggregateInput = {
+    id?: SortOrder
+    provision?: SortOrder
+    close?: SortOrder
+    state?: SortOrder
+    master?: SortOrder
+    master_active?: SortOrder
+    provision_request_value?: SortOrder
+    instance_id?: SortOrder
+  }
+
+  export type serversMaxOrderByAggregateInput = {
+    id?: SortOrder
+    hostname?: SortOrder
+    provision?: SortOrder
+    close?: SortOrder
+    state?: SortOrder
+    type?: SortOrder
+    last_update_time?: SortOrder
+    cluster?: SortOrder
+    master?: SortOrder
+    master_active?: SortOrder
+    projectx_node_version?: SortOrder
+    rvm?: SortOrder
+    service?: SortOrder
+    provision_request_value?: SortOrder
+    location?: SortOrder
+    instance_id?: SortOrder
+    last_requested_at?: SortOrder
+  }
+
+  export type serversMinOrderByAggregateInput = {
+    id?: SortOrder
+    hostname?: SortOrder
+    provision?: SortOrder
+    close?: SortOrder
+    state?: SortOrder
+    type?: SortOrder
+    last_update_time?: SortOrder
+    cluster?: SortOrder
+    master?: SortOrder
+    master_active?: SortOrder
+    projectx_node_version?: SortOrder
+    rvm?: SortOrder
+    service?: SortOrder
+    provision_request_value?: SortOrder
+    location?: SortOrder
+    instance_id?: SortOrder
+    last_requested_at?: SortOrder
+  }
+
+  export type serversSumOrderByAggregateInput = {
+    id?: SortOrder
+    provision?: SortOrder
+    close?: SortOrder
+    state?: SortOrder
+    master?: SortOrder
+    master_active?: SortOrder
+    provision_request_value?: SortOrder
+    instance_id?: SortOrder
+  }
+
+  export type Enumservers_typeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.servers_type | Enumservers_typeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.servers_type[] | null
+    notIn?: $Enums.servers_type[] | null
+    not?: NestedEnumservers_typeNullableWithAggregatesFilter<$PrismaModel> | $Enums.servers_type | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumservers_typeNullableFilter<$PrismaModel>
+    _max?: NestedEnumservers_typeNullableFilter<$PrismaModel>
+  }
+
+  export type Enumservers_rvmWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.servers_rvm | Enumservers_rvmFieldRefInput<$PrismaModel>
+    in?: $Enums.servers_rvm[]
+    notIn?: $Enums.servers_rvm[]
+    not?: NestedEnumservers_rvmWithAggregatesFilter<$PrismaModel> | $Enums.servers_rvm
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumservers_rvmFilter<$PrismaModel>
+    _max?: NestedEnumservers_rvmFilter<$PrismaModel>
+  }
+
+  export type servers_ipsOrderByRelevanceInput = {
+    fields: servers_ipsOrderByRelevanceFieldEnum | servers_ipsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type servers_ipsCountOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    ip?: SortOrder
+    comment?: SortOrder
+    instance?: SortOrder
+  }
+
+  export type servers_ipsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    instance?: SortOrder
+  }
+
+  export type servers_ipsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    ip?: SortOrder
+    comment?: SortOrder
+    instance?: SortOrder
+  }
+
+  export type servers_ipsMinOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    ip?: SortOrder
+    comment?: SortOrder
+    instance?: SortOrder
+  }
+
+  export type servers_ipsSumOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    instance?: SortOrder
+  }
+
+  export type servers_propertiesOrderByRelevanceInput = {
+    fields: servers_propertiesOrderByRelevanceFieldEnum | servers_propertiesOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type servers_propertiesCountOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+  }
+
+  export type servers_propertiesAvgOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+  }
+
+  export type servers_propertiesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+  }
+
+  export type servers_propertiesMinOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+  }
+
+  export type servers_propertiesSumOrderByAggregateInput = {
+    id?: SortOrder
+    servers_id?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -6761,6 +10685,14 @@ export namespace Prisma {
 
   export type Enummember_acl_rules_require_aclFieldUpdateOperationsInput = {
     set?: $Enums.member_acl_rules_require_acl
+  }
+
+  export type NullableEnumservers_typeFieldUpdateOperationsInput = {
+    set?: $Enums.servers_type | null
+  }
+
+  export type Enumservers_rvmFieldUpdateOperationsInput = {
+    set?: $Enums.servers_rvm
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -7021,6 +10953,40 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnummember_acl_rules_require_aclFilter<$PrismaModel>
     _max?: NestedEnummember_acl_rules_require_aclFilter<$PrismaModel>
+  }
+
+  export type NestedEnumservers_typeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.servers_type | Enumservers_typeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.servers_type[] | null
+    notIn?: $Enums.servers_type[] | null
+    not?: NestedEnumservers_typeNullableFilter<$PrismaModel> | $Enums.servers_type | null
+  }
+
+  export type NestedEnumservers_rvmFilter<$PrismaModel = never> = {
+    equals?: $Enums.servers_rvm | Enumservers_rvmFieldRefInput<$PrismaModel>
+    in?: $Enums.servers_rvm[]
+    notIn?: $Enums.servers_rvm[]
+    not?: NestedEnumservers_rvmFilter<$PrismaModel> | $Enums.servers_rvm
+  }
+
+  export type NestedEnumservers_typeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.servers_type | Enumservers_typeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.servers_type[] | null
+    notIn?: $Enums.servers_type[] | null
+    not?: NestedEnumservers_typeNullableWithAggregatesFilter<$PrismaModel> | $Enums.servers_type | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumservers_typeNullableFilter<$PrismaModel>
+    _max?: NestedEnumservers_typeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumservers_rvmWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.servers_rvm | Enumservers_rvmFieldRefInput<$PrismaModel>
+    in?: $Enums.servers_rvm[]
+    notIn?: $Enums.servers_rvm[]
+    not?: NestedEnumservers_rvmWithAggregatesFilter<$PrismaModel> | $Enums.servers_rvm
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumservers_rvmFilter<$PrismaModel>
+    _max?: NestedEnumservers_rvmFilter<$PrismaModel>
   }
 
 

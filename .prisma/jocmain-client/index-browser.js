@@ -184,6 +184,41 @@ exports.Prisma.Member_acl_rulesScalarFieldEnum = {
   deleted_at: 'deleted_at'
 };
 
+exports.Prisma.ServersScalarFieldEnum = {
+  id: 'id',
+  hostname: 'hostname',
+  provision: 'provision',
+  close: 'close',
+  state: 'state',
+  type: 'type',
+  last_update_time: 'last_update_time',
+  cluster: 'cluster',
+  master: 'master',
+  master_active: 'master_active',
+  projectx_node_version: 'projectx_node_version',
+  rvm: 'rvm',
+  service: 'service',
+  provision_request_value: 'provision_request_value',
+  location: 'location',
+  instance_id: 'instance_id',
+  last_requested_at: 'last_requested_at'
+};
+
+exports.Prisma.Servers_ipsScalarFieldEnum = {
+  id: 'id',
+  servers_id: 'servers_id',
+  ip: 'ip',
+  comment: 'comment',
+  instance: 'instance'
+};
+
+exports.Prisma.Servers_propertiesScalarFieldEnum = {
+  id: 'id',
+  servers_id: 'servers_id',
+  name: 'name',
+  value: 'value'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -232,6 +267,24 @@ exports.Prisma.member_acl_rulesOrderByRelevanceFieldEnum = {
   section_name: 'section_name',
   tutorial_url: 'tutorial_url'
 };
+
+exports.Prisma.serversOrderByRelevanceFieldEnum = {
+  hostname: 'hostname',
+  cluster: 'cluster',
+  projectx_node_version: 'projectx_node_version',
+  service: 'service',
+  location: 'location'
+};
+
+exports.Prisma.servers_ipsOrderByRelevanceFieldEnum = {
+  ip: 'ip',
+  comment: 'comment'
+};
+
+exports.Prisma.servers_propertiesOrderByRelevanceFieldEnum = {
+  name: 'name',
+  value: 'value'
+};
 exports.member_log_action = exports.$Enums.member_log_action = {
   SAVE: 'SAVE',
   DELETE: 'DELETE'
@@ -253,11 +306,24 @@ exports.member_acl_rules_require_acl = exports.$Enums.member_acl_rules_require_a
   NO: 'NO'
 };
 
+exports.servers_type = exports.$Enums.servers_type = {
+  REGULAR: 'REGULAR',
+  VB: 'VB'
+};
+
+exports.servers_rvm = exports.$Enums.servers_rvm = {
+  ZERO: 'ZERO',
+  ONE: 'ONE'
+};
+
 exports.Prisma.ModelName = {
   member_log: 'member_log',
   members: 'members',
   member_acl_paths: 'member_acl_paths',
-  member_acl_rules: 'member_acl_rules'
+  member_acl_rules: 'member_acl_rules',
+  servers: 'servers',
+  servers_ips: 'servers_ips',
+  servers_properties: 'servers_properties'
 };
 
 /**

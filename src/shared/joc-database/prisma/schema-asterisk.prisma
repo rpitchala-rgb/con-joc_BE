@@ -101,43 +101,43 @@ model users {
 
 enum users_hotkeys_active {
   HOTKEYS_INACTIVE @map("0")
-  HOTKEYS_ACTIVE   @map("1")
+  HOTKEYS_ACTIVE @map("1")
 }
 
 enum users_agent_choose_ingroups {
-  CHOOSE_NO  @map("0")
+  CHOOSE_NO @map("0")
   CHOOSE_YES @map("1")
 }
 
 enum users_scheduled_callbacks {
   CALLBACKS_DISABLED @map("0")
-  CALLBACKS_ENABLED  @map("1")
+  CALLBACKS_ENABLED @map("1")
 }
 
 enum users_agentonly_callbacks {
-  AGENTONLY_NO   @map("0")
-  AGENTONLY_YES  @map("1")
+  AGENTONLY_NO @map("0")
+  AGENTONLY_YES @map("1")
   AGENTONLY_SOME @map("2")
 }
 
 enum users_agentcall_manual {
-  MANUAL_NO  @map("0")
+  MANUAL_NO @map("0")
   MANUAL_YES @map("1")
 }
 
 enum users_recording {
   RECORDING_OFF @map("0")
-  RECORDING_ON  @map("1")
+  RECORDING_ON @map("1")
 }
 
 enum users_transfers {
   TRANSFERS_OFF @map("0")
-  TRANSFERS_ON  @map("1")
+  TRANSFERS_ON @map("1")
 }
 
 enum users_closer_default_blended {
   CLOSER_DEFAULT_OFF @map("0")
-  CLOSER_DEFAULT_ON  @map("1")
+  CLOSER_DEFAULT_ON @map("1")
 }
 
 enum users_recording_override {
@@ -155,21 +155,21 @@ enum users_alter_custdata_override {
 
 enum users_qc_enabled {
   QC_DISABLED @map("0")
-  QC_ENABLED  @map("1")
+  QC_ENABLED @map("1")
 }
 
 enum users_qc_pass {
-  QC_PASS_NO  @map("0")
+  QC_PASS_NO @map("0")
   QC_PASS_YES @map("1")
 }
 
 enum users_qc_finish {
-  QC_FINISH_NO  @map("0")
+  QC_FINISH_NO @map("0")
   QC_FINISH_YES @map("1")
 }
 
 enum users_qc_commit {
-  QC_COMMIT_NO  @map("0")
+  QC_COMMIT_NO @map("0")
   QC_COMMIT_YES @map("1")
 }
 
@@ -185,7 +185,7 @@ enum users_active {
 
 enum users_alert_enabled {
   ALERT_DISABLED @map("0")
-  ALERT_ENABLED  @map("1")
+  ALERT_ENABLED @map("1")
 }
 
 enum users_agent_shift_enforcement_override {
@@ -196,12 +196,12 @@ enum users_agent_shift_enforcement_override {
 }
 
 enum users_manager_shift_enforcement_override {
-  SHIFT_OVERRIDE_NO  @map("0")
+  SHIFT_OVERRIDE_NO @map("0")
   SHIFT_OVERRIDE_YES @map("1")
 }
 
 enum users_shift_override_flag {
-  SHIFT_OVERRIDE_FLAG_NO  @map("0")
+  SHIFT_OVERRIDE_FLAG_NO @map("0")
   SHIFT_OVERRIDE_FLAG_YES @map("1")
 }
 
@@ -211,23 +211,23 @@ enum users_default_callback_gmt_selection {
 }
 
 enum users_realtime_listen {
-  REALTIME_LISTEN_NO  @map("0")
+  REALTIME_LISTEN_NO @map("0")
   REALTIME_LISTEN_YES @map("1")
 }
 
 enum users_chat_history {
-  CHAT_HISTORY_NO  @map("0")
+  CHAT_HISTORY_NO @map("0")
   CHAT_HISTORY_YES @map("1")
 }
 
 enum users_auto_mode {
-  AUTO_MODE_NO  @map("0")
+  AUTO_MODE_NO @map("0")
   AUTO_MODE_YES @map("1")
 }
 
 enum users_notification {
   NOTIFICATION_OFF @map("0")
-  NOTIFICATION_ON  @map("1")
+  NOTIFICATION_ON @map("1")
 }
 
 enum users_connection_type {
@@ -256,7 +256,7 @@ enum users_queue_override {
 
 enum users_allow_mobile {
   ZERO @map("0")
-  ONE  @map("1")
+  ONE @map("1")
 }
 
 enum users_alter_override {

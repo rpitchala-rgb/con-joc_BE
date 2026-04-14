@@ -8,13 +8,17 @@ import { clusterServer } from '../../shared/constants/constants';
 import { safesoft_encrypt_decrypt_key } from '../../shared/constants/constants';
 import { USER } from './user-constants/user-constant';
 import { UsersUtility } from './users.utility';
+import { Utility } from '../../shared/utility/utility';
+import { ENTITY_CONSTANT } from '../accounts/account-constants/account.constant';
+import { UpdateCredentialDto } from './dto/update-credential.dto';
 
 @Injectable()
 export class UserService {
+  accountUtility: any;
 
   constructor(private readonly jocDataBaseService: JocDatabaseService,
     private readonly commonService: CommonService,
-    private readonly usersUtility: UsersUtility
+    private readonly utility: Utility
   ) { }
 
   async getFilteredUsers(dto: SearchUserDto): Promise<any> {
@@ -117,12 +121,13 @@ export class UserService {
 
         return {
           ...user,
+          created_at: this.commonService.formatDateForResponse(user.created_at),
           _username:
-            this.usersUtility.encrypted(
+            this.utility.encrypted(
               `${user.account_id}_${user.id}`,
               safesoft_encrypt_decrypt_key,
             ) + '--imper',
-          _password: this.usersUtility.encrypted(
+          _password: this.utility.encrypted(
             `${member_id}_${Math.floor(Date.now() / 1000) - 10}`,
             safesoft_encrypt_decrypt_key,
           ),
@@ -306,6 +311,244 @@ export class UserService {
         CurrentOptions: currentOptions,
         },
       };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+    async getCredentialAction(u_id: string): Promise<any> {
+    try {
+
+      const user = await this.jocDataBaseService.users.findFirst({
+        where: { u_id: u_id }
+      });
+
+      if (!user) {
+        return { success: false, code: 404, text: 'User not found!' };
+      }
+
+      const username = user.first_name;
+
+      const account_id_options: Record<number, string> = {};
+      const accounts = await this.jocDataBaseService.accounts.findMany({
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+      for (const account of accounts) {
+        account_id_options[account.id] = account.name;
+      }
+
+      const options: Record<string, any> = {};
+      options['remote_session_expired_at'] = [];
+      for (let i = 1; i < 8; i++) {
+        options['remote_session_expired_at'].push({ value: `${i}`, name: `${i} Days` });
+      }
+
+      const fields: Record<string, string> = {
+        account_id: ENTITY_CONSTANT.FIEL_TYPE_2,
+        id: ENTITY_CONSTANT.FIEL_TYPE_9,
+        email: ENTITY_CONSTANT.FIEL_TYPE_0,
+        title: ENTITY_CONSTANT.FIEL_TYPE_0,
+        first_name: ENTITY_CONSTANT.FIEL_TYPE_0,
+        last_name: ENTITY_CONSTANT.FIEL_TYPE_0,
+        password: ENTITY_CONSTANT.FIEL_TYPE_0,
+        remote_session: ENTITY_CONSTANT.FIEL_TYPE_1,
+        log_debug_level: ENTITY_CONSTANT.FIEL_TYPE_1,
+        talkdesk_user_id: ENTITY_CONSTANT.FIEL_TYPE_0,
+      };
+
+      // Remove password for interface
+      delete fields.password;
+
+      // Loop through fields to build options
+      for (const [field, fieldType] of Object.entries(fields)) {
+        let valueArray: any = null;
+        if (fieldType === ENTITY_CONSTANT.FIEL_TYPE_1) {
+          // Model choices
+          const fieldName = field + "_options";
+          valueArray = USER[fieldName.toUpperCase()];
+        } else if (fieldType === ENTITY_CONSTANT.FIEL_TYPE_2) {
+          // Controller choices
+          const fieldName = field + "_options";
+          if (fieldName === 'account_id_options') {
+            valueArray = account_id_options;
+          }
+        }
+        if (valueArray) {
+          options[field] = [];
+          for (const [value, name] of Object.entries(valueArray)) {
+            options[field].push({ value: `${value}`, name: name });
+          }
+        }
+      }
+
+      const currentOptions: Record<string, any> = {};
+      for (const field of Object.keys(fields)) {
+        currentOptions[field] = user[field as keyof typeof user] ?? '';
+      }
+
+      currentOptions['remote_session_expired_set'] = '2';
+      if (user.remote_session_expired_at instanceof Date) {
+        currentOptions['remote_session_expired_at'] = user.remote_session_expired_at.toISOString().split('T')[0];
+      }
+
+      const credentialOptions = {
+        Options: options,
+        CurrentOptions: currentOptions,
+      };
+      return {
+        username,
+        credentialOptions
+      }
+
+
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async credentialActionPut(u_id: string, updateCredentialDto: UpdateCredentialDto): Promise<any> {
+    try {
+
+      const content = updateCredentialDto;
+      if (!content) {
+        return { success: false, code: 404, text: 'Post data missing!' };
+      }
+
+      const options = content.currentOptions;
+      if (!options) {
+        return { success: false, code: 404, text: 'CurrentOptions missing!' };
+      }
+
+      let user: any = null;
+      if (u_id !== 'new') {
+        user = await this.jocDataBaseService.users.findFirst({
+          where: { u_id },
+        });
+        if (!user) {
+          return { success: false, code: 404, text: 'User not found!' };
+        }
+      }
+
+      const fields: Record<string, string> = {
+        account_id: ENTITY_CONSTANT.FIEL_TYPE_2,
+        id: ENTITY_CONSTANT.FIEL_TYPE_9,
+        email: ENTITY_CONSTANT.FIEL_TYPE_0,
+        title: ENTITY_CONSTANT.FIEL_TYPE_0,
+        first_name: ENTITY_CONSTANT.FIEL_TYPE_0,
+        last_name: ENTITY_CONSTANT.FIEL_TYPE_0,
+        password: ENTITY_CONSTANT.FIEL_TYPE_0,
+        remote_session: ENTITY_CONSTANT.FIEL_TYPE_1,
+        log_debug_level: ENTITY_CONSTANT.FIEL_TYPE_1,
+        talkdesk_user_id: ENTITY_CONSTANT.FIEL_TYPE_0,
+      };
+
+      if (u_id !== 'new' && !user) {
+        return { success: false, code: 404, text: 'User not found!' };
+      }
+
+      if (options.email) {
+        const check_email = await this.jocDataBaseService.users.findFirst({
+          where: { email: options.email },
+        });
+        if (check_email && check_email.id !== user?.id) {
+          return {
+            success: false,
+            code: 403,
+            text: 'User with such email already exists!',
+          };
+        }
+      }
+
+      const account = await this.jocDataBaseService.accounts.findFirst({
+        where: { id: options.account_id },
+      });
+      if (!account) {
+        return { success: false, code: 404, text: 'Account not found!' };
+      }
+
+      for (const [field, fieldType] of Object.entries(fields)) {
+        if (fieldType !== ENTITY_CONSTANT.FIEL_TYPE_9 && options[field] !== undefined) {
+          if (field === 'first_name' || field === 'last_name') {
+            options[field] = this.accountUtility.sanitizeAlphaNumeric(options[field]);
+          }
+          if (!user) {
+            user = { id: 0 };
+          }
+          user[field] = options[field];
+        }
+      }
+      let userUpdate: any = null;
+      if (u_id === 'new') {
+        const lastUser = await this.jocDataBaseService.users.findFirst({
+          orderBy: { id: 'desc' },
+          select: { id: true },
+        });
+        const nextId = (lastUser?.id ?? 0) + 1;
+        user.id = nextId;
+        user.u_id = `new_${nextId}`;
+        const createData = {
+          id: user.id,
+          u_id: user.u_id,
+          salt: user.salt ?? '',
+          algo: user.algo ?? 'sha256',
+          password: user.password ?? '',
+          first_name: user.first_name ?? '',
+          last_name: user.last_name ?? '',
+          title: user.title ?? '',
+          contact_email: user.contact_email ?? null,
+          email_verification_key: user.email_verification_key ?? null,
+          email: user.email ?? '',
+          account_id: user.account_id ?? options.account_id ?? 0,
+          registration_server: user.registration_server ?? null,
+          remote_session: user.remote_session ?? 'NO',
+          log_debug_level: user.log_debug_level ?? 0,
+          talkdesk_user_id: user.talkdesk_user_id ?? null,
+        };
+        await this.jocDataBaseService.users.create({ data: createData });
+      } else {
+        userUpdate = await this.jocDataBaseService.users.update({
+          where: { id: user.id },
+          data: Object.fromEntries(
+            Object.entries(user).filter(([key]) => key !== 'id' && key !== 'u_id'),
+          ),
+        });
+      }
+
+      const params = {
+        id: user.id,
+        account_id: user.account_id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        cluster: account.cluster_node,
+      };
+
+      //placeholder for ProjectX API call to update user in Omni
+      /*const response: any = await this.projectXApi.projectXApiRequest('user/update', params, 'POST');
+
+      if (response && response.success !== undefined) {
+        if (response.success) {
+          data.success = true;
+          data.code = response.code ?? 200;
+          data.text = response.text ?? 'User updated successfully!';
+        } else {
+          data.code = response.code ?? 420;
+          data.text = response.text ?? 'There was a problem updating the User in Omni';
+        }
+      } else if (response === false) {
+        data.success = false;
+        data.code = 502;
+        data.text = 'ProjectX API request failed';
+      } else {
+        data.success = true;
+        data.code = 200;
+        data.text = 'User updated successfully!';
+      }*/
+
+      return { u_id: userUpdate.u_id };
     } catch (error) {
       throw new Error(error);
     }

@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "generate:joc": "prisma generate --schema=src/shared/joc-database/prisma/schema-joc.prisma",
     "generate:joc-main": "prisma generate --schema=src/shared/joc-database/prisma/schema-jocmain.prisma",
+    "generate:asterisk": "prisma generate --schema=src/shared/joc-database/prisma/schema-asterisk.prisma",
     "lint:check": "eslint .",
     "lint:fix": "eslint --fix ."
   },
