@@ -2,9 +2,13 @@ import { Body, Controller, Get, Post, Put, Req, Query, Param, Inject } from '@ne
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { SearchAccountDto } from './dto/search-account.dto';
+import { MoveUserDto } from './dto/move-user.dto';
 import { ResponseService } from '../../shared/common-modules/response/response.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { CreateNotesDto } from './dto/create-notes.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateCredentialDto } from '../user/dto/update-credential.dto';
+import { GetTransactionLogsDto } from './dto/get-transaction-logs.dto';
 
 @Controller('projectx/accounts')
 export class AccountsController {
@@ -33,6 +37,7 @@ export class AccountsController {
       return this.responseService.createErrorResponse(success,code,text);
     }
   }
+
 
   @Get("search")
   async searchAction(@Body() searchAccountDto: SearchAccountDto): Promise<any> {
@@ -116,9 +121,51 @@ export class AccountsController {
   @Post(':u_id/page/:page/notes')
   async postAccountNotes(@Param('u_id') u_id: string, @Param('page') page: number, @Body() createNotesDto: CreateNotesDto, @Req() req: any): Promise<any> {
     try {
-      const result = await this.accountsService.accountNotesPostAction(u_id, createNotesDto, req?.user?.userId);
+      const result = await this.accountsService.accountNotesPostAction(u_id, createNotesDto, req?.headers?.userId);
       return result;
     } catch (error) {
+      return this.responseService.createErrorResponse(false, 500, "Internal Server Error!");
+    }
+  }
+
+  @Get(':u_id/get-users')
+  async getUsersAction(@Param('u_id') u_id: string, @Req() req: any): Promise<any> {
+    try {
+      const userId = req?.user?.userId;
+      const result = await this.accountsService.usersGetAction(u_id?.trim(), userId);
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  @Put(':u_id/get-users')
+  async putUsersAction(@Param('u_id') u_id: string, @Body() updateUserDto: UpdateUserDto, @Req() req?: any): Promise<any> {
+    try {
+      const result = await this.accountsService.usersPostAction(u_id?.trim(), updateUserDto,req?.headers?.userId);
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
+  //placeholder for now as this is calling projectXApiRequest
+  @Post(':u_id/move-user')
+  async moveUserAction(@Param('u_id') u_id: string, @Body() moveUserDto: MoveUserDto): Promise<any> {
+    try {
+      const result = await this.accountsService.moveUserAction(u_id?.trim(), moveUserDto);
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  @Post(':u_id/get-transaction-logs')
+  async transactionAction(@Param('u_id') u_id:string,@Body() transactionDto: GetTransactionLogsDto):Promise<any>{
+    try{
+      const result = await this.accountsService.transactionAction(u_id?.trim(), transactionDto);
+      return result;
+    }catch(error){
       return this.responseService.createErrorResponse(false, 500, "Internal Server Error!");
     }
   }

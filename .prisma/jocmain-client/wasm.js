@@ -156,6 +156,41 @@ exports.Prisma.Member_acl_rulesScalarFieldEnum = {
   deleted_at: 'deleted_at'
 };
 
+exports.Prisma.ServersScalarFieldEnum = {
+  id: 'id',
+  hostname: 'hostname',
+  provision: 'provision',
+  close: 'close',
+  state: 'state',
+  type: 'type',
+  last_update_time: 'last_update_time',
+  cluster: 'cluster',
+  master: 'master',
+  master_active: 'master_active',
+  projectx_node_version: 'projectx_node_version',
+  rvm: 'rvm',
+  service: 'service',
+  provision_request_value: 'provision_request_value',
+  location: 'location',
+  instance_id: 'instance_id',
+  last_requested_at: 'last_requested_at'
+};
+
+exports.Prisma.Servers_ipsScalarFieldEnum = {
+  id: 'id',
+  servers_id: 'servers_id',
+  ip: 'ip',
+  comment: 'comment',
+  instance: 'instance'
+};
+
+exports.Prisma.Servers_propertiesScalarFieldEnum = {
+  id: 'id',
+  servers_id: 'servers_id',
+  name: 'name',
+  value: 'value'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -204,6 +239,24 @@ exports.Prisma.member_acl_rulesOrderByRelevanceFieldEnum = {
   section_name: 'section_name',
   tutorial_url: 'tutorial_url'
 };
+
+exports.Prisma.serversOrderByRelevanceFieldEnum = {
+  hostname: 'hostname',
+  cluster: 'cluster',
+  projectx_node_version: 'projectx_node_version',
+  service: 'service',
+  location: 'location'
+};
+
+exports.Prisma.servers_ipsOrderByRelevanceFieldEnum = {
+  ip: 'ip',
+  comment: 'comment'
+};
+
+exports.Prisma.servers_propertiesOrderByRelevanceFieldEnum = {
+  name: 'name',
+  value: 'value'
+};
 exports.member_log_action = exports.$Enums.member_log_action = {
   SAVE: 'SAVE',
   DELETE: 'DELETE'
@@ -225,11 +278,24 @@ exports.member_acl_rules_require_acl = exports.$Enums.member_acl_rules_require_a
   NO: 'NO'
 };
 
+exports.servers_type = exports.$Enums.servers_type = {
+  REGULAR: 'REGULAR',
+  VB: 'VB'
+};
+
+exports.servers_rvm = exports.$Enums.servers_rvm = {
+  ZERO: 'ZERO',
+  ONE: 'ONE'
+};
+
 exports.Prisma.ModelName = {
   member_log: 'member_log',
   members: 'members',
   member_acl_paths: 'member_acl_paths',
-  member_acl_rules: 'member_acl_rules'
+  member_acl_rules: 'member_acl_rules',
+  servers: 'servers',
+  servers_ips: 'servers_ips',
+  servers_properties: 'servers_properties'
 };
 /**
  * Create the Client
@@ -279,13 +345,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../../../../.prisma/jocmain-client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL_JOC_MAIN\")\n}\n\nmodel member_log {\n  id            Int                @id @default(autoincrement()) @db.UnsignedInt\n  ip_address    String             @db.VarChar(20)\n  created_at    DateTime           @db.DateTime(0)\n  member_id     Int\n  section       String?            @db.VarChar(100)\n  sub_section   String?            @db.VarChar(100)\n  action        member_log_action? @default(SAVE)\n  altered       String?            @db.VarChar(100)\n  data          String?            @db.MediumText\n  original_data String?            @db.MediumText\n  account_id    Int?\n\n  @@index([ip_address, created_at, member_id, section, sub_section, action, altered], map: \"ip_address\")\n}\n\nmodel members {\n  id                     Int             @id @default(autoincrement())\n  u_id                   String          @db.VarChar(32)\n  username               String          @db.VarChar(255)\n  first_name             String?         @db.VarChar(255)\n  last_name              String?         @db.VarChar(255)\n  google_id              String          @db.VarChar(255)\n  email                  String          @db.VarChar(255)\n  salt                   String          @db.VarChar(255)\n  algo                   String          @db.VarChar(32)\n  password               String          @db.VarChar(255)\n  email_verification_key String          @db.VarChar(255)\n  verify                 members_verify? @default(NO)\n  google_key             String?         @db.VarChar(255)\n  acl_access_profile     Int?\n  user_level             Int?            @default(1) @db.TinyInt\n  created_at             DateTime?       @db.DateTime(0)\n  updated_at             DateTime?       @db.DateTime(0)\n  deleted_at             DateTime?       @db.DateTime(0)\n}\n\nmodel member_acl_paths {\n  id              Int                              @id @default(autoincrement())\n  u_id            String                           @db.VarChar(32)\n  section_name    String                           @db.VarChar(255)\n  name            String                           @db.VarChar(255)\n  route_name      String                           @db.VarChar(255)\n  path            String                           @db.VarChar(255)\n  permission_type member_acl_paths_permission_type @default(R)\n  created_at      DateTime                         @db.DateTime(0)\n  updated_at      DateTime?                        @db.DateTime(0)\n  deleted_at      DateTime?                        @db.DateTime(0)\n\n  @@unique([u_id, path], map: \"u_id\")\n  @@index([section_name], map: \"parent_id\")\n}\n\nmodel member_acl_rules {\n  id                 Int                          @id @default(autoincrement())\n  u_id               String                       @unique(map: \"u_id\") @db.VarChar(32)\n  parent_id          Int\n  app                String                       @db.VarChar(20)\n  minimum_tier_level Int?\n  name               String                       @db.VarChar(255)\n  section_name       String                       @db.VarChar(255)\n  require_acl        member_acl_rules_require_acl @default(NO)\n  tutorial_url       String?                      @db.VarChar(255)\n  created_at         DateTime                     @db.DateTime(0)\n  updated_at         DateTime?                    @db.DateTime(0)\n  deleted_at         DateTime?                    @db.DateTime(0)\n\n  @@index([parent_id], map: \"parent_id\")\n}\n\nenum member_log_action {\n  SAVE\n  DELETE\n}\n\nenum members_verify {\n  NO\n  YES\n}\n\nenum member_acl_paths_permission_type {\n  R\n  W\n  D\n}\n\nenum member_acl_rules_require_acl {\n  YES\n  NO\n}\n",
-  "inlineSchemaHash": "de721d00d561afab9d0b4e426858617be72817c6408906ffedc4ab4fcdedbc86",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../../../../.prisma/jocmain-client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL_JOC_MAIN\")\n}\n\nmodel member_log {\n  id            Int                @id @default(autoincrement()) @db.UnsignedInt\n  ip_address    String             @db.VarChar(20)\n  created_at    DateTime           @db.DateTime(0)\n  member_id     Int\n  section       String?            @db.VarChar(100)\n  sub_section   String?            @db.VarChar(100)\n  action        member_log_action? @default(SAVE)\n  altered       String?            @db.VarChar(100)\n  data          String?            @db.MediumText\n  original_data String?            @db.MediumText\n  account_id    Int?\n\n  @@index([ip_address, created_at, member_id, section, sub_section, action, altered], map: \"ip_address\")\n}\n\nmodel members {\n  id                     Int             @id @default(autoincrement())\n  u_id                   String          @db.VarChar(32)\n  username               String          @db.VarChar(255)\n  first_name             String?         @db.VarChar(255)\n  last_name              String?         @db.VarChar(255)\n  google_id              String          @db.VarChar(255)\n  email                  String          @db.VarChar(255)\n  salt                   String          @db.VarChar(255)\n  algo                   String          @db.VarChar(32)\n  password               String          @db.VarChar(255)\n  email_verification_key String          @db.VarChar(255)\n  verify                 members_verify? @default(NO)\n  google_key             String?         @db.VarChar(255)\n  acl_access_profile     Int?\n  user_level             Int?            @default(1) @db.TinyInt\n  created_at             DateTime?       @db.DateTime(0)\n  updated_at             DateTime?       @db.DateTime(0)\n  deleted_at             DateTime?       @db.DateTime(0)\n}\n\nmodel member_acl_paths {\n  id              Int                              @id @default(autoincrement())\n  u_id            String                           @db.VarChar(32)\n  section_name    String                           @db.VarChar(255)\n  name            String                           @db.VarChar(255)\n  route_name      String                           @db.VarChar(255)\n  path            String                           @db.VarChar(255)\n  permission_type member_acl_paths_permission_type @default(R)\n  created_at      DateTime                         @db.DateTime(0)\n  updated_at      DateTime?                        @db.DateTime(0)\n  deleted_at      DateTime?                        @db.DateTime(0)\n\n  @@unique([u_id, path], map: \"u_id\")\n  @@index([section_name], map: \"parent_id\")\n}\n\nmodel member_acl_rules {\n  id                 Int                          @id @default(autoincrement())\n  u_id               String                       @unique(map: \"u_id\") @db.VarChar(32)\n  parent_id          Int\n  app                String                       @db.VarChar(20)\n  minimum_tier_level Int?\n  name               String                       @db.VarChar(255)\n  section_name       String                       @db.VarChar(255)\n  require_acl        member_acl_rules_require_acl @default(NO)\n  tutorial_url       String?                      @db.VarChar(255)\n  created_at         DateTime                     @db.DateTime(0)\n  updated_at         DateTime?                    @db.DateTime(0)\n  deleted_at         DateTime?                    @db.DateTime(0)\n\n  @@index([parent_id], map: \"parent_id\")\n}\n\nmodel servers {\n  id                      Int           @id @default(autoincrement())\n  hostname                String        @db.VarChar(40)\n  provision               Int\n  close                   Int\n  state                   Int\n  type                    servers_type? @default(REGULAR)\n  last_update_time        DateTime      @db.DateTime(0)\n  cluster                 String        @db.VarChar(10)\n  master                  Int\n  master_active           Int\n  projectx_node_version   String        @default(\"NONE\") @db.VarChar(30)\n  rvm                     servers_rvm   @default(ZERO)\n  service                 String        @db.VarChar(40)\n  provision_request_value Int\n  location                String?       @db.VarChar(5)\n  instance_id             Int           @default(1)\n  last_requested_at       DateTime?     @db.DateTime(0)\n\n  @@index([cluster], map: \"cluster\")\n  @@index([service], map: \"service\")\n}\n\nmodel servers_ips {\n  id         Int    @id @default(autoincrement())\n  servers_id Int\n  ip         String @db.VarChar(40)\n  comment    String @db.VarChar(30)\n  instance   Int    @default(1)\n\n  @@index([comment], map: \"comment\")\n  @@index([ip], map: \"ip\")\n  @@index([servers_id], map: \"key\")\n  @@index([servers_id], map: \"servers_id\")\n}\n\nmodel servers_properties {\n  id         Int    @id @default(autoincrement())\n  servers_id Int\n  name       String @db.VarChar(40)\n  value      String @db.VarChar(255)\n\n  @@index([servers_id], map: \"key\")\n  @@index([servers_id], map: \"servers_id\")\n  @@index([value], map: \"value\")\n}\n\nenum member_log_action {\n  SAVE\n  DELETE\n}\n\nenum members_verify {\n  NO\n  YES\n}\n\nenum member_acl_paths_permission_type {\n  R\n  W\n  D\n}\n\nenum member_acl_rules_require_acl {\n  YES\n  NO\n}\n\nenum servers_type {\n  REGULAR\n  VB\n}\n\nenum servers_rvm {\n  ZERO @map(\"0\")\n  ONE  @map(\"1\")\n}\n",
+  "inlineSchemaHash": "a0f6b189ad154fefef7cbf2a246524fcd79cf087be904a91477bc38147e6e61c",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"member_log\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"ip_address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"member_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"section\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sub_section\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"enum\",\"type\":\"member_log_action\"},{\"name\":\"altered\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"original_data\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"account_id\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null},\"members\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"u_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"first_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"google_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"salt\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"algo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email_verification_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"verify\",\"kind\":\"enum\",\"type\":\"members_verify\"},{\"name\":\"google_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acl_access_profile\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user_level\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"member_acl_paths\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"u_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"section_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"route_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"path\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permission_type\",\"kind\":\"enum\",\"type\":\"member_acl_paths_permission_type\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"member_acl_rules\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"u_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parent_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"app\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"minimum_tier_level\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"section_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"require_acl\",\"kind\":\"enum\",\"type\":\"member_acl_rules_require_acl\"},{\"name\":\"tutorial_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"member_log\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"ip_address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"member_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"section\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sub_section\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"enum\",\"type\":\"member_log_action\"},{\"name\":\"altered\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"original_data\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"account_id\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null},\"members\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"u_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"first_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"google_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"salt\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"algo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email_verification_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"verify\",\"kind\":\"enum\",\"type\":\"members_verify\"},{\"name\":\"google_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acl_access_profile\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user_level\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"member_acl_paths\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"u_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"section_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"route_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"path\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permission_type\",\"kind\":\"enum\",\"type\":\"member_acl_paths_permission_type\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"member_acl_rules\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"u_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parent_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"app\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"minimum_tier_level\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"section_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"require_acl\",\"kind\":\"enum\",\"type\":\"member_acl_rules_require_acl\"},{\"name\":\"tutorial_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"servers\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"hostname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"provision\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"close\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"state\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"servers_type\"},{\"name\":\"last_update_time\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"cluster\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"master\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"master_active\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"projectx_node_version\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rvm\",\"kind\":\"enum\",\"type\":\"servers_rvm\"},{\"name\":\"service\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"provision_request_value\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"location\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"instance_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"last_requested_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"servers_ips\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"servers_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"comment\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"instance\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null},\"servers_properties\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"servers_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

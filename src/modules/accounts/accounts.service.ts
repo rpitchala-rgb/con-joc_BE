@@ -5,9 +5,17 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { SearchAccountDto } from './dto/search-account.dto';
 import { AccountsUtility } from './accounts.utility';
 import { CommonService } from '../../shared/common/common.service';
-import { ACCOUNT, ACCOUNT_INFO } from './account-constants/account.constant';
+import { ACCOUNT, ACCOUNT_INFO, providers_array } from './account-constants/account.constant';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { CreateNotesDto } from './dto/create-notes.dto';
+import { Utility } from '../../shared/utility/utility';
+import { safesoft_encrypt_decrypt_key } from '../../shared/constants/constants';
+import { USER } from '../user/user-constants/user-constant';
+import { AsteriskDatabaseService } from '../../shared/joc-database/asterisk-database.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { projectxApiService } from '../../shared/projectX_Api/projectx-api.service';
+import { MoveUserDto } from './dto/move-user.dto';
+import { GetTransactionLogsDto } from './dto/get-transaction-logs.dto';
 
 
 @Injectable()
@@ -15,9 +23,15 @@ export class AccountsService {
   constructor(
     private readonly jocDataBaseService: JocDatabaseService,
     private readonly jocMainDatabaseService: JocMainDatabaseService,
+    private readonly asteriskDatabaseService: AsteriskDatabaseService,
     private readonly accountUtility: AccountsUtility,
-    private readonly commonService: CommonService
+    private readonly commonService: CommonService,
+    private readonly utility: Utility,
+    private readonly projectXApi : projectxApiService
+
   ) { }
+
+
 
   async createAction(dto: CreateAccountDto, currentUserId?: number): Promise<any> {
     const data = {
@@ -348,7 +362,7 @@ export class AccountsService {
           accounts: exportArr,
         };
       }
-      const pages = this.commonService.getPaginationLinks(
+      const pages = this.commonService.getPaginationLink(
         result.total_found,
         limit,
       );
@@ -1037,15 +1051,15 @@ export class AccountsService {
 
       if (accountNotes.length > 0) {
         const notes: Record<string, any>[] = [];
-        const note_format: Record<string, any>= {};
         for (const oneNote of accountNotes) {
           const member = await this.jocMainDatabaseService.members.findFirst({ where: { id: oneNote.member_id } });
+          const note_format: Record<string, any> = {};
 
-            note_format['account_id'] = oneNote.account_id;
-            note_format['member_id'] = oneNote.member_id;
-            note_format['subject'] = oneNote.subject;
-            note_format['note'] = oneNote.note;
-            note_format['created_at'] = oneNote.created_at ? oneNote.created_at.toISOString().slice(0, 19).replace('T', ' ') : null;
+          note_format['account_id'] = oneNote.account_id;
+          note_format['member_id'] = oneNote.member_id;
+          note_format['subject'] = oneNote.subject;
+          note_format['note'] = oneNote.note;
+          note_format['created_at'] = oneNote.created_at ? oneNote.created_at.toISOString().slice(0, 19).replace('T', ' ') : null;
 
           if (member && member.first_name && member.last_name) {
             note_format['member_name'] = member.first_name + ' ' + member.last_name;
@@ -1097,6 +1111,411 @@ export class AccountsService {
 
     return result;
   }
+
+  // ─── GET/PUT: users action (manage users and remote session) ──────────────────
+  async getFilteredUsersByAccountId(accountId: number, clusterNode: string): Promise<Record<number, any>> {
+    try {
+      // Build dynamic cluster connection name
+      const clusterDb = `cluster_${clusterNode}`;
+
+      // Query the cluster-specific database for users with ACL and connection_type
+      // This would need to be handled with a dynamic Prisma client or raw query
+      // For now, we'll use a placeholder that assumes a cluster database service
+      const results: any = await this.asteriskDatabaseService.$queryRawUnsafe(
+        `SELECT user_id, connection_type, acl_access_profile FROM users WHERE account_id = ? ORDER BY user_id`,
+        accountId,
+      );
+
+      const returnObj: Record<number, any> = {};
+      for (const result of results) {
+        returnObj[result.user_id] = {
+          acl_access_profile: result.acl_access_profile,
+          connection_type: result.connection_type,
+        };
+      }
+
+      return returnObj;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+
+  async getRegistrationServerByCluster(clusterId: string | string[], type: string = 'REGULAR', close: number = 0): Promise<any[]> {
+    try {
+      let sql = `
+        SELECT i.ip, s.cluster, s.close 
+        FROM servers s 
+        LEFT JOIN servers_ips i ON s.id = i.servers_id 
+        LEFT JOIN servers_properties p ON s.id = p.servers_id 
+        WHERE p.value = 'reg' AND s.type = ?
+      `;
+
+      const params: any[] = [type];
+
+      if ([0, 1].includes(close)) {
+        sql += ` AND s.close = ?`;
+        params.push(close);
+      }
+
+      if (Array.isArray(clusterId)) {
+        sql += ` AND s.cluster IN (${clusterId.map(() => '?').join(',')})`;
+        params.push(...clusterId);
+      } else {
+        sql += ` AND s.cluster = ?`;
+        params.push(clusterId);
+      }
+
+      const results: any = await this.jocMainDatabaseService.$queryRawUnsafe(sql, ...params);
+      return results || [];
+    } catch (error) {
+      console.error('Error fetching registration servers:', error);
+      return [];
+    }
+  }
+
+  async usersGetAction(uId: string, userId?: number): Promise<any> {
+    try {
+      const data = {
+        success: false,
+        code: 404,
+        text: 'Account not found!',
+      };
+
+      const account = await this.jocDataBaseService.accounts.findFirst({ where: { u_id: uId } });
+
+      if (!account) {
+        return data;
+      }
+      const accountId = account.id;
+      const memberId = userId || 999999;
+
+      // Fetch all users for the account
+      const users = await this.jocDataBaseService.users.findMany({
+        where: {
+          account_id: accountId,
+        },
+        select: {
+          id: true,
+          u_id: true,
+          account_id: true,
+          email: true,
+          salt: true,
+          algo: true,
+          password: true,
+          first_name: true,
+          last_name: true,
+          title: true,
+          contact_email: true,
+          email_verification_key: true,
+          created_at: true,
+          remote_session: true,
+          log_debug_level: true,
+          deleted_at: true,
+          registration_server: true,
+        },
+      });
+
+      let theUsers = users.map(u => ({
+        id: u.id,
+        u_id: u.u_id,
+        account_id: u.account_id,
+        email: u.email,
+        salt: u.salt,
+        algo: u.algo,
+        password: u.password,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        title: u.title,
+        contact_email: u.contact_email,
+        email_verification_key: u.email_verification_key,
+        created_at: this.commonService.formatDateForResponse(u.created_at as Date),
+        registration_server: u.registration_server,
+        remote_session: u.remote_session,
+        log_debug_level: u.log_debug_level,
+      }));
+
+      // If account has cluster node, get extended info from cluster database
+      if (account.cluster_node !== '' && account.cluster_node !== null) {
+        const omniUsers = await this.getFilteredUsersByAccountId(accountId, String(account.cluster_node));
+
+        theUsers = theUsers.map((user: any) => {
+          // Generate encrypted credentials
+          user._username = this.utility.encrypted(
+            `${user.account_id}_${user.id}`, safesoft_encrypt_decrypt_key
+          ) + '--imper';
+          user._password = this.utility.encrypted(
+            `${memberId}_${Math.floor(Date.now() / 1000) - 10}`, safesoft_encrypt_decrypt_key
+          );
+
+          // Set ACL defaults
+          user.acl = 'N/A';
+
+          // Check if user exists in cluster omniUsers
+          if (omniUsers[user.id]) {
+            user.acl = 'Custom';
+            user.connection_type = '';
+            if (USER.acl_access_profile_options[omniUsers[user.id].acl_access_profile]) {
+              user.acl = USER.acl_access_profile_options[omniUsers[user.id].acl_access_profile];
+            }
+            if (omniUsers[user.id].connection_type) {
+              user.connection_type = omniUsers[user.id].connection_type;
+            }
+          }
+
+          return user;
+        });
+      }
+
+      // Add options to all users
+      theUsers = theUsers.map((user: any) => {
+        return {
+          remote_session_options: USER.REMOTE_SESSION_OPTIONS,
+          log_debug_level_options: USER.LOG_DEBUG_LEVEL_OPTIONS,
+          ...user,
+        };
+      });
+
+      // Build recording options
+      const recordingOptions: Record<string, any> = {};
+      for (let i = 1; i < 8; i++) {
+        recordingOptions['remote_session_expired_at'] = recordingOptions['remote_session_expired_at'] || [];
+        recordingOptions['remote_session_expired_at'].push({ value: `${i}`, name: `${i} Days` });
+      }
+      recordingOptions['remote_session_options'] = [
+        { value: 'NO', name: 'No' },
+        { value: 'YES', name: 'Yes' }
+      ];
+
+      // Fetch registration servers
+      const registrationServers = await this.getRegistrationServerByCluster(
+        account.cluster_node || '',
+      );
+
+      // Count active remote session users
+      const remoteUsers: any[] = [];
+      const usersCount: any[] = [];
+      for (const user of users) {
+        if (user.deleted_at === null) {
+          usersCount.push('x');
+        }
+        if (user.remote_session === 'YES' && user.deleted_at === null) {
+          remoteUsers.push('yes');
+        }
+      }
+      if (usersCount.length === remoteUsers.length) {
+        recordingOptions['remote_account'] = true;
+      }
+
+      return {
+        success: true,
+        code: 200,
+        data: theUsers,
+        recordingOptions,
+        data_center: account.primary_data_center ? account.primary_data_center.toLowerCase() : 'dt',
+        registration_servers: registrationServers,
+
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async usersPostAction(u_id: string, updateUserDto: UpdateUserDto, userId?: string): Promise<any> {
+    try {
+      const account = await this.jocDataBaseService.accounts.findFirst({ where: { u_id: u_id } });
+
+      const data = {
+        success: false,
+        code: 404,
+        text: 'Account not found!',
+      };
+
+      if (account) {
+        const accountId = account.id;
+        let remoteSession = ACCOUNT.FLAGS.FLAG_YES_FULL;
+        if (updateUserDto.currentOptions && updateUserDto.currentOptions.remote_session !== undefined) {
+          remoteSession = updateUserDto.currentOptions.remote_session;
+        }
+
+        await this.jocDataBaseService.users.updateMany({
+          where: {
+            account_id: accountId,
+            deleted_at: null,
+          },
+          data: {
+            remote_session: remoteSession as any,
+            remote_session_expired_at: null,
+          },
+        });
+
+        const recording = (remoteSession === ACCOUNT.FLAGS.FLAG_YES_FULL) ? ACCOUNT.STRINGS.ACTIVE : ACCOUNT.STRINGS.INACTIVE;
+        data.success = true;
+        data.code = 200;
+        data.text = `All users on account ${accountId} have session recording ${recording}`;
+      }
+      return data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  // API is done but need to check as this is calling projectXApiRequest 
+  //placeholder
+  async moveUserAction(u_id: string, moveUserDto: MoveUserDto): Promise<any> {
+    try {
+      const params: Record<string, any> = {
+        user_id: '',
+        server_ip: '',
+        account_id: '',
+        cluster: '',
+        emergency: 0,
+        location: '',
+        hostname: '',
+      };
+
+      const account: any = await this.jocDataBaseService.accounts.findFirst({
+        where: { u_id },
+        select: {
+          id: true,
+          cluster_node: true,
+          primary_data_center: true,
+        },
+      });
+
+      if (account) {
+        params.account_id = account.id;
+        params.cluster = account.cluster_node;
+        params.location = account.primary_data_center;
+      }
+
+      if (moveUserDto && typeof moveUserDto === 'object') {
+        if (moveUserDto.user_id !== undefined) {
+          params.user_id = moveUserDto.user_id;
+        }
+        if (moveUserDto.server_ip !== undefined) {
+          params.server_ip = moveUserDto.server_ip;
+        }
+        if (moveUserDto.emergency !== undefined) {
+          params.emergency = moveUserDto.emergency;
+        }
+      }
+
+      let data: Record<string, any>;
+
+      if (!params.account_id) {
+        data = {
+          success: false,
+          code: 404,
+          text: 'Account not found!',
+        };
+      } else if (!params.user_id || !params.server_ip) {
+        data = {
+          success: false,
+          code: 422,
+          text: 'Post data missing!',
+        };
+      } else {
+        params.hostname = '';
+        if (params.emergency === 0) {
+          const theServerIp: any = await this.jocMainDatabaseService.servers_ips.findFirst({
+            where: { ip: params.server_ip },
+            select: { servers_id: true },
+          });
+          if (theServerIp) {
+            const server: any = await this.jocMainDatabaseService.servers.findFirst({
+              where: { id: theServerIp.server_id },
+              select: { hostname: true },
+            });
+            if (server) {
+              params.hostname = server.hostname;
+            }
+          }
+        }
+
+        data = {
+          success: false,
+          code: 422,
+          text: 'Something went wrong in Omni API!',
+        };
+
+        //placeholder for now as this is calling projectXApiRequest
+        const response: any = await this.projectXApi.projectXApiRequest('move-voicemail', params, 'POST');
+        if (response) {
+          if (response.code !== undefined) {
+            if (response.code === 200) {
+              const jocUser: any = await this.jocDataBaseService.users.findFirst({
+                where: {
+                  account_id: params.account_id,
+                  id: Number(params.user_id),
+                },
+              });
+              if (jocUser) {
+                await this.jocDataBaseService.users.update({
+                  where: { id: Number(params.user_id) },
+                  data: { registration_server: params.server_ip },
+                });
+              }
+            }
+            data = response;
+          }
+        }
+      }
+
+      return data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async transactionAction(u_id: string, transactionDto: GetTransactionLogsDto): Promise<any> {
+    try {
+      const accounts = await this.jocDataBaseService.accounts.findFirst({
+        where: { u_id },
+        select: { id: true },
+      });
+      const provider_name = providers_array
+      if (!accounts) {
+        return {
+          success: false,
+          code: 404,
+          text: 'Account not found!',
+          data: []
+        };
+      } else {
+        const page = transactionDto.page;
+        const total = await this.jocDataBaseService.transaction_logs.findMany({
+          where: { account_id: accounts.id },
+          orderBy: { created_at: 'desc' },
+        });
+        const total_found = total.length;
+
+        const logsData = await this.jocDataBaseService.transaction_logs.findMany({
+          where: { account_id: accounts.id },
+          orderBy: { created_at: 'desc' },
+          take: 20,
+          skip: page
+        });
+        for (const log of logsData) {
+          log.new_balance = Number(log.new_balance);
+          log.amount_charged = Number(log.amount_charged);
+          log.current_balance = Number(log.current_balance);
+        }
+        const pages = await this.commonService.getPaginationLinks(total_found, (page / 20));
+        return {
+          success: true,
+          code: 200,
+          data: logsData,
+          pages: pages,
+          total_found: total_found,
+          provider_name: provider_name
+        }
+      }
+
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
 
 }
 

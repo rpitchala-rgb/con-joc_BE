@@ -42,4 +42,5 @@
         'cluster_99',
     ];
 
-    export const safesoft_encrypt_decrypt_key:any = process.env.ENCRYPT_KEY;
+  export const safesoft_encrypt_decrypt_key = "OQrfd5zDsx4Aab0Ib77x766777ppDimwdwdDv7d5cbToqjzsWswA";
+  export const joc_encrypt_decrypt_key = "RFfHJHJx7pP3mTqXXfMXcGM8xbWrf5jFkzqdDTk6YgCXzCaxmGneYW6rnpbdYm8sL"

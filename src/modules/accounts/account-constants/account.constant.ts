@@ -362,6 +362,56 @@ export const ACCOUNT = {
     { value: 'billing_production', name: 'Billing', type: '2' },
     { value: 'cluster_node', name: 'Cluster', type: '2' },
   ],
+  // Constants for users/flags
+  FLAGS: {
+    FLAG_YES: 'Y',
+    FLAG_NO: 'N',
+    FLAG_YES_FULL: 'YES',
+    FLAG_NO_FULL: 'NO',
+    FLAG_TRUE: 'True',
+    FLAG_FALSE: 'False',
+  },
+
+  INTEGERS: {
+    ZERO: 0,
+    ONE: 1,
+    TWO: 2,
+    THREE: 3,
+    FOUR: 4,
+    FIVE: 5,
+    NEGATIVE_ONE: -1,
+  },
+
+  SECONDS: {
+    SIX: 6,
+    THIRTY: 30,
+    SIXTY: 60,
+  },
+
+  STATUS_CODES: {
+    SERVICE_UNAVAILABLE: 7,
+  },
+
+  STRINGS: {
+    ACTIVE: 'Active',
+    INACTIVE: 'Inactive',
+  },
+
+  REMOTE_SESSION_OPTIONS: [
+    { value: 'NO', name: 'No' },
+    { value: 'YES', name: 'Yes' },
+  ],
+
+  REMOTE_SESSION_EXPIRY_OPTIONS: [
+    { value: '1', name: '1 Days' },
+    { value: '2', name: '2 Days' },
+    { value: '3', name: '3 Days' },
+    { value: '4', name: '4 Days' },
+    { value: '5', name: '5 Days' },
+    { value: '6', name: '6 Days' },
+    { value: '7', name: '7 Days' },
+  ],
+
 };
 
 export const ACCOUNT_INFO = {
@@ -492,4 +542,36 @@ export const ACCOUNT_INFO = {
     'externally_managed_account',
   ],
 };
+
+export const ENTITY_CONSTANT = {
+  FIEL_TYPE_0: 'no_choice',
+  FIEL_TYPE_1: 'model_choices',
+  FIEL_TYPE_2: 'controller_choices',
+  FIEL_TYPE_3: 'decode',
+  FIEL_TYPE_4: 'encode',
+  FIEL_TYPE_7: 'default_empty',
+  FIEL_TYPE_9: 'no_update',
+};
+
+
+export const providers_array = {
+  OUTBOUND: 'Outbound',
+  INBOUND: 'Inbound',
+  OUTBOUND_VB: 'Outbound Voice Broadcast',
+  OUTBOUND_RVM: 'Outbound RVM',
+  INBOUND_SMS: 'Inbound SMS',
+  SMS: 'SMS',
+  EMAIL: 'Email',
+  SMS_BULK: 'SMS Bulk',
+  EMAIL_BULK: 'Email Bulk',
+  OUTBOUND_VX: 'CAI/IVA',
+  SPEECH_TO_TEXT: 'Speech To Text',
+  TEXT_TO_SPEECH: 'Text To Speech',
+  RVM_COST: 'RVM COST',
+  PAY_PER_ACTION: 'Pay Per Action',
+  PAY_PER_ACTION_VX: 'Pay Per Action CAI',
+  PAY_PER_ACTION_RVM: 'Pay Per Action RVM',
+  INTENT_DETECTION: 'IVA Intent Detection',
+
+}
 
